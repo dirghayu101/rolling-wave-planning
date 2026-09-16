@@ -1,4 +1,4 @@
-# Per-Feature Human Verification File — Template
+# Per-Feature Human Verification File: Template
 
 Template for `rolling-wave-planning`. Lives at `verification/<n>.<f>-<slug>.md`, one per feature
 that owns L5 rows. Written by the `human-assisted-verification` skill at the feature's
@@ -9,10 +9,10 @@ left for a human. Handed over at `documented`.
 the check themselves: each row carries the exact query, command or console path, pasted ready to
 use. Anything an agent can observe is L1 to L4 evidence in the feature file, not a row here.
 
-## Template — copy verbatim, replacing bracketed text
+## Template: copy verbatim, replacing bracketed text
 
 ```markdown
-# Verification <n>.<f> — <Feature Title>
+# Verification <n>.<f>: <Feature Title>
 
 Feature: `rollout/<n>-<item>/<f>-<feature-slug>.md` · Indexed in `01-verification.md`
 Written <YYYY-MM-DD>. Handed over at stage `documented`; all rows PASS promotes the item to `complete`.
@@ -21,7 +21,7 @@ Setup the human needs first: <account / role / device / build, or "none">.
 
 | # | Human steps | Human-only observation | Check it yourself | 24h | Verdict + date |
 |---|---|---|---|---|---|
-| 1 | <Numbered, unambiguous app actions. "1. Open the app → Profile → Contact Support. 2. Type `test-123`. 3. Tap Submit." Assume the human is deliberately slow — leave no gaps: name the exact screen, the exact label, the exact text to type.> | <What no tool can see: "a success toast appears and the field clears".> | <The exact thing the human runs, pasted ready to use. SQL for the database console: `select id, message, created_at from support_tickets where message = 'test-123' order by created_at desc limit 1;` · a CLI command: `<cmd>` · a path in the admin UI: Dashboard → Support → Tickets, newest row.> | <no \| yes> | <PASS / FAIL / NEEDS-HUMAN> <YYYY-MM-DD> |
+| 1 | <Numbered, unambiguous app actions. "1. Open the app → Profile → Contact Support. 2. Type `test-123`. 3. Tap Submit." Assume the human is deliberately slow, leaving no gaps: name the exact screen, the exact label, the exact text to type.> | <What no tool can see: "a success toast appears and the field clears".> | <The exact thing the human runs, pasted ready to use. SQL for the database console: `select id, message, created_at from support_tickets where message = 'test-123' order by created_at desc limit 1;` · a CLI command: `<cmd>` · a path in the admin UI: Dashboard → Support → Tickets, newest row.> | <no \| yes> | <PASS / FAIL / NEEDS-HUMAN> <YYYY-MM-DD> |
 | 2 | … | … | … | … | … |
 
 **24h column:** `yes` when the check reads a log rather than durable state. Log retention is about

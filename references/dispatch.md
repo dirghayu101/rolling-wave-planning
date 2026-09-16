@@ -2,7 +2,7 @@
 
 Loaded when the lifecycle reaches a step that hands work to a subagent: exploration, implementation, review, agent-side verification, docs. Defines the handoff packet and the role list. The bindings (which skill, which tool, which model alias) are NOT here: they live in the batch's `02-adapters.md`, generated at kickoff by `references/adapters.md`.
 
-**Token economy:** the orchestrator does judgment only — decomposition, synthesis, the interview, final review. Reading-heavy work (repo exploration, doc sweeps, log reduction) goes to cheaper models with self-contained handoff packets: objective, scope, evidence format to return (files, line refs, uncertainties), stop conditions. Treat subagent reports as leads: reopen the cited files for anything a decision will rest on. *(Retained from v1 `pre-rolling-wave-planning` § Overview.)*
+**Token economy:** the orchestrator does judgment only: decomposition, synthesis, the interview, final review. Reading-heavy work (repo exploration, doc sweeps, log reduction) goes to cheaper models with self-contained handoff packets: objective, scope, evidence format to return (files, line refs, uncertainties), stop conditions. Treat subagent reports as leads: reopen the cited files for anything a decision will rest on. *(Retained from v1 `pre-rolling-wave-planning` § Overview.)*
 
 Packet-writing craft (what to include, what the subagent cannot see, how to phrase stop conditions) lives in `efficient-fable` § Handoff Packets. Load that skill when you need the craft. This file states only the contract that a rolling-wave packet must satisfy.
 

@@ -1,4 +1,4 @@
-# Intake — <effort>
+# Intake: <effort>
 
 Written at `phase: intake`, before any exploration. Copy to `planning/00-intake.md` and replace the bracketed text.
 

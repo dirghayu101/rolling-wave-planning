@@ -56,12 +56,12 @@ The user will report new issues mid-effort. Triage each one immediately into exa
 
 `<n>` in `rollout/<n>-<slug>/` is **position in execution order, never an identity**; the ledger is sorted by it, and slots are assigned at open time in the planned order.
 
-- **Insert that will execute NEXT** (the normal case, since inserts land at "now"): it takes slot `(highest item opened so far) + 1` and **every still-`pending` item shifts +1** — rename its `rollout/<n>-…` dir and, if the working file carries a number prefix, `working/<item>.agent.md`, retitle its issue `[<N>.<i>]`, and fix every reference in `00-plan.md` (ledger, STATE, and any decision that spells out the order — add a dated note there, never a silent rewrite).
+- **Insert that will execute NEXT** (the normal case, since inserts land at "now"): it takes slot `(highest item opened so far) + 1` and **every still-`pending` item shifts +1**: rename its `rollout/<n>-…` dir and, if the working file carries a number prefix, `working/<item>.agent.md`, retitle its issue `[<N>.<i>]`, and fix every reference in `00-plan.md` (ledger, STATE, and any decision that spells out the order, adding a dated note there, never a silent rewrite).
 - **Insert that will execute LATER** (rare): it takes the slot after the item it follows; only items after it shift.
-- **Never renumber an item that has a branch, PR, or merged code** — those numbers are frozen in git history. If a shift would require it, the insert goes at the END and STATE must say explicitly that it executed out of numeric order. That is the one allowed exception, and it is loud on purpose.
-- Feature numbers `<i>.<f>` are per-item and unaffected by a shift, except that `<i>` follows its item. `docs/` chapter numbers (`docs/045-…`) are READING order, not item numbers — they never shift. No fractional or letter suffixes (`1.5`, `1a`, `1.1`) for an insert: `<N>.<i>.<f>` is already the feature grammar, so `10.1.1` is a feature, never an item.
+- **Never renumber an item that has a branch, PR, or merged code**: those numbers are frozen in git history. If a shift would require it, the insert goes at the END and STATE must say explicitly that it executed out of numeric order. That is the one allowed exception, and it is loud on purpose.
+- Feature numbers `<i>.<f>` are per-item and unaffected by a shift, except that `<i>` follows its item. `docs/` chapter numbers (`docs/045-…`) are READING order, not item numbers: they never shift. No fractional or letter suffixes (`1.5`, `1a`, `1.1`) for an insert: `<N>.<i>.<f>` is already the feature grammar, so `10.1.1` is a feature, never an item.
 
-**Why:** batch 10 gave a mid-flight item the next unused number, 4 (2026-09-04), while it actually executed second and items 2–3 were still pending — the number implied it ran last and cost the developer a long, confused session. Renumbered 2026-09-10.
+**Why:** batch 10 gave a mid-flight item the next unused number, 4 (2026-09-04), while it actually executed second and items 2–3 were still pending: the number implied it ran last and cost the developer a long, confused session. Renumbered 2026-09-10.
 
 ## Pausing a batch
 

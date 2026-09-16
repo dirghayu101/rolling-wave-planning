@@ -1,8 +1,8 @@
-# <N> — <Batch title>
+# <N>: <Batch title>
 
 The batch's entry file. Copy to `<N>-<slug>/00-plan.md` at intake and replace the bracketed text.
 
-**Soft target 100 lines.** Item cards do NOT live here; that is what kept every audited plan file growing without bound. Only STATE, decisions, the adapters pointer, the ledger, the review URLs and the deferred forward links. **Edited in place on every re-plan — never append a superseding "new plan" section.** History lives in git; four stacked re-plan narratives are what made one audited 969-line plan unskimmable. **Detail never goes in table cells**, it goes in the card, the feature file or `working/`.
+**Soft target 100 lines.** Item cards do NOT live here; that is what kept every audited plan file growing without bound. Only STATE, decisions, the adapters pointer, the ledger, the review URLs and the deferred forward links. **Edited in place on every re-plan: never append a superseding "new plan" section.** History lives in git; four stacked re-plan narratives are what made one audited 969-line plan unskimmable. **Detail never goes in table cells**, it goes in the card, the feature file or `working/`.
 
 ## STATE
 
@@ -58,4 +58,4 @@ Ceremony ON only; delete this section when ceremony is OFF.
 
 Work discovered in this batch and pushed out of it. Each line is a forward link to the sibling stub directory that carries the context.
 
-- `<M>-<slug>/README.md` — <one line: what it is and why it is out of scope here> (<YYYY-MM-DD>)
+- `<M>-<slug>/README.md`: <one line: what it is and why it is out of scope here> (<YYYY-MM-DD>)

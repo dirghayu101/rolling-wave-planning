@@ -18,20 +18,20 @@ Dots, not slashes: git forbids a ref `x1` and a ref directory `x1/feat2` from co
 `<N>-<batch>` is the SSOT directory name verbatim. `<i>` and `<f>` are the item and feature
 numbers from the directory. `<slug>` is the feature file's slug.
 
-**Worked example — batch `10-terminal-alerting`, item 1 (the Capacitor shell), which was one
+**Worked example: batch `10-terminal-alerting`, item 1 (the Capacitor shell), which was one
 coherent behavior and so opened as a single feature:**
 
 ```
 dev
 └── 10-terminal-alerting                        batch branch
-    └── 10-terminal-alerting.1                  item 1 — Capacitor shell
+    └── 10-terminal-alerting.1                  item 1 (Capacitor shell)
         └── 10-terminal-alerting.1.1-capacitor-shell        feature PR → item branch
-    └── 10-terminal-alerting.2                  item 2 — cut from the batch branch
-                                                AFTER item 1's PR merged
+    └── 10-terminal-alerting.2                  item 2 (cut from the batch branch
+                                                AFTER item 1's PR merged)
 ```
 
-An item that does split shows two or more feature branches under it —
-`….2.1-<slug>`, `….2.2-<slug>` — each with its own PR into the item branch. (Corrected
+An item that does split shows two or more feature branches under it:
+`….2.1-<slug>`, `….2.2-<slug>`, each with its own PR into the item branch. (Corrected
 2026-09-10: this example read "item 1 (PWA shell)" split into manifest/service-worker features;
 batch 10 changed from PWA to Capacitor on Sep 3rd, 2026 and item 1 shipped as one feature.)
 
@@ -44,7 +44,7 @@ merged into it, so it inherits item 1's work and nothing has to be rebased.
 |---|---|---|---|---|
 | Feature | item branch | at the `reviewed` gate: tests green and review point 1 resolved on the branch (a draft PR is fine) | rich description (what / why / how tested), the `agent` and `ceiling` confidence scores, and review point 2 (`references/review.md`): fresh-context diff review plus the security pass when flagged | **agent, automatically**, once review findings are resolved |
 | Item | batch branch | all the item's feature PRs merged into the item branch and the L4 cross-feature pass recorded | review point 3: integration review plus the rogue-check | **agent, automatically**, once findings are resolved |
-| Batch | `dev` | all items `complete` | review point 4: final whole-batch review plus the rogue-check, full test-suite evidence, handoff summary | **the developer — nobody else merges this one** |
+| Batch | `dev` | all items `complete` | review point 4: final whole-batch review plus the rogue-check, full test-suite evidence, handoff summary | **the developer (nobody else merges this one)** |
 
 Merge method for feature→item and item→batch is a **merge commit, not a squash**: squashing a
 base branch in a stack rewrites history the child branches depend on. The developer chooses the
@@ -64,7 +64,7 @@ drill-down from a single entry point, without opening the repo:
 - **One batch tracking issue**, opened at kickoff: a task-list of the item issues (GitHub renders
   cross-referenced task-list entries with live open/closed state). Closed when the developer
   merges the batch PR. This is the developer's home page for the effort.
-- **One tracking issue per ITEM. Never per feature** — a per-feature issue would duplicate the
+- **One tracking issue per ITEM. Never per feature**: a per-feature issue would duplicate the
   feature PR. The item issue holds the feature checklist with PR links, updated as each feature
   merges, and is closed at `complete`.
 - **Title convention:** item issues `[<N>.<i>] <item title>`, feature PRs `[<N>.<i>.<f>] <feature
@@ -79,7 +79,7 @@ drill-down from a single entry point, without opening the repo:
 **Three views, three jobs.** Sub-issues on the batch issue = *where are we*; the merged-PR list
 filtered by the batch label, sorted oldest-first (and `git log --first-parent <batch-branch>`) =
 *what ran, in order*; the repo ledger (`00-plan.md` STATE) = *how to resume*. Issue and PR
-**numbers are identity, not order** — they are never expected to be sequential. The `[<N>.<i>]`
+**numbers are identity, not order**: they are never expected to be sequential. The `[<N>.<i>]`
 slot label lives in the *title* and is retitled when slots shift (see "Renumbering and pausing"
 below).
 
@@ -94,18 +94,18 @@ gh api graphql -f query='mutation{reprioritizeSubIssue(input:{issueId:"<batchId>
 
 `addSubIssue` always appends; `reprioritizeSubIssue` takes `afterId` or `beforeId`.
 
-**Every PR body's first line is `Part of #<item issue>`** — feature PRs and item PRs both point at
+**Every PR body's first line is `Part of #<item issue>`**: feature PRs and item PRs both point at
 the item issue, the batch PR at the batch issue. **"Part of", never "Closes"**: item issues close
 at `complete`, not at merge. A PR already merged without the line is retrofitted with a comment
-`Part of #<n>` — that lands on the issue timeline just the same.
+`Part of #<n>`: that lands on the issue timeline just the same.
 
-**Every issue and PR carries the `batch:<slug>` label** — that label is what makes the sorted PR
+**Every issue and PR carries the `batch:<slug>` label**: that label is what makes the sorted PR
 list work. Record both review URLs in `00-plan.md` at kickoff:
 
     https://github.com/<o>/<r>/pulls?q=is:pr+label:batch:<slug>+sort:created-asc
     https://github.com/<o>/<r>/issues/<batch issue number>
 
-**Why (2026-09-10):** batch 10 was found with no platform linking — batch issue #42 had no
+**Why (2026-09-10):** batch 10 was found with no platform linking: batch issue #42 had no
 sub-issues, and none of the four merged PRs (#43, #44, #46, #47) referenced item issue #39 or #45.
 The only glue was the `batch:<slug>` label, and the developer could not follow the chronology
 from GitHub.
@@ -115,13 +115,13 @@ from GitHub.
 Both rules live in `references/resume.md` ("Item numbers are execution slots", "Pausing a batch");
 their git/GitHub consequences:
 
-- **Item issue titles are retitled when items shift** — `[<N>.<i>]` always carries the item's
+- **Item issue titles are retitled when items shift**: `[<N>.<i>]` always carries the item's
   current slot, because the issue tree is how the developer navigates.
-- **Merged PR titles and branch names are never edited retroactively** — they are history, and an
+- **Merged PR titles and branch names are never edited retroactively**: they are history, and an
   item carrying either is never renumbered at all. A renumbered item records the bridge in its
   card: `renumbered <date> from <old n>; PRs #x/#y carry the old number`. Without that line the two
   numbers cannot be reconciled later, so it is not optional.
-- **On pause**, the batch PR into `dev` is an interim merge — title it
+- **On pause**, the batch PR into `dev` is an interim merge: title it
   `[<N>] <batch title> — interim merge (paused)`. The **batch tracking issue stays open** with a
   pause comment; item issues keep their own stages. Merged item and feature branches are deleted;
   the batch branch may be deleted and re-cut from `dev` on resume.
@@ -144,9 +144,9 @@ feature PR, the rogue-check on the item PR and once more on the batch PR.
 
 ## Red flags
 
-- A GitHub issue opened per feature — issues are per item, PRs are per feature.
-- A squash-merge of a feature or item PR — it rewrites history the child branches depend on.
-- The agent merging the batch PR — that one is the developer's.
-- A merged PR title or a branch renamed to match a renumbering — those are history, not records to keep current.
+- A GitHub issue opened per feature: issues are per item, PRs are per feature.
+- A squash-merge of a feature or item PR: it rewrites history the child branches depend on.
+- The agent merging the batch PR: that one is the developer's.
+- A merged PR title or a branch renamed to match a renumbering: those are history, not records to keep current.
 - A PR opened without `Part of #<item issue>` on line one, or an item issue that is not a sub-issue of its batch.
-- An item issue closed at `documented` — it closes at `complete`, when the human rows are ticked.
+- An item issue closed at `documented`: it closes at `complete`, when the human rows are ticked.

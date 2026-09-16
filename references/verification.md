@@ -93,14 +93,14 @@ before a paused batch resumes. Note dev-time database resets too: a row you asse
 A **judgment against a rubric, with no prescriptive arithmetic.** A formula invites gaming and
 micromanages the implementing agent. Weigh five dimensions:
 
-1. **Unit coverage of exit points** — every exit point of every changed unit has a test, per the
+1. **Unit coverage of exit points**: every exit point of every changed unit has a test, per the
    one-test-per-exit-point convention, or the gap is named.
-2. **Integration seams exercised** — the boundaries this feature crosses are actually run, not
+2. **Integration seams exercised**: the boundaries this feature crosses are actually run, not
    mocked away on both sides.
-3. **Real-surface verification** — the bound browser or mobile adapter was driven for any surface a
+3. **Real-surface verification**: the bound browser or mobile adapter was driven for any surface a
    user touches, or the uncovered-surface decision is cited.
-4. **Review findings raised vs resolved** — an unresolved finding on the PR lowers the score.
-5. **Unverifiable effects honestly listed** — declaring "the push send is unobserved" raises trust;
+4. **Review findings raised vs resolved**: an unresolved finding on the PR lowers the score.
+5. **Unverifiable effects honestly listed**: declaring "the push send is unobserved" raises trust;
    omitting it and being caught in review destroys it.
 
 **The same rubric is evaluated twice, and both numbers are dated:**
@@ -134,7 +134,7 @@ that does not survive re-derivation is a rogue-check finding.
 summarized there.
 
 - **Same-commit rule:** ticking the verification index is what moves a ledger row from `documented`
-  to `complete` — **tick and row change in the same commit.** Audits found ledgers asserting DONE
+  to `complete`: **tick and row change in the same commit.** Audits found ledgers asserting DONE
   above fully unchecked checklists in 2 of 4 batches.
 - **No human-verifiable surface** (pure tooling, internal refactor)? Record the **substitute** in
   the item's card (fault injection, a CI gate, a migration dry-run) and cite it in the index row.

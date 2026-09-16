@@ -90,17 +90,17 @@ skill. Invoke it; do not restate it here.
 ## Rogue-check
 
 An audit by a **fresh-context reviewer who did not execute the work.** Runs at **every item PR**,
-and **once more at the batch PR**. No other cadence — moment-to-moment agent work is deliberately
+and **once more at the batch PR**. No other cadence: moment-to-moment agent work is deliberately
 unconstrained; this replaces step-level policing.
 
 **(a) Direction.** Are the `00-plan.md` decisions honored? Any silent scope creep? Are the ledger
 stages truthful (the classic drift: a row reading `complete` above an unchecked
 `01-verification.md`, or `merged` before the PR actually merged)? Do the `agent` and `ceiling`
-confidence scores survive a spot-check re-derivation from the diff — re-derive one or two? Does any
+confidence scores survive a spot-check re-derivation from the diff (re-derive one or two)? Does any
 L5 row hold a check an agent could have run at L1 to L4? Is `working/` clean?
 
-**(b) Execution architecture.** Was subagent-driven development actually used — one orchestrator
-handing bounded tasks to subagents — or did one agent grind the whole item in a single rotting
+**(b) Execution architecture.** Was subagent-driven development actually used (one orchestrator
+handing bounded tasks to subagents), or did one agent grind the whole item in a single rotting
 context? Evidence: task decomposition in the working file, distinct subagent handoffs, feature
 branches with independent commit clusters.
 
@@ -114,13 +114,13 @@ file is itself the finding.)
 
 **Where findings land.** On the item PR (or the batch PR for the final pass), as review comments,
 resolved before that PR auto-merges. Any finding that cannot be resolved inside the item goes into
-`00-plan.md` STATE as the next order of business — **never into a code comment**.
+`00-plan.md` STATE as the next order of business: **never into a code comment**.
 
 ## Reviews post on the PR
 
 **Reviews post as GitHub PR review comments, not chat messages.** Use the GitHub MCP review flow
 (`pull_request_review_write` create → `add_comment_to_pending_review` → submit) or the `gh api`
-equivalents. The PR is the durable review record — the diff, the discussion, and the commit list
+equivalents. The PR is the durable review record: the diff, the discussion, and the commit list
 persist forever, which is why "PR" is the drill-down link in the feature file. Point 1 is the single
 exception, because no PR exists yet; it records into `working/<item>.agent.md` instead, never into
 chat either.

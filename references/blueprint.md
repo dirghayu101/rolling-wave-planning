@@ -1,4 +1,4 @@
-# Blueprint — wireframes before backend decisions
+# Blueprint: wireframes before backend decisions
 
 Loaded at `phase: blueprint` (Phase 3 of `pre-rolling-wave-planning`), only when the effort has a screen. Paths here are relative to the repo root; SSOT paths are relative to the batch directory.
 

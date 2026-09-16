@@ -1,25 +1,25 @@
-# Per-Feature File — Template
+# Per-Feature File: Template
 
 Template for `rolling-wave-planning`. The feature file is the developer's skim surface: they read
 scores, not diffs, and dive where the number is low.
 
-Lives at `rollout/<n>-<item>/<f>-<feature-slug>.md`. **Soft target ~100 lines** — solution
+Lives at `rollout/<n>-<item>/<f>-<feature-slug>.md`. **Soft target ~100 lines**: solution
 detail belongs in `working/<item>.agent.md`. **Created when the feature starts** (sections 1 to 3
 planned) and **updated at every stage transition**: the evidence log gains a row and both
 confidence numbers are re-derived each time a layer is climbed or a review point closes, per
 `references/verification.md`.
 
-## Template — copy verbatim, replacing bracketed text
+## Template: copy verbatim, replacing bracketed text
 
 ```markdown
-# Feature <n> — <Title>
+# Feature <n>: <Title>
 
 Item: `rollout/<i>-<item-slug>/0-card.md` · Stage: **pending | in-progress | reviewed | agent-verified | documented | merged**
 
 ## What & why
 
 <Soft target 3–5 lines; legibility beats brevity. What behavior this delivers and why it is
-a separate feature from its siblings. Use precise technical terms — never compress into
+a separate feature from its siblings. Use precise technical terms: never compress into
 vague abstraction to hit a line count.>
 
 ## Links
@@ -41,7 +41,7 @@ Planned <YYYY-MM-DD>, updated at close <YYYY-MM-DD>.
 | L4 cross-feature (item level) | <which sibling features are exercised together, and the flow that crosses them> | <what was run, evidence> |
 | L5 human-only | <`verification/<n>.<f>-<slug>.md` rows this feature owns> | <verdicts: PASS / FAIL / NEEDS-HUMAN> |
 
-Sensitive surfaces: <none | RLS | auth | payments | secrets — flagged features get the security pass, `references/review.md`>
+Sensitive surfaces: <none | RLS | auth | payments | secrets (flagged features get the security pass, `references/review.md`)>
 
 ## Evidence log
 

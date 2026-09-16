@@ -1,8 +1,8 @@
-# Item <n> — <Item title>
+# Item <n>: <Item title>
 
 The item's **stable layer**: what the problem is and what "done" means, not how to solve it. Copy to `rollout/<n>-<item>/0-card.md` at scaffold time and replace the bracketed text.
 
-**Soft target 100 lines.** A card approaching 100 lines means solution detail is leaking in — move it to `working/<item>.agent.md`.
+**Soft target 100 lines.** A card approaching 100 lines means solution detail is leaking in: move it to `working/<item>.agent.md`.
 
 Batch: `00-plan.md` · Stage: **pending | in-progress | agent-verified | documented | complete** (plus `triage`, `blocked`, `deferred`)
 <renumbered <YYYY-MM-DD> from <n>>   ← keep this bridge line whenever the slot changed, so old links and old sessions still resolve

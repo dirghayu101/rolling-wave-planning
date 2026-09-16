@@ -1,6 +1,6 @@
 ---
 name: rolling-wave-planning
-description: Use when starting or resuming any large multi-item or multi-step effort (many bugs, a big spec, several features) that won't fit cleanly in one context or one session — including "continue the ongoing flow" and new items arriving in an effort whose SSOT directory already exists. Don't use for a single isolated task or a quick one-off change.
+description: Use when starting or resuming any large multi-item or multi-step effort (many bugs, a big spec, several features) that won't fit cleanly in one context or one session, including "continue the ongoing flow" and new items arriving in an effort whose SSOT directory already exists. Don't use for a single isolated task or a quick one-off change.
 ---
 
 # Rolling-Wave Planning
@@ -19,7 +19,7 @@ Router. Read the principles, find the batch's STATE, then load **exactly one** t
 
 ## Find the SSOT and read STATE
 
-1. **Locate the batch directory.** Ask the user where it is, or where it should go; suggest the project convention (for example `docs/features/<N>-<name>/`). **List sibling dirs first and take the next unused number** — a real audit found two dirs both numbered 9. The scan counts deferred stub dirs (`<M>-<slug>/README.md`) as used numbers.
+1. **Locate the batch directory.** Ask the user where it is, or where it should go; suggest the project convention (for example `docs/features/<N>-<name>/`). **List sibling dirs first and take the next unused number**: a real audit found two dirs both numbered 9. The scan counts deferred stub dirs (`<M>-<slug>/README.md`) as used numbers.
 2. **Read only `00-plan.md`,** and from it only the STATE block's `phase:` and `layout:` fields, before you choose a target. Cards, feature files and the ledger detail are loaded later, by the target, and only for the item in play.
 3. **No SSOT directory exists** for this effort: the phase is `intake`.
 
@@ -50,7 +50,7 @@ Four rules sit around the table:
 - Working from what is in context after a gap instead of re-reading the SSOT files. Context is stale the moment the session breaks; the directory is the truth.
 - A `phase:` value that is not in the table, or STATE with no `phase:` at all.
 - A subagent dispatched without a tier (`judge`, `heavy`, `light`). Subagents inherit the driver's model, so an unstated tier silently burns the expensive one.
-- "The detail is in the session transcript / my context" — if it isn't in the SSOT dir, it doesn't exist tomorrow.
+- "The detail is in the session transcript / my context": if it isn't in the SSOT dir, it doesn't exist tomorrow.
 
 ## Version
 

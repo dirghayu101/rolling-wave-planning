@@ -10,9 +10,9 @@ Reference for `rolling-wave-planning`. Loaded at phase `scaffolded` and at phase
 | ----------- | ------------------------------------------------------------------------------------------------------------------------ | ------------------------------------- |
 | **Batch**   | The whole effort. One SSOT directory.                                                                                    | Up front (stable layer only)          |
 | **Item**    | Today's card.                                                                                                            | Up front (stable layer only)          |
-| **Feature** | One skimmable PR — roughly **≤400 changed lines excluding tests and generated code** — delivering one coherent behavior. | **Just in time, when the item opens** |
+| **Feature** | One skimmable PR (roughly **≤400 changed lines excluding tests and generated code**) delivering one coherent behavior. | **Just in time, when the item opens** |
 
-Pre-decomposing item 7's features before item 1 starts is the rot this skill exists to avoid. **An item that is already feature-sized gets no sub-breakdown** — one item branch, one PR, one feature file numbered `1-`. Do not manufacture a split to satisfy the shape.
+Pre-decomposing item 7's features before item 1 starts is the rot this skill exists to avoid. **An item that is already feature-sized gets no sub-breakdown**: one item branch, one PR, one feature file numbered `1-`. Do not manufacture a split to satisfy the shape.
 
 ## Stage sets
 
@@ -96,7 +96,7 @@ This is the close-out gate. **ALL of:**
 - [ ] Ledger note updated, one sentence.
 - [ ] The item PR is merged into the batch branch per `references/ceremony.md`.
 
-**The gate is a checklist, not a reminder:** one audited effort collapsed 8/9 working files, the next collapsed 0/8 — with the collapse instruction present in every file it ignored. Prose reminders don't survive deadline pressure; gates do.
+**The gate is a checklist, not a reminder:** one audited effort collapsed 8/9 working files, the next collapsed 0/8, with the collapse instruction present in every file it ignored. Prose reminders don't survive deadline pressure; gates do.
 
 ### `documented → complete`
 
@@ -125,7 +125,7 @@ A batch that stops mid-item does not just stop, it is paused, and pausing is a c
 - A stage moved without its gate. The gate is the definition of the stage, not a suggestion attached to it.
 - A feature at `merged` whose PR is still open, or at `documented` with no chapter in `docs/`.
 - An item at `complete` with an unticked row in `01-verification.md`, or an agent setting `complete` at all.
-- "DONE (verification pending)" — that is `agent-verified`, a different stage.
+- "DONE (verification pending)": that is `agent-verified`, a different stage.
 - An item decomposed into features before its own turn came, or a split manufactured to make a feature-sized item look like three.
 - A second working file for the same item, or "I'll collapse the working files at the end of the batch". Collapse is per item, at close-out.
 - An Outcome block growing past 5 bullets.

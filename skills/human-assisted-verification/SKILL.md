@@ -1,13 +1,13 @@
 ---
 name: human-assisted-verification
-description: Use when a verification step can only be performed or perceived by a human: a surface with no automation adapter bound (typically a mobile screen), a fire-and-forget effect (push, email, webhook) with no durable trace, or an end-to-end judgement no tool can make. Don't use when a test, a browser flow, or a read-only query already proves the behavior.
+description: "Use when a verification step can only be performed or perceived by a human: a surface with no automation adapter bound (typically a mobile screen), a fire-and-forget effect (push, email, webhook) with no durable trace, or an end-to-end judgement no tool can make. Don't use when a test, a browser flow, or a read-only query already proves the behavior."
 ---
 
 # Human-Assisted Verification
 
 ## Overview
 
-The agent and the human perceive a system differently. The human uses the app — taps, sees, feels
+The agent and the human perceive a system differently. The human uses the app: taps, sees, feels
 something is wrong. The agent reads logs, DB rows, and network traffic. A bug the human can see may
 be invisible to the agent's tools, and vice-versa.
 
@@ -40,7 +40,7 @@ Cross-feature human checks get `verification/group-<slug>.md`. Each row has:
 
 | Column | What | Who |
 |---|---|---|
-| **Human steps** | Detailed, numbered, unambiguous app actions. e.g. "1. Open app → Profile → Contact Support. 2. Type 'test-123'. 3. Tap Submit." Assume the human is deliberately slow — leave no gaps. | Human |
+| **Human steps** | Detailed, numbered, unambiguous app actions. e.g. "1. Open app → Profile → Contact Support. 2. Type 'test-123'. 3. Tap Submit." Assume the human is deliberately slow, leaving no gaps. | Human |
 | **Human-only observation** | What no tool can see. e.g. "a success toast appears and the field clears." | Human |
 | **Check it yourself** | The exact thing the human runs, pasted ready to use: the SQL for the database console (`select id, message, created_at from support_tickets where message = 'test-123' order by created_at desc limit 1;`), the CLI command, or the click path in the admin UI. Written out in full: a row that says "check the tickets table" is unfinished. | Human |
 
@@ -50,9 +50,9 @@ cases too.
 ### Durable-observable-first
 
 1. Point the human at **durable state** (a persisted row, a status field) wherever the behavior
-   produces one — it doesn't expire, so the row survives a paused batch.
+   produces one: it doesn't expire, so the row survives a paused batch.
 2. **Logs are primary only for fire-and-forget calls** with no persisted trace (e.g. confirming the
-   push send succeeded). Flag those rows **time-sensitive (24h)** in the `24h` column — log retention
+   push send succeeded). Flag those rows **time-sensitive (24h)** in the `24h` column: log retention
    is about a day. Order them first in the file and say so in the handover.
 3. Note dev-time DB resets: a row the human would look for may be wiped, so verify before the next
    reset.
@@ -64,12 +64,12 @@ cases too.
 2. When a feature's L1 to L3 evidence is in (its `reviewed → agent-verified` gate), flesh out its
    per-feature file with concrete human steps and the exact checks, while context is fresh. The file
    is handed to the human at `documented`.
-3. The human verifies in **groups as items complete** (verify 4 done of 20) — never blocked waiting
+3. The human verifies in **groups as items complete** (verify 4 done of 20), never blocked waiting
    for the whole batch.
 
 ### Fallback on failed assertion
 
-If a check cannot be run as written — often because a planning-phase premise was wrong (the log line
+If a check cannot be run as written, often because a planning-phase premise was wrong (the log line
 you expected doesn't exist, the table you expected doesn't change):
 
 1. Do **not** fail silently or assume the change is broken. The row is `NEEDS-HUMAN`, not FAIL.
