@@ -10,7 +10,7 @@ the skill-roles table filled (including a stack-conditional `framework` row for 
 
 ## Prompt
 
-Give the fresh agent exactly this, filling `<FIXTURE>` with the absolute path to
+Give the fresh agent exactly this, filling `<FIXTURE>` with the absolute path of a fresh COPY of
 `fixtures/12-notifications/`:
 
 > You are working in an existing rolling-wave-planning batch at `<FIXTURE>`. Invoke the

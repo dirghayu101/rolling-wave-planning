@@ -2,7 +2,7 @@
 
 ## Fixture
 
-`fixtures/13-onboarding/` (scratchpad copy of a pre-scaffold SSOT dir). `00-plan.md` has
+`fixtures/13-onboarding/` (`tests/fixtures/13-onboarding/` in this repo, a pre-scaffold SSOT dir). `00-plan.md` has
 `phase: interview`, `layout: v2`. `planning/00-intake.md`, `planning/01-exploration.md`, and
 `planning/02-edge-cases.md` are all written. `planning/04-interview.md` has round 1 (2 questions,
 settled) and round 2 (1 question, settled) with their decision-table rows already reflected in
@@ -11,7 +11,7 @@ reached its final round yet.
 
 ## Prompt
 
-Give the fresh agent exactly this, filling `<FIXTURE>` with the absolute path to
+Give the fresh agent exactly this, filling `<FIXTURE>` with the absolute path of a fresh COPY of
 `fixtures/13-onboarding/`:
 
 > You are working in an existing rolling-wave-planning effort at `<FIXTURE>`, which has not been

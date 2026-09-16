@@ -28,6 +28,5 @@ a orchestrator makes by reading the transcript, the same way a human reviewer wo
 ## Fixtures
 
 `fixtures/12-notifications/` and `fixtures/13-onboarding/` (built from this repo's own
-`templates/*`) live in the orchestrator's scratchpad, not under version control here, since they
-are throwaway test data regenerated whenever the release gate runs. Each scenario names its
+`templates/*`) live under `tests/fixtures/` in this repo. Before a run, copy the fixture to a scratch directory and hand the runner that absolute path as `<FIXTURE>`: runs must never modify the committed fixture, and a runner given a relative path will guess.
 fixture's path explicitly in its prompt.

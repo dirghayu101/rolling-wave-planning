@@ -2,7 +2,7 @@
 
 ## Fixture
 
-`fixtures/12-notifications/` (scratchpad copy of a v2 SSOT dir, built from this repo's
+`fixtures/12-notifications/` (`tests/fixtures/12-notifications/` in this repo, built from this repo's
 `templates/*`). `00-plan.md` has `phase: executing`, `layout: v2`, 9 ledger items: 1-3
 `complete`, item 4 `in-progress` (feature 4.1 `merged`, feature 4.2 `reviewed`, feature 4.3
 `pending`), 5-9 `pending`. Item 4's working file (`working/4-quota.agent.md`) is live with a
@@ -10,7 +10,7 @@ dispatch record.
 
 ## Prompt
 
-Give the fresh agent exactly this, filling `<FIXTURE>` with the absolute path to
+Give the fresh agent exactly this, filling `<FIXTURE>` with the absolute path of a fresh COPY of
 `fixtures/12-notifications/`:
 
 > You are working in an existing rolling-wave-planning batch directory at `<FIXTURE>`. Invoke the

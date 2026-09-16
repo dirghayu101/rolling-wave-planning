@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<!--
+  Screen: Quota settings
+  Route:  /settings/notifications/quota
+  Roles:  workspace-member  (who can open this screen)
+  Item:   rollout/4-quota/0-card.md
+  Boxes and labels only. No framework, no scripts, no styling decisions.
+-->
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Wireframe — Quota settings</title>
+<style>
+  body { font: 14px system-ui; margin: 16px; }
+  div.box { border: 1px solid #999; padding: 8px; margin: 8px 0; }
+  div.box > b { display: block; margin-bottom: 6px; }
+  label { display: block; margin: 4px 0; }
+  span.ctl { border: 1px dashed #999; padding: 2px 6px; }
+</style>
+</head>
+<body>
+
+<div class="box">
+  <b>Header / navigation</b>
+  <label>Arrives from: Settings &gt; Notifications (or the header quota banner's "Manage" link)</label>
+  <label>Exit: Back control returns to Settings &gt; Notifications</label>
+</div>
+
+<div class="box">
+  <b>Quota summary</b>
+  <label>Usage this period <span class="ctl">progress bar, 0-100%, red above 90%</span></label>
+  <label>Reset date <span class="ctl">text, "Resets on &lt;date&gt;"</span></label>
+  <label>Upgrade <span class="ctl">button, opens the upgrade-quota modal (feature 4.3)</span></label>
+</div>
+
+<div class="box">
+  <b>Usage by channel</b>
+  <label>Columns: channel, sent this period, quota share</label>
+  <label>Sort / filter: none</label>
+  <label>Row action: none</label>
+</div>
+
+<!--
+  STATES (list every one, delete none):
+  - empty:    no usage yet this period, show "0 of <limit> used"
+  - loading:  skeleton over the progress bar and the table
+  - error:    "couldn't load your usage", retry button
+  - success:  usage renders with the live progress bar
+  - other:    near-limit (>=90%) switches the progress bar red and shows the upgrade CTA inline
+
+  ROLE VARIATION:
+  - workspace-member: full read access, upgrade button visible
+-->
+
+<!--
+  BACKEND NEEDS (each line becomes an acceptance criterion in the item card):
+  - GET current-period usage + limit from `notification_quota`
+  - GET per-channel usage breakdown for the current period
+  - RLS: a member reads only their own row
+  - no realtime requirement; page-load fetch is sufficient
+-->
+
+</body>
+</html>
