@@ -12,11 +12,13 @@ something is wrong. The agent reads logs, DB rows, and network traffic. A bug th
 be invisible to the agent's tools, and vice-versa.
 
 This skill writes **only the human half**. Everything the agent can observe is layers L1 to L4 of
-the verification ladder (`references/verification.md` in the `rolling-wave-planning` repo) and is
-finished **before** handover: unit tests, seams, the bound browser or mobile adapter, cross-feature
-runs. What is left is what a human alone can do or see, and the checklist you write here has **zero
-agent steps**. The human is the instrument and also the reader: each row carries the exact query,
-command or console path, so they run it themselves without an agent in the loop.
+the verification ladder (`references/verification.md`) and is finished **before** handover: unit
+tests, seams, the bound browser or mobile adapter, cross-feature runs. Paths like that one resolve
+against the `rolling-wave-planning` skill directory: the directory of that name in the same skills
+folder, which is the repo root when reading inside the repo. What is left is what a human alone can
+do or see, and the checklist you write here has **zero agent steps**. The human is the instrument
+and also the reader: each row carries the exact query, command or console path, so they run it
+themselves without an agent in the loop.
 
 A row an agent could have checked does not belong here. It is an unclimbed rung of the ladder and a
 rogue-check finding.
@@ -34,8 +36,8 @@ rogue-check finding.
 
 ### Write the rows
 
-Copy `templates/verification-feature.md` (paths are relative to the `rolling-wave-planning` repo
-root) into `verification/<n>.<f>-<slug>.md`, and index it with one row in `01-verification.md`.
+Copy `templates/verification-feature.md` (paths resolve against the `rolling-wave-planning` skill
+directory, as above) into `verification/<n>.<f>-<slug>.md`, and index it with one row in `01-verification.md`.
 Cross-feature human checks get `verification/group-<slug>.md`. Each row has:
 
 | Column | What | Who |

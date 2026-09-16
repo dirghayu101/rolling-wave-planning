@@ -8,16 +8,16 @@ Also loaded mid-batch when a dispatch needs a role that `02-adapters.md` has no 
 
 ## Two config layers
 
-1. **Project defaults**: `<features-dir>/adapters.default.md` (the same directory the batch dirs are siblings in; the project's `CLAUDE.md` or `AGENTS.md` may carry a one-line pointer to it). It is the accumulated answer from earlier batches in this project.
+1. **Project defaults**: `<project root>/adapters.default.md`, at the git root of the project or monorepo. A project usually has several feature directories and several `spec` directories, each holding its own SSOT, so the root is the one location a kickoff can find the defaults in without searching; the project's `CLAUDE.md` or `AGENTS.md` may carry a one-line pointer to it. It is the accumulated answer from earlier batches in this project.
 2. **Batch bindings**: `02-adapters.md` inside the batch directory. This is what packets read. It can diverge from the defaults for the life of one batch.
 
 Kickoff procedure:
 
-1. Read `<features-dir>/adapters.default.md` if it exists. If it does not, this is the project's first v2 batch: skip to step 2 and generate from detection alone.
+1. Read `<project root>/adapters.default.md` if it exists. If it does not, this is the project's first v2 batch: skip to step 2 and generate from detection alone.
 2. Run detection (below).
 3. Diff detection against the defaults file. **Present only the delta** in the interview's final round: newly installed skills or tools that could replace a current binding, and bindings whose tool is now missing. Numbered options, each with a one-line trade-off and **your recommendation**. Unchanged rows are not a question; carry them over silently.
 4. Write `02-adapters.md` from `templates/02-adapters.md` with the answers.
-5. Save the result back to `<features-dir>/adapters.default.md` (from `templates/adapters.default.md` on first creation), so the next batch starts from today's answers and its delta is genuinely small.
+5. Save the result back to `<project root>/adapters.default.md` (from `templates/adapters.default.md` on first creation), so the next batch starts from today's answers and its delta is genuinely small.
 
 A missing defaults file is normal, not an error. So is a delta of zero rows: then the adapter round is one sentence confirming the carry-over.
 
@@ -86,7 +86,7 @@ Used by the blueprint phase's L3 comparison: screenshot through the browser adap
 
 ### Code map
 
-`safishamsi/graphify`. Install `uv tool install graphifyy`, then `graphify install`, then build code-only with `graphify extract . --code-only` (secrets and build output excluded via `.graphifyignore`, gitignore syntax; docs and images are skipped so no LLM call is made). Queries: `graphify query "<question>" --budget N`, `graphify explain`, `graphify affected`, `graphify path`. Refresh: `rm -rf graphify-out && graphify extract . --code-only`. Corrected 2026-09-16: previously read `/graphify .` and `graphify update .`; measured on a real monorepo, `update` re-includes markdown and doubled the graph, and `--code-only` merges into an existing graph so deleted code lingers without the clean rebuild. Output lands in `graphify-out/`, which belongs in `.gitignore`. `graphify install` writes to the config dir named by `CLAUDE_CONFIG_DIR`, so check where the skill landed.
+`safishamsi/graphify`. Install `uv tool install graphifyy`, then `graphify install`, then build code-only with `graphify extract . --code-only` (secrets and build output excluded via `.graphifyignore`, gitignore syntax; docs and images are skipped so no LLM call is made). Queries: `graphify query "<question>" --budget N`, `graphify explain`, `graphify affected`, `graphify path`. Refresh: `rm -rf graphify-out && graphify extract . --code-only`. Corrected 2026-09-16: previously read `/graphify .` and `graphify update .`; measured on a real monorepo, `update` re-includes markdown and doubled the graph, and `--code-only` merges into an existing graph so deleted code lingers without the clean rebuild. Output lands in `graphify-out/`, which belongs in `.gitignore`. `graphify install` installs the `graphify` skill once, globally, into the config dir named by `CLAUDE_CONFIG_DIR`; only the graph is per project.
 
 Detection: `command -v graphify` **and** `graphify-out/graph.json` exists in the project. A graph that was never built is the same as no code map.
 

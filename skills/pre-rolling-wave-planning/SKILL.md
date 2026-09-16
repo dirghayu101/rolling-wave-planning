@@ -11,7 +11,7 @@ Front-loads the **stable layer** of a rolling-wave effort: capture the developer
 
 **Token economy:** the orchestrator does judgment only: decomposition, synthesis, the interview, final review. Reading-heavy work (repo exploration, doc sweeps, log reduction) goes to cheaper models with self-contained handoff packets: objective, scope, evidence format to return (files, line refs, uncertainties), stop conditions. Treat subagent reports as leads: reopen the cited files for anything a decision will rest on.
 
-**Paths in this file are relative to the repo root**, two levels up from `skills/pre-rolling-wave-planning/`. So `templates/00-plan.md` means `<repo root>/templates/00-plan.md`. Other skills are named, never read as files.
+**Paths in this file, such as `templates/00-plan.md` and `references/blueprint.md`, resolve against the `rolling-wave-planning` skill directory (the directory of that name in the same skills folder; the repo root when reading inside the repo).** That holds whether the family is read inside the repo or installed with skills.sh, which drops each sub-skill beside `rolling-wave-planning/` rather than under it. Other skills are named, never read as files.
 
 ## Phases and checkpoints
 
@@ -50,7 +50,7 @@ Dispatch parallel cheap agents (see `dispatching-parallel-agents`) to map: curre
 
 **Verify every premise the effort rests on.** If a premise can be settled by a query, a file read, or fetched vendor docs, settle it now: a plan anchored on a false premise fails silently at verification time, when the evidence may already be gone. Mark each premise from the intake settled or still open.
 
-When the `code-map` role is bound and enabled (in the project's `<features-dir>/adapters.default.md`, or in `02-adapters.md` once it exists) and its graph file is present, every exploration packet carries the line: query the code map first, open only the files it cites.
+When the `code-map` role is bound and enabled (in the project's `<project root>/adapters.default.md`, or in `02-adapters.md` once it exists) and its graph file is present, every exploration packet carries the line: query the code map first, open only the files it cites.
 
 `planning/01-exploration.md` holds the findings that survive: file paths with line refs, the settled premises with the evidence that settled them, the open ones, and one line per dispatched packet so a resume knows what is already covered.
 
@@ -82,10 +82,10 @@ Every settled question lands in the decisions table with its why and its rejecte
 
 **The transcript accumulates round by round** in `planning/04-interview.md`: the questions as asked, the developer's answers, and which decision-table row each answer produced. Append the round before asking the next one, so a quit mid-interview resumes at the next round with no question re-asked.
 
-**The final round is the adapter and ceremony round.** Follow the procedure in `references/adapters.md`: read `<features-dir>/adapters.default.md` if it exists, run detection over installed skills and tools, and present as numbered options only the **delta** (roles whose binding changed, newly detected alternatives, roles with nothing installed) plus the ceremony level, each with a recommendation. Then:
+**The final round is the adapter and ceremony round.** Follow the procedure in `references/adapters.md`: read `<project root>/adapters.default.md` if it exists, run detection over installed skills and tools, and present as numbered options only the **delta** (roles whose binding changed, newly detected alternatives, roles with nothing installed) plus the ceremony level, each with a recommendation. Then:
 
 - Write `02-adapters.md` from `templates/02-adapters.md` with the agreed bindings.
-- Save the result back as the project's `<features-dir>/adapters.default.md` (create it when this is the project's first batch).
+- Save the result back as the project's `<project root>/adapters.default.md` (create it when this is the project's first batch).
 - Record the surface coverage decision in the decisions table: each surface the batch touches (web / iOS / Android / backend) with the role and tool that covers it, and an uncovered surface named as a decision with install suggestions.
 
 ## Phase 5: Scaffold and hand off

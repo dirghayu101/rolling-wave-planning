@@ -56,7 +56,7 @@ Corrected 2026-09-16: this section was titled "Hard output contract" and set a h
 
 ## Docs-writer contract
 
-A chapter is often written by a separate docs-writer run rather than by the agent that built the feature, on the feature branch before the merge. That writer may be an external CLI that cannot see this conversation, so the handoff packet has to be self-contained. The packet template lives at `templates/doc-handoff.md` in the rolling-wave-planning repository root.
+A chapter is often written by a separate docs-writer run rather than by the agent that built the feature, on the feature branch before the merge. That writer may be an external CLI that cannot see this conversation, so the handoff packet has to be self-contained. The packet template lives at `templates/doc-handoff.md` in the `rolling-wave-planning` skill directory (the directory of that name in the same skills folder; the repo root when reading inside the repo).
 
 Inputs the packet carries:
 

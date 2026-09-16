@@ -18,7 +18,7 @@ The restructure. One repo, one router, one file loaded per phase, drivers bound 
   kept verbatim in `planning/00-intake.md`) and `blueprint` (plain-HTML wireframes as a feature
   inventory per screen). Every phase writes a checkpoint before its work, so a session can end
   at any point and resume there.
-- `02-adapters.md` per batch, seeded from `<features-dir>/adapters.default.md` and fresh
+- `02-adapters.md` per batch, seeded from `<project root>/adapters.default.md` and fresh
   detection; roles (`simplicity`, `tdd`, `ui-implementation`, `browser-verification`, ...) bound
   to installed skills, tools and model-tier aliases. Kickoff shows only the delta. A surface with
   no verification tool is a recorded decision, not a silent ceiling.

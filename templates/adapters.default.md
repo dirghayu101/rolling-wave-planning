@@ -2,7 +2,7 @@
 
 Edit this file to swap any binding; the skill reads it, never hard-codes.
 
-> **This is the project-level seed, not a batch file.** It lives at `<features-dir>/adapters.default.md`, beside the numbered batch directories. Kickoff reads it, runs detection from `references/adapters.md`, and presents **only the delta** (newly installed skills or tools, bindings whose tool has gone missing) in the interview's final round. The answers are written to the batch's `02-adapters.md`, then saved back here, so the next batch starts from today's answers.
+> **This is the project-level seed, not a batch file.** It lives at `<project root>/adapters.default.md`, at the git root of the project or monorepo, not inside any feature or spec directory. Kickoff reads it, runs detection from `references/adapters.md`, and presents **only the delta** (newly installed skills or tools, bindings whose tool has gone missing) in the interview's final round. The answers are written to the batch's `02-adapters.md`, then saved back here, so the next batch starts from today's answers.
 >
 > Editing this file changes the starting point for future batches. It does **not** change a batch already running: edit that batch's `02-adapters.md` instead.
 >
