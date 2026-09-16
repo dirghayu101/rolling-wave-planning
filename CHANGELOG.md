@@ -26,6 +26,14 @@ The restructure. One repo, one router, one file loaded per phase, drivers bound 
   twice: `agent` (L1 to L4) and `ceiling` (as if every human row passed). Later phases append
   evidence and re-derive; the resume sweep promotes items when human rows all read PASS.
 - Four review points per feature/item/batch, with reuse and duplication as a review dimension.
+- `setup.sh` and `setup.ps1`: link the six skill entries into a skills directory, verify each
+  resolves, report referenced skills present or missing with an install command, and report the
+  tools on PATH. `--check` is the health check after either install path. `tests/setup/run.sh`
+  proves both in Docker containers (Ubuntu for bash, the official PowerShell image for pwsh).
+- Sub-skill paths resolve against the `rolling-wave-planning` skill directory (a sibling in the
+  skills folder, or the repo root), so the family works both cloned and installed by skills.sh.
+- A `framework` trigger for `@capacitor/core` in `references/dispatch.md`, with no default skill
+  bound until one is installed.
 - Docs chapter per feature, written on the feature branch by the docs-writer binding (an external
   CLI, or a subagent fallback that is not a failure state).
 - `tests/scenarios/`: five fresh-agent scenarios that gate a release.
