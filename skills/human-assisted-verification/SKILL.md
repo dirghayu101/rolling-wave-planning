@@ -44,7 +44,7 @@ Cross-feature human checks get `verification/group-<slug>.md`. Each row has:
 | **Human-only observation** | What no tool can see. e.g. "a success toast appears and the field clears." | Human |
 | **Check it yourself** | The exact thing the human runs, pasted ready to use: the SQL for the database console (`select id, message, created_at from support_tickets where message = 'test-123' order by created_at desc limit 1;`), the CLI command, or the click path in the admin UI. Written out in full: a row that says "check the tickets table" is unfinished. | Human |
 
-Record a verdict per row: **PASS / FAIL / NEEDS-HUMAN**, with the date. Reference the relevant test
+The verdict per row is **PASS / FAIL / NEEDS-HUMAN**, with the date, **written by the human only**. The agent hands the file over with every verdict cell reading `open`, and the index row in `01-verification.md` reading `open`. An agent never fills a verdict, not as a placeholder, not as an expectation, not because the L1 to L4 evidence makes the outcome obvious: a verdict in an agent's hand is a fabricated human result, and it is the exact failure this skill exists to prevent. The L5 row in the feature's evidence log is written from the human's tick, never before it. Reference the relevant test
 cases too.
 
 ### Durable-observable-first

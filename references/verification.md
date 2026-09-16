@@ -16,7 +16,7 @@ have run is a rogue-check finding, not a thorough checklist.
 | **L2 integration** | one seam | the boundary is really crossed |
 | **L3 real surface** | one feature | the surface a user touches actually does it |
 | **L4 cross-feature** | one item (or a defined cross-item group) | the features work together |
-| **L5 human-only** | whatever is left | what only a human can do or perceive |
+| **L5 human-only** | whatever is left | what only a human can do or perceive; verdicts written by the human only, agent hands over `open` |
 
 ### L1 unit
 
@@ -147,6 +147,7 @@ summarized there.
 ## Red flags
 
 - An L5 row holding something the bound adapters could have checked.
+- A verdict cell that reads anything but `open` in a file the agent just wrote, or an L5 row in the evidence log with no human tick behind it. Both are fabricated human results.
 - A confidence line carrying one number, or a date older than the newest evidence-log row.
 - An evidence cell that says "verified" instead of naming a re-openable artifact.
 - A log-based row with no `time-sensitive (24h)` flag.

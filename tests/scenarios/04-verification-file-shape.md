@@ -27,6 +27,8 @@ Give the fresh agent exactly this, filling `<FIXTURE>` with the absolute path of
 
 ## Pass criteria
 
+- [ ] Every verdict cell in the produced file reads `open`; the index row reads `open`; no L5 row was added to the evidence log (found 2026-09-16: a runner pre-filled PASS on every row).
+
 - [ ] The verification file is written at `verification/4.1-quota-banner.md` (per
   `references/verification.md`'s `verification/<n>.<f>-<slug>.md` naming), not inside `rollout/`
   and not under a made-up path.
