@@ -137,6 +137,7 @@ requirements. `./setup.sh --check` prints this list with present or missing per 
 | `grill-with-docs` | user-invoked only, for decisions that deserve durable ADRs |
 | `dispatching-parallel-agents` | parallel exploration packets in phase 1 |
 | `subagent-driven-development` | the shape of the review and fix loop |
+| `efficient-fable` | the handoff-packet craft that `references/dispatch.md` points at |
 | `graphify` | the `code-map` role |
 
 `graphify` is the exception to the table above. `graphify install` writes it as a global
@@ -177,7 +178,7 @@ session.
 
 The kernel is the part that does not change: the SSOT directory layout, the router, the
 lifecycle stages, and the gate checklists between them. It is small. `SKILL.md` is 57
-lines and the largest reference file is 156.
+lines and the largest reference file is 157.
 
 Everything else is a driver. The browser tool, the mobile tool, the database inspector,
 the TDD skill, the review skill, the docs writer, the code map, the model behind each
@@ -234,23 +235,23 @@ The router reads `00-plan.md`, takes the `phase:` field, and loads exactly one t
 | `phase:` | Loads | Lines today |
 |---|---|---|
 | `intake`, `exploring`, `edge-cases`, `blueprint`, `interview` | skill `pre-rolling-wave-planning` | 120 |
-| `scaffolded` | `references/lifecycle.md` | 132 |
-| `executing` | `references/lifecycle.md` | 132 |
+| `scaffolded` | `references/lifecycle.md` | 133 |
+| `executing` | `references/lifecycle.md` | 133 |
 | `paused` | `references/resume.md` | 78 |
-| `done` | `references/verification.md`, promotion pass only | 156 |
+| `done` | `references/verification.md`, promotion pass only | 157 |
 
 The rest of the repo is reached only from inside one of those, at a named transition:
 
 | Reached at | File | Lines today |
 |---|---|---|
-| a subagent dispatch | `references/dispatch.md` | 98 |
+| a subagent dispatch | `references/dispatch.md` | 99 |
 | a review point | `references/review.md` | 139 |
-| a verification transition | `references/verification.md` | 156 |
+| a verification transition | `references/verification.md` | 157 |
 | branch and PR work, once per item | `references/ceremony.md` | 152 |
 | a screen in the blueprint phase | `references/blueprint.md` | 41 |
 | kickoff, or a rebind mid-batch | `references/adapters.md` | 150 |
 | scaffolding, or `layout: v1` | `references/ssot-layout.md` | 87 |
-| writing the human-only rows | skill `human-assisted-verification` | 96 |
+| writing the human-only rows | skill `human-assisted-verification` | 98 |
 
 A resume reads `00-plan.md` plus one card, one feature file and one working file,
 regardless of how many items the batch has. Nine items cost the same as three.
@@ -413,8 +414,8 @@ fallback is the one path the suite cannot reach; it needs a Windows host.
 | Scenario | First run | What it found | What changed | Re-run |
 |---|---|---|---|---|
 | 01 cold resume | Invalid | The orchestrator never filled `<FIXTURE>`; the runner guessed a path inside the repo and reported files as missing. | Fixtures moved into the repo under `tests/fixtures/`; scenarios now say to hand the runner an absolute path to a fresh copy. | PASS: read `00-plan.md`, the resume protocol, item 4's card, its feature file and working file, the verification index and adapters, nothing from the other eight items; correct next action. |
-| 02 quit mid-interview | PASS | Routed to `pre-rolling-wave-planning`, resumed at round 3, did not re-ask settled questions, created no cards before the interview closed. | None. | Not needed. |
-| 03 dispatch packet shape | FAIL | The runner invented a feature slug the card does not list, and the prompt said "implement" for a feature the fixture holds at `reviewed`. | The packet template gained a required "Feature (verbatim from the card)" slot; the scenario was reworded to "advance the feature to its next stage." | PASS: produced the L3 verification packet for feature 4.2 with the card's slug, all seven slots filled, `light` tier, roles resolved from `02-adapters.md`, exactly three SSOT paths, no vendor names. |
+| 02 quit mid-interview | PASS | Routed to `pre-rolling-wave-planning`, resumed at round 3, did not re-ask settled questions, created no cards before the interview closed. | Re-run three times on 2026-09-16 after the path changes. Run one never named the final adapter round because the prompt never asked, so the prompt gained item (5). Run two drafted questions without the exploration evidence because the pre-planning resume rule loaded only the current checkpoint; the rule now loads every completed checkpoint. The fixture also gained its missing blueprint checkpoint. | PASS: run three routed correctly, drafted three grounded questions, named the adapter round and `02-adapters.md`, created no cards. |
+| 03 dispatch packet shape | FAIL | The runner invented a feature slug the card does not list, and the criteria described a feature the fixture holds at a different stage. | The packet template gained a required "Feature (verbatim from the card)" slot. On 2026-09-16 the criteria were corrected to match the fixture and prompt: feature 4.3 at `pending`, so an implementer packet, and `agent-browser` belongs to the later L3 packet. | PASS: the 2026-09-16 re-run produced the implementer packet for 4.3 with the card's slug, all seven slots filled, `heavy` tier, ponytail, superpowers:test-driven-development, frontend-design:frontend-design and next-best-practices resolved from `02-adapters.md`, exactly three SSOT paths, no vendor names, L3 deferred to a separate agent. |
 | 04 verification file shape | FAIL, twice | First: the runner pre-filled PASS on every human verdict and logged L5 evidence before any human had run anything. Fixed, then the re-run found rows duplicating checks L1 and L3 already proved, and the runner never invoked `human-assisted-verification`. | Verdict cells became the human's to fill, in the template, the skill, and the verification reference, with the agent handing over `open`. Then the template gained a required "Excluded because L1 to L4 prove them" slot, and the lifecycle gate now names the skill. | PASS: both skills invoked, zero duplicated rows. |
 | 05 problem fit | PASS | Named the three forces, the five mechanisms, and one file per phase, from README and SKILL.md alone. | None. | Not needed. |
 

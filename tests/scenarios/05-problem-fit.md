@@ -28,7 +28,8 @@ Give the fresh agent exactly this, filling `<REPO>` with the absolute path to th
   resource (loading everything degrades reasoning and forces session exits), and trust is uneven
   (agents claim done without proof, so review time lands in the wrong place) — not a paraphrase
   that drops one of the three or invents a fourth.
-- [ ] The "who it is for" answer matches the README's "Who this is for": a developer shipping
+- [ ] The "who it is for" answer matches the README's opening paragraph (corrected 2026-09-16:
+  the "Who this is for" heading became the lede when setup moved to the top): a developer shipping
   real software with agents across more than one session, who works in git and delegates
   implementation to subagents.
 - [ ] The mechanism answer names the five things the README lists as the answer: an on-disk state
