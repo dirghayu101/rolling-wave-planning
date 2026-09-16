@@ -24,7 +24,12 @@ Give the fresh agent exactly this, filling `<FIXTURE>` with the absolute path of
 
 ## Pass criteria
 
-- [ ] The packet type matches the feature's ledger stage (4.2 is `reviewed`, so the packet is an L3 verification packet: `light` tier, `browser-verification` role, wireframe path in scope). An implementer packet would additionally carry `simplicity` and `tdd`. (Corrected 2026-09-16: the prompt used to say "implement", which contradicted the fixture.)
+- [ ] The packet type matches the feature's ledger stage: 4.3 is `pending`, so this is an
+  implementer packet at the `heavy` tier carrying `simplicity`, `tdd`, `ui-implementation` and the
+  stack-conditional `framework` role, with the wireframe path in scope. It does not carry
+  `browser-verification`: L3 is a later dispatch to a different agent, and the packet may say so.
+  (Corrected 2026-09-16: this criterion previously described 4.2 at `reviewed` and an L3 packet,
+  which contradicted the Fixture and Prompt sections above; the fixture card has 4.3 at `pending`.)
 
 - [ ] All seven packet slots are filled with concrete content (objective + acceptance criteria,
   scope files, exactly the three SSOT paths, resolved roles → skills, a tier, evidence-to-return
@@ -32,9 +37,11 @@ Give the fresh agent exactly this, filling `<FIXTURE>` with the absolute path of
 - [ ] The tier is stated as one of `judge` / `heavy` / `light` only; no model-vendor name (opus,
   sonnet, haiku, codex, gemini, claude) appears anywhere in the packet.
 - [ ] The packet names, without paraphrasing their content, at least: `ponytail` (simplicity, on
-  every implementer packet), `superpowers:test-driven-development` (tdd), and `agent-browser`
-  (browser-verification, since 4.3 has a web surface) — resolved from `02-adapters.md`'s Skill
-  roles table, not invented.
+  every implementer packet), `superpowers:test-driven-development` (tdd) and
+  `frontend-design:frontend-design` (ui-implementation), resolved from `02-adapters.md`'s Skill
+  roles table, not invented. `agent-browser` belongs to the later L3 packet, not this one.
+  (Corrected 2026-09-16: previously required `agent-browser` on the implementer packet, which
+  `references/dispatch.md` § Separation of agents forbids.)
 - [ ] The packet's SSOT paths are exactly `rollout/4-quota/0-card.md`,
   `rollout/4-quota/3-quota-upgrade-modal.md` (or the feature's to-be-created path), and
   `working/4-quota.agent.md` — never the whole `rollout/` tree and never `00-plan.md`.

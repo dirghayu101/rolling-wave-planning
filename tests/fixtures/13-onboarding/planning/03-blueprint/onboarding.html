@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<!--
+  Screen: <Screen Name>
+  Route:  <path or navigation target>
+  Roles:  <role>, <role>   (who can open this screen)
+  Item:   rollout/<n>-<item>/0-card.md
+  Boxes and labels only. No framework, no scripts, no styling decisions.
+-->
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Onboarding: 4-step flow at /onboarding</title>
+<style>
+  body { font: 14px system-ui; margin: 16px; }
+  div.box { border: 1px solid #999; padding: 8px; margin: 8px 0; }
+  div.box > b { display: block; margin-bottom: 6px; }
+  label { display: block; margin: 4px 0; }
+  span.ctl { border: 1px dashed #999; padding: 2px 6px; }
+</style>
+</head>
+<body>
+
+<div class="box">
+  <b>Header / navigation</b>
+  <label>Arrives from: &lt;screen&gt;</label>
+  <label>Exit: &lt;control&gt; goes to &lt;screen&gt;</label>
+</div>
+
+<div class="box">
+  <b>&lt;Section name&gt;</b>
+  <label>&lt;Field label&gt; <span class="ctl">text input, required, &lt;validation&gt;</span></label>
+  <label>&lt;Field label&gt; <span class="ctl">select, options: &lt;a&gt; / &lt;b&gt;</span></label>
+  <label>&lt;Button label&gt; <span class="ctl">button, does &lt;action&gt;</span></label>
+</div>
+
+<div class="box">
+  <b>&lt;List or table name&gt;</b>
+  <label>Columns: &lt;col&gt;, &lt;col&gt;, &lt;col&gt;</label>
+  <label>Sort / filter: &lt;affordance&gt;</label>
+  <label>Row action: &lt;control&gt; does &lt;action&gt;</label>
+</div>
+
+<!--
+  STATES (list every one, delete none):
+  - empty:    <what the screen shows with no data, and its call to action>
+  - loading:  <skeleton, spinner, or blocking>
+  - error:    <message, retry affordance, which failures land here>
+  - success:  <confirmation, redirect, or inline update>
+  - other:    <unsaved / submitting / offline / read-only, as applicable>
+
+  ROLE VARIATION:
+  - <role>: <what is hidden, what is disabled with an explanation, what is absent>
+-->
+
+<!--
+  BACKEND NEEDS (each line becomes an acceptance criterion in the item card):
+  - <endpoint or query this screen calls, with its shape>
+  - <table / column / index it depends on>
+  - <policy or permission the roles above require>
+  - <realtime, pagination, or caching requirement implied by the states above>
+-->
+
+</body>
+</html>

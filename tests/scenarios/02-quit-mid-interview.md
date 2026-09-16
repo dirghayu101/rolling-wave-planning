@@ -20,11 +20,14 @@ Give the fresh agent exactly this, filling `<FIXTURE>` with the absolute path of
 > for an answer — instead, report: (1) which skill and phase you routed to and why, (2) confirm
 > which rounds are already settled and that you would not re-ask them, (3) draft the exact
 > numbered questions you would ask in the next round, with their options, trade-offs and your
-> recommendation for each, and (4) state explicitly whether you would create any `rollout/` cards
-> right now. Do not create, edit, or scaffold any file. End your answer with a list titled "Files I
+> recommendation for each, (4) state explicitly whether you would create any `rollout/` cards
+> right now, and (5) say what the interview's final round covers and which file it writes. Do not create, edit, or scaffold any file. End your answer with a list titled "Files I
 > read" naming every file you opened, in the order you opened them.
 
 ## Pass criteria
+
+(Corrected 2026-09-16: the prompt gained item (5) because the fourth criterion below tests
+knowledge the prompt never asked for; a runner that read the skill correctly still failed it.)
 
 - [ ] Routes to the `pre-rolling-wave-planning` skill (via `SKILL.md`'s phase table, `phase:
   interview` → invoke `pre-rolling-wave-planning`), not to `references/lifecycle.md` or any
