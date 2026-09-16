@@ -270,8 +270,9 @@ requirements.
 ### Installing any of them with skills.sh
 
 ```sh
-npx skills add <owner/repo>                    # install a skill repo
-npx skills add <owner/repo> --skill <name>     # one sub-skill from a repo subdirectory
+npx skills add <owner/repo>                              # install a skill repo
+npx skills add <owner/repo> --list --full-depth          # see every skill, including nested ones
+npx skills add <owner/repo> --full-depth --skill <name>  # one sub-skill from a repo subdirectory
 npx skills list                                # what is installed
 npx skills update                              # update installed skills
 npx skills remove <name>                       # uninstall
@@ -287,11 +288,16 @@ https://github.com/vercel-labs/skills
 
 ```sh
 npx skills add dirghayu101/rolling-wave-planning
-npx skills add dirghayu101/rolling-wave-planning --skill pre-rolling-wave-planning
-npx skills add dirghayu101/rolling-wave-planning --skill human-assisted-verification
-npx skills add dirghayu101/rolling-wave-planning --skill human-engineering-docs
-npx skills add dirghayu101/rolling-wave-planning --skill senior-mentor
+npx skills add dirghayu101/rolling-wave-planning --full-depth --skill pre-rolling-wave-planning
+npx skills add dirghayu101/rolling-wave-planning --full-depth --skill human-assisted-verification
+npx skills add dirghayu101/rolling-wave-planning --full-depth --skill human-engineering-docs
+npx skills add dirghayu101/rolling-wave-planning --full-depth --skill senior-mentor
 ```
+
+`--full-depth` matters: without it the CLI stops at the root `SKILL.md` and never sees the
+sub-skills (verified 2026-09-16 with `--list`). The CLI still asks which agents to install for,
+even with `-y`; answer the menu once.
+
 
 The root skill is the router. The sub-skills live in subdirectories of the repo:
 `skills/pre-rolling-wave-planning/` and `skills/human-assisted-verification/` directly,
