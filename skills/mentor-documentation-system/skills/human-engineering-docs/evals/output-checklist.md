@@ -7,7 +7,7 @@ Use this checklist to review a generated docset without relying only on whether 
 ## Structure
 
 - `000-index.md` exists and links to every active chapter.
-- Every Markdown file is 100 lines or fewer.
+- Every Markdown file is near the 100-line soft target, and anything longer was kept whole for a stated reason rather than by accident.
 - Numbering is stable, three digits, and normally advances by ten.
 - Each chapter answers one main reader question.
 - The depth was preserved by splitting rather than compressing away important reasoning.

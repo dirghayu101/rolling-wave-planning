@@ -1,5 +1,7 @@
 # Validation report
 
+> Historical, dated 2026-09-16: this report describes the pre-v2 bundle layout (docsets under `human/`, a hard 100-line cap, a standalone ZIP install). It is kept as a record of what was checked at the time. Current conventions live in `README.md` and in `skills/human-engineering-docs/SKILL.md`.
+
 ## TL;DR
 
 The bundle passed local structural checks. Both skills have valid required frontmatter fields, every text file in the bundle is under 100 lines, the generated-doc validator accepted a linked sample docset, and the ZIP archive passed an integrity test.

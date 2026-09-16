@@ -8,7 +8,10 @@ import re
 import sys
 from pathlib import Path
 
-MAX_LINES = 100
+# Soft target, not a hard cap. Corrected 2026-09-16: an over-length file used to
+# be an error; it is now a warning, because v2 line limits are soft targets on
+# human-facing files. The 000-index.md requirement stays an error.
+SOFT_MAX_LINES = 100
 MAX_PARAGRAPH_WORDS = 140
 TLDR = re.compile(r"^##\s+TL;DR\s*$", re.MULTILINE | re.IGNORECASE)
 H1 = re.compile(r"^#\s+\S", re.MULTILINE)
@@ -40,8 +43,11 @@ def validate(root: Path) -> tuple[list[str], list[str]]:
         text = path.read_text(encoding="utf-8")
         rel = path.relative_to(root)
         line_count = len(text.splitlines())
-        if line_count > MAX_LINES:
-            errors.append(f"{rel}: {line_count} lines; maximum is {MAX_LINES}")
+        if line_count > SOFT_MAX_LINES:
+            warnings.append(
+                f"{rel}: {line_count} lines; soft target is {SOFT_MAX_LINES}. "
+                "Split at the next conceptual boundary."
+            )
         if not H1.search(text):
             errors.append(f"{rel}: missing H1 title")
         if not TLDR.search(text):
@@ -68,7 +74,7 @@ def validate(root: Path) -> tuple[list[str], list[str]]:
 
 def main() -> int:
     parser = argparse.ArgumentParser()
-    parser.add_argument("root", type=Path, help="Path to human/<task-slug>")
+    parser.add_argument("root", type=Path, help="Path to docs/<task-slug>")
     args = parser.parse_args()
     if not args.root.is_dir():
         print(f"ERROR: not a directory: {args.root}", file=sys.stderr)

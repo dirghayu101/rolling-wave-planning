@@ -27,7 +27,7 @@ After substantial completed work, use the `human-engineering-docs` skill when an
 - The change has important data flow, failure, migration, security, or operational implications.
 - I ask for a document, write-up, implementation explanation, or human-readable plan.
 
-Write the docset only after implementation and verification, unless the request is explicitly for planning documentation. Keep agent-facing plans separate from the generated `human/` directory.
+Write the docset only after implementation and verification, unless the request is explicitly for planning documentation. Keep agent-facing plans separate from the generated `docs/` directory (was `human/` before 2026-09-16).
 
 For smaller work, explain it in chat using a few high-value mentor insights instead of creating files.
 
