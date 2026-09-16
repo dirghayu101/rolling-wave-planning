@@ -362,6 +362,49 @@ not `graphify update`, which re-includes markdown and doubles a code-only graph.
 like, not as a recommendation: the kernel works with the row set to `false` and no code
 map installed at all.
 
+## Tests
+
+Five fresh-agent scenarios live under `tests/scenarios/`. Each one hands a brand-new
+light-tier subagent nothing but the scenario's prompt and an absolute path to a fresh copy
+of a fixture from `tests/fixtures/`. The subagent acts on that alone, with no README, no
+plan, and no other scenario in view. It ends its answer with a list of every file it
+opened. The orchestrator then grades that written answer against the scenario's checklist
+by reading the transcript, never against what it assumes happened. There is no runner
+script, by design: a script that drove the subagent or parsed its output for grading would
+test the harness, not the skill.
+
+The scenarios are built to pressure the skill, not to read through it: a cold resume
+mid-item, an interview cut off before its final round, a dispatch packet for a feature
+already at `reviewed`, a verification file with nothing yet on disk. A read-through would
+have confirmed the files exist and sound right. It would not have caught a runner guessing
+a fixture path, inventing a feature slug, or pre-filling human verdicts, things a fresh
+agent under a real prompt actually did. The table below records what each scenario found
+and what changed in response.
+
+### Run one
+
+1. Pick the scenario under `tests/scenarios/`.
+2. Copy the fixture it names to a scratch directory, e.g. `cp -r tests/fixtures/12-notifications /tmp/scratch-12`.
+3. Launch a fresh light-tier subagent with only the scenario's `## Prompt` text, replacing
+   `<FIXTURE>` with the absolute path to that scratch copy. A relative path makes the
+   runner guess, and the committed fixture itself must never be edited.
+4. Read the subagent's transcript and grade it against the scenario's `## Pass criteria`
+   yourself.
+
+### 2.0.0 release, 2026-09-16
+
+| Scenario | First run | What it found | What changed | Re-run |
+|---|---|---|---|---|
+| 01 cold resume | Invalid | The orchestrator never filled `<FIXTURE>`; the runner guessed a path inside the repo and reported files as missing. | Fixtures moved into the repo under `tests/fixtures/`; scenarios now say to hand the runner an absolute path to a fresh copy. | PASS: read `00-plan.md`, the resume protocol, item 4's card, its feature file and working file, the verification index and adapters, nothing from the other eight items; correct next action. |
+| 02 quit mid-interview | PASS | Routed to `pre-rolling-wave-planning`, resumed at round 3, did not re-ask settled questions, created no cards before the interview closed. | None. | Not needed. |
+| 03 dispatch packet shape | FAIL | The runner invented a feature slug the card does not list, and the prompt said "implement" for a feature the fixture holds at `reviewed`. | The packet template gained a required "Feature (verbatim from the card)" slot; the scenario was reworded to "advance the feature to its next stage." | PASS: produced the L3 verification packet for feature 4.2 with the card's slug, all seven slots filled, `light` tier, roles resolved from `02-adapters.md`, exactly three SSOT paths, no vendor names. |
+| 04 verification file shape | FAIL, twice | First: the runner pre-filled PASS on every human verdict and logged L5 evidence before any human had run anything. Fixed, then the re-run found rows duplicating checks L1 and L3 already proved, and the runner never invoked `human-assisted-verification`. | Verdict cells became the human's to fill, in the template, the skill, and the verification reference, with the agent handing over `open`. Then the template gained a required "Excluded because L1 to L4 prove them" slot, and the lifecycle gate now names the skill. | PASS: both skills invoked, zero duplicated rows. |
+| 05 problem fit | PASS | Named the three forces, the five mechanisms, and one file per phase, from README and SKILL.md alone. | None. | Not needed. |
+
+The acceptance checklist for this release lives at `tests/acceptance/v2-criteria.md`: the
+agent fills the evidence column for each requirement, the developer fills the verdict
+column, and the tag waits for the developer to do that.
+
 ## Versioning
 
 Semver. `VERSION` holds the current release, `CHANGELOG.md` records what each release
