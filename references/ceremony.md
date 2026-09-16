@@ -42,18 +42,17 @@ merged into it, so it inherits item 1's work and nothing has to be rebased.
 
 | PR | Base | Opened when | Carries | Merged by |
 |---|---|---|---|---|
-| Feature | item branch | feature implemented, tests green | rich description (what / why / how tested), confidence score, agent code review | **agent, automatically**, once review findings are resolved |
-| Item | batch branch | all the item's features merged | item integration review + rogue-check | **agent, automatically**, once findings are resolved |
-| Batch | `dev` | all items `verified` | final whole-batch review, full test-suite evidence, handoff summary | **the developer — nobody else merges this one** |
+| Feature | item branch | L1–L2 green and review point 1 resolved on the branch | rich description (what / why / how tested), the `agent` and `ceiling` confidence scores, and review point 2 (`references/review.md`): fresh-context diff review plus the security pass when flagged | **agent, automatically**, once review findings are resolved |
+| Item | batch branch | all the item's feature PRs merged into the item branch and the L4 cross-feature pass recorded | review point 3: integration review plus the rogue-check | **agent, automatically**, once findings are resolved |
+| Batch | `dev` | all items `complete` | review point 4: final whole-batch review plus the rogue-check, full test-suite evidence, handoff summary | **the developer — nobody else merges this one** |
 
 Merge method for feature→item and item→batch is a **merge commit, not a squash**: squashing a
 base branch in a stack rewrites history the child branches depend on. The developer chooses the
 method for the batch PR.
 
-**Reviews post as GitHub PR review comments, not chat messages.** Use the GitHub MCP review flow
-(`pull_request_review_write` create → `add_comment_to_pending_review` → submit) or the `gh api`
-equivalents. The PR is the durable review record — the diff, the discussion, and the commit list
-persist forever, which is why "PR" is the drill-down link in the feature file.
+Reviews post on the PR as review comments, never in chat: see `references/review.md` § Reviews post
+on the PR for the mechanics and the why. The PR is the durable record, which is why "PR" is the
+drill-down link in the feature file.
 
 ## Issues and the GitHub navigation tree
 
@@ -67,13 +66,13 @@ drill-down from a single entry point, without opening the repo:
   merges the batch PR. This is the developer's home page for the effort.
 - **One tracking issue per ITEM. Never per feature** — a per-feature issue would duplicate the
   feature PR. The item issue holds the feature checklist with PR links, updated as each feature
-  merges, and is closed at `verified`.
+  merges, and is closed at `complete`.
 - **Title convention:** item issues `[<N>.<i>] <item title>`, feature PRs `[<N>.<i>.<f>] <feature
   title>`, batch issue and batch PR `[<N>] <batch title>`.
 - **One label per batch** (`batch:<N>-<slug>`) on every issue and PR of the effort, so a single
   filter shows everything.
-- **PR descriptions are self-sufficient:** what & why, test-strategy summary, and confidence score
-  live in the description, so review needs no repo file open.
+- **PR descriptions are self-sufficient:** what & why, test-strategy summary, and both confidence
+  scores live in the description, so review needs no repo file open.
 
 ## Platform linking (GitHub)
 
@@ -97,7 +96,7 @@ gh api graphql -f query='mutation{reprioritizeSubIssue(input:{issueId:"<batchId>
 
 **Every PR body's first line is `Part of #<item issue>`** — feature PRs and item PRs both point at
 the item issue, the batch PR at the batch issue. **"Part of", never "Closes"**: item issues close
-at `verified`, not at merge. A PR already merged without the line is retrofitted with a comment
+at `complete`, not at merge. A PR already merged without the line is retrofitted with a comment
 `Part of #<n>` — that lands on the issue timeline just the same.
 
 **Every issue and PR carries the `batch:<slug>` label** — that label is what makes the sorted PR
@@ -113,7 +112,7 @@ from GitHub.
 
 ## Renumbering and pausing
 
-Both rules live in `rolling-wave-planning` ("Item numbers are execution slots", "Pausing a batch");
+Both rules live in `references/resume.md` ("Item numbers are execution slots", "Pausing a batch");
 their git/GitHub consequences:
 
 - **Item issue titles are retitled when items shift** — `[<N>.<i>]` always carries the item's
@@ -129,52 +128,25 @@ their git/GitHub consequences:
 
 ## Ceremony levels
 
-Decided at kickoff (`pre-rolling-wave-planning` Phase 4) and recorded in the decisions table.
+Chosen in the final round of the kickoff interview (the `pre-rolling-wave-planning` skill, Phase 4)
+and recorded in the decisions table.
 
 | Level | When | Shape |
 |---|---|---|
 | **ON** (default) | feature efforts | the full ladder above |
 | **lighter** (default for bug batches) | bug batches | one branch and one PR for the whole batch; one tracking issue for the batch; a per-bug test strategy only when the bug is non-trivial |
-| **OFF** | only if the developer asks | no branch/PR/issue machinery; `code-done` reverts to "implemented, tests green, committed" |
+| **OFF** | only if the developer asks | no branch/PR/issue machinery; feature `merged` reverts to "implemented, tests green, committed", and review points 1 to 4 record into `working/<item>.agent.md` instead of a PR |
 
-## Security pass
+## Security pass and rogue-check
 
-An **additional** security-focused review (RLS, auth, payments, secrets handling) runs only on
-features whose `Sensitive surfaces:` line is not `none`. Flag those surfaces in the item card at
-planning time so the feature inherits the flag. The security review posts on the feature PR and
-must be resolved before auto-merge.
-
-## Rogue-check
-
-An audit by a **fresh-context reviewer who did not execute the work.** Runs at **every item PR**,
-and **once more at the batch PR**. No other cadence — moment-to-moment agent work is deliberately
-unconstrained; this replaces step-level policing.
-
-**(a) Direction.** Are the `00-plan.md` decisions honored? Any silent scope creep? Are the ledger
-stages truthful (the classic drift: a row reading `verified` above an unchecked
-`01-verification.md`, or `code-done` before the PR actually merged)? Do the confidence scores
-survive a spot-check re-derivation from the diff — re-derive one or two? Is `working/` clean?
-
-**(b) Execution architecture.** Was subagent-driven development actually used — one orchestrator
-handing bounded tasks to subagents — or did one agent grind the whole item in a single rotting
-context? Evidence: task decomposition in the working file, distinct subagent handoffs, feature
-branches with independent commit clusters.
-
-**(c) Model tiering.** Did hard implementation and review run on a heavy model, and mechanical or
-minor work on a light one? Evidence: the model recorded on each dispatch in the working file.
-
-**Where findings land.** On the item PR (or the batch PR for the final pass), as review comments,
-resolved before that PR auto-merges. Any finding that cannot be resolved inside the item goes into
-`00-plan.md` STATE as the next order of business — **never into a code comment**.
+Both moved to `references/review.md` (points 2 and 3/4) at v2.0.0; the security pass posts on the
+feature PR, the rogue-check on the item PR and once more on the batch PR.
 
 ## Red flags
 
 - A GitHub issue opened per feature — issues are per item, PRs are per feature.
-- A feature or item PR merged with unresolved review findings.
 - A squash-merge of a feature or item PR — it rewrites history the child branches depend on.
-- A confidence score that does not survive re-derivation from the diff.
-- A rogue-check finding parked in a code comment instead of `00-plan.md` STATE.
 - The agent merging the batch PR — that one is the developer's.
-- A review delivered in chat instead of on the PR.
 - A merged PR title or a branch renamed to match a renumbering — those are history, not records to keep current.
 - A PR opened without `Part of #<item issue>` on line one, or an item issue that is not a sub-issue of its batch.
+- An item issue closed at `documented` — it closes at `complete`, when the human rows are ticked.
