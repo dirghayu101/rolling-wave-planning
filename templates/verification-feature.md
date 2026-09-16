@@ -14,7 +14,7 @@ use. Anything an agent can observe is L1 to L4 evidence in the feature file, not
 ```markdown
 # Verification <n>.<f> — <Feature Title>
 
-Feature: `rollout/<n>-<item-slug>/<f>-<feature-slug>.md` · Indexed in `01-verification.md`
+Feature: `rollout/<n>-<item>/<f>-<feature-slug>.md` · Indexed in `01-verification.md`
 Written <YYYY-MM-DD>. Handed over at stage `documented`; all rows PASS promotes the item to `complete`.
 
 Setup the human needs first: <account / role / device / build, or "none">.

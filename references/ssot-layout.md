@@ -25,7 +25,7 @@ Audits of nine real efforts found the old single-file `00-plan.md` design failin
       0-card.md       the item's stable card
       <f>-<feature>.md  per-feature file
   verification/       <n>.<f>-<slug>.md  group-<slug>.md   (L5, human-only)
-  working/<item-slug>.agent.md   JIT volatile detail, exactly ONE live file per item
+  working/<item>.agent.md        JIT volatile detail, exactly ONE live file per item
   docs/               NNN-<slug>.md reader chapters, one per feature
   assets/             screenshots, captured logs (copy expiring evidence in)
 ```

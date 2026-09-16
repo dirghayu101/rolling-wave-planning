@@ -42,7 +42,7 @@ merged into it, so it inherits item 1's work and nothing has to be rebased.
 
 | PR | Base | Opened when | Carries | Merged by |
 |---|---|---|---|---|
-| Feature | item branch | L1–L2 green and review point 1 resolved on the branch | rich description (what / why / how tested), the `agent` and `ceiling` confidence scores, and review point 2 (`references/review.md`): fresh-context diff review plus the security pass when flagged | **agent, automatically**, once review findings are resolved |
+| Feature | item branch | at the `reviewed` gate: tests green and review point 1 resolved on the branch (a draft PR is fine) | rich description (what / why / how tested), the `agent` and `ceiling` confidence scores, and review point 2 (`references/review.md`): fresh-context diff review plus the security pass when flagged | **agent, automatically**, once review findings are resolved |
 | Item | batch branch | all the item's feature PRs merged into the item branch and the L4 cross-feature pass recorded | review point 3: integration review plus the rogue-check | **agent, automatically**, once findings are resolved |
 | Batch | `dev` | all items `complete` | review point 4: final whole-batch review plus the rogue-check, full test-suite evidence, handoff summary | **the developer — nobody else merges this one** |
 

@@ -93,7 +93,7 @@ Every settled question lands in the decisions table with its why and its rejecte
 Set `phase: scaffolded`, then build the rest of the SSOT tree that `rolling-wave-planning` defines:
 
 - `00-plan.md` — STATE, decisions table, adapters pointer, status ledger. Already created at intake; fill the ledger now.
-- `rollout/<n>-<item-slug>/0-card.md` — one dir per item from `templates/0-card.md`, numbered in execution order: problem, files, evidence, acceptance criteria, sensitive-surface flags. **No feature files** — features are decomposed when the item opens.
+- `rollout/<n>-<item>/0-card.md` — one dir per item from `templates/0-card.md`, numbered in execution order: problem, files, evidence, acceptance criteria, sensitive-surface flags. **No feature files** — features are decomposed when the item opens.
   `<n>` is an **execution slot, not an identity**: an item added mid-flight takes the slot it will actually run in and shifts the later `pending` items, so scaffold the numbers in the order the work will happen. See `rolling-wave-planning`'s "Item numbers are execution slots".
 - `01-verification.md` skeleton and an empty `verification/` directory for the per-feature human checklists.
 - `docs/000-index.md` seed for the reader-facing chapters.

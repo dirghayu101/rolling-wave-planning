@@ -16,7 +16,7 @@ Two rules hold at every point:
 | # | When | Scope | Lands on |
 |---|---|---|---|
 | **1** | L1 tests green on the feature branch, before the feature PR opens | spec compliance, then code quality and reuse | `working/<item>.agent.md` (no PR exists yet) |
-| **2** | Feature PR open | fresh-context diff review, plus the security pass when the feature's `Sensitive surfaces:` line is not `none` | the feature PR |
+| **2** | Final diff of the open feature PR, at the `documented → merged` gate | fresh-context diff review, plus the security pass when the feature's `Sensitive surfaces:` line is not `none` | the feature PR |
 | **3** | Item PR open | integration review across the item's merged features, plus the rogue-check | the item PR |
 | **4** | Batch PR open | final whole-batch review, plus the rogue-check once more | the batch PR |
 
@@ -28,9 +28,9 @@ way the `subagent-driven-development` skill defines them: name the skill in the 
 subagent load it. Point 1 predates the PR, so its findings and their resolution live in
 `working/<item>.agent.md`, and the PR description written at point 2 summarizes them.
 
-### Point 2: feature PR
+### Point 2: feature PR, final diff
 
-A reviewer with no memory of the implementation reads the diff against the feature file and the
+The PR was opened at the `reviewed` gate (see `references/lifecycle.md`) and has since collected L3 evidence and the docs chapter. A reviewer with no memory of the implementation reads the final diff against the feature file and the
 item card. It reports findings; it does not fix. The feature PR auto-merges only when every finding
 is resolved, which is also the gate that moves the feature to `merged`.
 

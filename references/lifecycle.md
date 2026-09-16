@@ -48,7 +48,8 @@ Each transition is a checklist. The stage in the feature index moves when every 
 ### `in-progress → reviewed`
 
 - [ ] Tests green, and the test strategy's "Actually ran" column in the feature file is filled from the real run, not from intent.
-- [ ] **Review point 1** is resolved on the branch, before any PR exists: spec compliance against the feature file and the card's acceptance criteria, then code quality and reuse. Findings are fixed by a fresh subagent that did not write the code, then re-reviewed in scope, and the exchange is recorded in `working/<item>.agent.md`. Procedure and dimensions: `references/review.md`.
+- [ ] **Review point 1** is resolved on the branch, before the PR is opened: spec compliance against the feature file and the card's acceptance criteria, then code quality and reuse. Findings are fixed by a fresh subagent that did not write the code, then re-reviewed in scope, and the exchange is recorded in `working/<item>.agent.md`. Procedure and dimensions: `references/review.md`.
+- [ ] Ceremony ON: **the feature PR is opened now** (a draft is fine), linked per `references/ceremony.md` § Platform linking. From here the PR is the durable record: L3 evidence, the docs chapter and review point 2 all attach to it.
 
 ### `reviewed → agent-verified`
 
@@ -58,13 +59,13 @@ Each transition is a checklist. The stage in the feature index moves when every 
 
 ### `agent-verified → documented`
 
-- [ ] The reader chapter `docs/NNN-<slug>.md` is written **on the feature branch, before the PR merges**, so the PR carries it. It is delegated to the `docs-writer` role bound in `02-adapters.md`, with the contract in `templates/doc-handoff.md`: feature boundary file list, item card path, terms, conventions path. A subagent fallback for that role is a normal outcome, not a failure.
+- [ ] The reader chapter `docs/NNN-<slug>.md` is written **on the feature branch, before the PR merges**, so the PR carries it. It is delegated under the `docs-conventions` role, using the docs-writer binding (external CLI or `subagent`) in `02-adapters.md`, with the contract in `templates/doc-handoff.md`: feature boundary file list, item card path, terms, conventions path. A subagent fallback for that role is a normal outcome, not a failure.
 - [ ] `docs/000-index.md` has the new chapter's row.
 
 ### `documented → merged`
 
-- [ ] The feature PR is open, its description self-sufficient (what and why, test strategy, the two scores), with the chapter already on the branch.
-- [ ] **Review point 2** is resolved: a fresh-context reviewer reads the diff against the feature file and the card, plus the security pass when the feature's `Sensitive surfaces:` line is not `none`. See `references/review.md`.
+- [ ] The feature PR description is self-sufficient (what and why, test strategy, the two scores), with the chapter already on the branch, and the PR is marked ready for review.
+- [ ] **Review point 2** is resolved on the final diff: a fresh-context reviewer reads the diff against the feature file and the card, plus the security pass when the feature's `Sensitive surfaces:` line is not `none`. See `references/review.md`.
 - [ ] The feature PR is merged into the item branch per `references/ceremony.md` (merge commit, not squash). With ceremony OFF, `merged` means implemented, tests green, committed.
 - [ ] The feature index row in the card is updated.
 

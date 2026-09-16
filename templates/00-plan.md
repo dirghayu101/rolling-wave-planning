@@ -37,7 +37,7 @@ Roles, tiers and tool bindings for this batch: `02-adapters.md`. Packets read th
 
 ## Status ledger
 
-One row per item, sorted by execution slot, linking to `rollout/<n>-<item-slug>/0-card.md`.
+One row per item, sorted by execution slot, linking to `rollout/<n>-<item>/0-card.md`.
 
 | # | Item | Stage | Note |
 |---|---|---|---|

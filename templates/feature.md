@@ -3,7 +3,7 @@
 Template for `rolling-wave-planning`. The feature file is the developer's skim surface: they read
 scores, not diffs, and dive where the number is low.
 
-Lives at `rollout/<n>-<item-slug>/<f>-<feature-slug>.md`. **Soft target ~100 lines** — solution
+Lives at `rollout/<n>-<item>/<f>-<feature-slug>.md`. **Soft target ~100 lines** — solution
 detail belongs in `working/<item>.agent.md`. **Created when the feature starts** (sections 1 to 3
 planned) and **updated at every stage transition**: the evidence log gains a row and both
 confidence numbers are re-derived each time a layer is climbed or a review point closes, per
