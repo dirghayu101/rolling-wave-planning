@@ -21,6 +21,8 @@ Written <YYYY-MM-DD>. Handed over at stage `documented`; all rows PASS promotes 
 
 Setup the human needs first: <account / role / device / build, or "none">.
 
+Excluded because L1 to L4 already prove them (read the feature file's evidence log before writing a row): <list each candidate check you left out and the evidence row that covers it, or "none">. A row that repeats a unit test, a seam test or a browser screenshot is a wasted human minute and a red flag in `references/verification.md`.
+
 | # | Human steps | Human-only observation | Check it yourself | 24h | Verdict + date |
 |---|---|---|---|---|---|
 | 1 | <Numbered, unambiguous app actions. "1. Open the app → Profile → Contact Support. 2. Type `test-123`. 3. Tap Submit." Assume the human is deliberately slow, leaving no gaps: name the exact screen, the exact label, the exact text to type.> | <What no tool can see: "a success toast appears and the field clears".> | <The exact thing the human runs, pasted ready to use. SQL for the database console: `select id, message, created_at from support_tickets where message = 'test-123' order by created_at desc limit 1;` · a CLI command: `<cmd>` · a path in the admin UI: Dashboard → Support → Tickets, newest row.> | <no \| yes> | open |

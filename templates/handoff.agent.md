@@ -5,6 +5,10 @@ Copy this file, fill every slot, dispatch. The subagent has no chat context and 
 `Tier:` `<judge | heavy | light>`
 `Roles → skills:` `<role → skill>`, `<role → skill>`, `<role → skill>` (resolved from `02-adapters.md`; invoke each named skill yourself before you start)
 
+## Feature (verbatim from the card)
+
+<Copy the feature's row from the item card's feature index, unchanged: `<n>.<f>` · `<slug>` · stage. The packet's feature number and slug must match this row character for character; a packet that names a feature the card does not list is a defect, not a rename (found 2026-09-16 under test).>
+
 ## Objective
 
 `<One sentence naming the finished state, not the activity.>`

@@ -55,7 +55,7 @@ Each transition is a checklist. The stage in the feature index moves when every 
 
 - [ ] **L1 to L3 evidence rows** are recorded in the feature file, each with what was run and what it showed. Ladder definitions, what counts as evidence at each level, and the `agent` and `ceiling` scores: `references/verification.md`.
 - [ ] Anything agent-actionable that would raise the score is **done, not listed**. The "what would raise this" list is only for raises needing human intervention or infrastructure that does not exist yet.
-- [ ] The feature's L5 file exists in `verification/` for the human, with zero agent steps.
+- [ ] The feature's L5 file exists in `verification/` for the human, with zero agent steps and every verdict `open`. Invoke the `human-assisted-verification` skill to write it; it owns the row shape.
 
 ### `agent-verified → documented`
 
