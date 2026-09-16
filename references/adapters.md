@@ -86,7 +86,7 @@ Used by the blueprint phase's L3 comparison: screenshot through the browser adap
 
 ### Code map
 
-`safishamsi/graphify`. Install `uv tool install graphifyy`, then `graphify install`, then `/graphify .` to build. Queries: `graphify query`, `graphify path`, `graphify explain`. Refresh: `graphify update .`. Output lands in `graphify-out/`, which belongs in `.gitignore`.
+`safishamsi/graphify`. Install `uv tool install graphifyy`, then `graphify install`, then build code-only with `graphify extract . --code-only` (secrets and build output excluded via `.graphifyignore`, gitignore syntax; docs and images are skipped so no LLM call is made). Queries: `graphify query "<question>" --budget N`, `graphify explain`, `graphify affected`, `graphify path`. Refresh: `rm -rf graphify-out && graphify extract . --code-only`. Corrected 2026-09-16: previously read `/graphify .` and `graphify update .`; measured on a real monorepo, `update` re-includes markdown and doubled the graph, and `--code-only` merges into an existing graph so deleted code lingers without the clean rebuild. Output lands in `graphify-out/`, which belongs in `.gitignore`. `graphify install` writes to the config dir named by `CLAUDE_CONFIG_DIR`, so check where the skill landed.
 
 Detection: `command -v graphify` **and** `graphify-out/graph.json` exists in the project. A graph that was never built is the same as no code map.
 
@@ -95,7 +95,7 @@ Detection: `command -v graphify` **and** `graphify-out/graph.json` exists in the
 - `enabled: true` in `02-adapters.md`, and
 - `graphify-out/graph.json` exists.
 
-When both hold: every exploration and implementer packet carries the line *"query the code map first, open only cited files"*, and opening an item runs the incremental update (`graphify update .`) first. When either fails, packets carry no code-map line and no refresh runs. Do not treat a stale graph as absent: refresh it, or set `enabled: false` and say why in the row.
+When both hold: every exploration and implementer packet carries the line *"query the code map first, open only cited files"*, and opening an item runs the clean code-only rebuild (`rm -rf graphify-out && graphify extract . --code-only`) first. When either fails, packets carry no code-map line and no refresh runs. Do not treat a stale graph as absent: refresh it, or set `enabled: false` and say why in the row.
 
 Build code only. Docs and media extraction is what triggers LLM calls, so leave that unconfigured. Check `graphify --help` or the README for the exclusion mechanism before building a monorepo root that holds secrets (env files, keystores, auth keys); if no exclusion mechanism exists, build per package instead, which excludes root secrets by construction. Git hooks are a separate opt-in (`graphify hook install|uninstall|status`) and stay off.
 
