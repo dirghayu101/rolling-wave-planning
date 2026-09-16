@@ -24,6 +24,8 @@ Give the fresh agent exactly this, filling `<FIXTURE>` with the absolute path of
 
 ## Pass criteria
 
+- [ ] The packet type matches the feature's ledger stage (4.2 is `reviewed`, so the packet is an L3 verification packet: `light` tier, `browser-verification` role, wireframe path in scope). An implementer packet would additionally carry `simplicity` and `tdd`. (Corrected 2026-09-16: the prompt used to say "implement", which contradicted the fixture.)
+
 - [ ] All seven packet slots are filled with concrete content (objective + acceptance criteria,
   scope files, exactly the three SSOT paths, resolved roles → skills, a tier, evidence-to-return
   shape, stop conditions) — none left as a bracketed placeholder.
