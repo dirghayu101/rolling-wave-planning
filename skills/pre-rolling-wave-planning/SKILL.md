@@ -26,7 +26,7 @@ Front-loads the **stable layer** of a rolling-wave effort: capture the developer
 
 **Write the checkpoint file and set `phase:` in the `00-plan.md` STATE block BEFORE doing the phase's work**, then fill the checkpoint as the work produces findings. A session that exits at any point resumes at the phase named, with the partial checkpoint in hand.
 
-**Resume rule.** Read `00-plan.md`, jump to the phase its STATE names, and read only that phase's checkpoint file plus `planning/00-intake.md`. Nothing else from the batch loads. Continue where the checkpoint stops: an interview resumes at the next unanswered round, exploration resumes with the packets not yet dispatched.
+**Resume rule.** Read `00-plan.md`, jump to the phase its STATE names, and read `planning/00-intake.md`, the checkpoint files of the phases already completed (they are the current phase's inputs: an interview question rests on exploration findings and graduated edge cases), and the current phase's own checkpoint. Nothing else loads, and no completed phase is re-run. Continue where the checkpoint stops: an interview resumes at the next unanswered round, exploration resumes with the packets not yet dispatched. (Corrected 2026-09-16: previously "only that phase's checkpoint file plus intake", which made a resumed interview draft questions without the exploration evidence; a test runner then flagged its own question as a lookup dressed as a decision.)
 
 ## Phase 0: Intake
 

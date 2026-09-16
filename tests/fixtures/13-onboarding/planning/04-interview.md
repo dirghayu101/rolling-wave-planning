@@ -31,4 +31,5 @@ re-asked.
 ## Round 3 — not yet asked
 
 Next questions, per `planning/02-edge-cases.md`: progress persistence (server-side vs
-browser-local) and the data-source step's provider scope. Resume here.
+browser-local), the data-source step's provider scope, and whether an SSO-provisioned
+workspace enters the flow. Resume here.

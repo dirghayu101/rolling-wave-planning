@@ -9,7 +9,7 @@ This batch has not been scaffolded yet — it is still in the pre-rolling-wave-p
 phase: interview
 layout: v2
 What: Design a guided onboarding flow for new signups on the web dashboard, replacing the current drop-into-empty-dashboard experience.
-Stage: interview round 2 of an expected ~4 answered; round 3 (progress persistence + skip rules) not yet asked
+Stage: interview round 2 of an expected ~4 answered; round 3 (progress persistence, data-source scope, SSO entry) not yet asked
 Next: open planning/04-interview.md and ask round 3
 ```
 
