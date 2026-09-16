@@ -70,6 +70,7 @@ Stack-conditional roles. These appear in `02-adapters.md` only when detection fi
 | `payments` | `stripe`, `@stripe/*` | `stripe-best-practices` | `stripe-projects` | Any packet touching checkout, subscriptions, connected accounts, or webhook handling |
 | `framework` | `next` | `next-best-practices` | `next-cache-components`, `vercel-react-best-practices`, `tanstack-query-best-practices` | Any packet writing application code in that framework |
 | `framework` | `react-native`, `expo` | `vercel-react-native-skills` | `react-native-animations`, `expo-cicd-workflows`, `sentry-react-native-sdk` | Same |
+| `framework` | `@capacitor/core` | none detected on 2026-09-16; run § No role fits the task shape, or `npx skills find capacitor` | none | Same. Record `no role` in the dispatch record until a skill is bound |
 
 ## No role fits the task shape
 

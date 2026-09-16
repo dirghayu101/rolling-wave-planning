@@ -1,0 +1,49 @@
+# Skills the rolling-wave-planning family names by name, and how to get them.
+# Source: the role tables in references/dispatch.md plus the skills named in
+# skills/*/SKILL.md and references/*.md. Install hints come from the skills.sh lock
+# file of the machine this list was built on (2026-09-16); run `npx skills find <name>`
+# if a source has moved.
+#
+# Format: <skill-name><TAB><install hint>. '#' starts a comment.
+# A line reading '[plugin]' starts the block of harness or plugin skills, which are not
+# directories on disk and cannot be checked; their second field is the plugin name.
+# None of these affect the exit code of setup.sh or setup.ps1. They are advice.
+
+ponytail	npx skills add dietrichgebert/ponytail --skill ponytail
+systematic-debugging	npx skills add obra/superpowers --skill systematic-debugging
+ui-ux-pro-max	npx skills add nextlevelbuilder/ui-ux-pro-max-skill --skill ui-ux-pro-max
+web-design-guidelines	npx skills add vercel-labs/agent-skills --skill web-design-guidelines
+adhd-design-expert	npx skills add erichowens/some_claude_skills --skill adhd-design-expert
+shadcn	npx skills add shadcn/ui --skill shadcn
+shadcn-ui	npx skills add google-labs-code/stitch-skills --skill shadcn-ui
+agent-browser	npx skills add vercel-labs/agent-browser --skill agent-browser
+supabase	npx skills add supabase/agent-skills --skill supabase
+supabase-postgres-best-practices	npx skills add supabase/agent-skills --skill supabase-postgres-best-practices
+supabase-security	npx skills add omer-metin/skills-for-antigravity --skill supabase-security
+documentation-writer	npx skills add github/awesome-copilot --skill documentation-writer
+graphify	uv tool install graphifyy && graphify install (see README, Adapters and roles)
+stripe-best-practices	find with: npx skills find stripe-best-practices
+stripe-projects	npx skills add stripe/ai --skill stripe-projects
+next-best-practices	npx skills add vercel-labs/next-skills --skill next-best-practices
+next-cache-components	npx skills add vercel-labs/next-skills --skill next-cache-components
+vercel-react-best-practices	npx skills add vercel-labs/agent-skills --skill vercel-react-best-practices
+tanstack-query-best-practices	npx skills add deckardger/tanstack-agent-skills --skill tanstack-query-best-practices
+vercel-react-native-skills	npx skills add vercel-labs/agent-skills --skill vercel-react-native-skills
+react-native-animations	npx skills add pluginagentmarketplace/custom-plugin-react-native --skill react-native-animations
+expo-cicd-workflows	npx skills add expo/skills --skill expo-cicd-workflows
+sentry-react-native-sdk	npx skills add getsentry/agent-skills --skill sentry-react-native-sdk
+grilling	npx skills add mattpocock/skills --skill grilling
+grill-with-docs	npx skills add mattpocock/skills --skill grill-with-docs
+dispatching-parallel-agents	npx skills add obra/superpowers --skill dispatching-parallel-agents
+subagent-driven-development	npx skills add obra/superpowers --skill subagent-driven-development
+efficient-fable	npx skills add builderio/skills --skill efficient-fable
+
+[plugin]
+superpowers:test-driven-development	superpowers
+superpowers:systematic-debugging	superpowers
+superpowers:requesting-code-review	superpowers
+superpowers:receiving-code-review	superpowers
+superpowers:brainstorming	superpowers
+feature-dev:code-reviewer	feature-dev
+frontend-design:frontend-design	frontend-design
+security-review	harness built-in

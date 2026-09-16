@@ -1,20 +1,150 @@
 # Rolling-wave planning
 
-A skill family for running large software efforts with coding agents. It keeps the whole
-effort on disk as a small state machine, loads one file per phase instead of the whole
-method, binds every skill, tool and model to a role in a per-batch file you can edit, and
-grades the work on a five-level verification ladder so attention lands where the evidence
-is thin. The unit of work is a **batch**: one directory holding the plan, the items, the
-features, the verification checklists and the reader documentation.
+A skill family for running large software efforts with coding agents. It is for developers
+who ship real software, work in git, review diffs, and hand implementation to subagents.
+You get an on-disk effort that survives a session exit, one file loaded per phase instead
+of the whole method, every skill and tool bound to a role in a file you can edit, and a
+five-level verification ladder that shows where the evidence is thin.
 
-## Who this is for
+The unit of work is a **batch**: one directory holding the plan, the items, the features,
+the verification checklists and the reader documentation.
 
-A developer who ships real software with agents and keeps losing work to two things:
-sessions that end before the effort does, and agents that report success without proof.
-It assumes you work in git, review diffs, and delegate implementation to subagents. It
-does not assume any particular model, harness, skill set or test framework. It is
-deliberately heavy for a one-hour change; the payoff starts when an effort spans several
-items and more than one session.
+## Quick start
+
+### Install, path A: skills.sh
+
+```sh
+npx skills add dirghayu101/rolling-wave-planning --full-depth
+```
+
+`--full-depth` is required. Five skills are nested under `skills/`, and without the flag
+the CLI stops at the root `SKILL.md` and never sees them (verified 2026-09-16 with
+`--list`). The CLI still asks which agents to install for, even with `-y`; answer the menu
+once.
+
+The root skill is the router. The other five sit under `skills/`, two of them inside the
+`mentor-documentation-system` bundle, and the harness does not auto-discover nested skills.
+
+The rest of the CLI:
+
+```sh
+npx skills add <owner/repo> --list --full-depth          # see every skill, including nested ones
+npx skills add <owner/repo> --full-depth --skill <name>  # one sub-skill from a repo subdirectory
+npx skills list                                          # what is installed
+npx skills update                                        # update installed skills
+npx skills remove <name>                                 # uninstall
+```
+
+It installs into `~/.agents/skills` or `.claude/skills`, global or project-local, and
+supports Claude Code, Codex, Gemini CLI and Cursor. Docs: https://skills.sh and
+https://github.com/vercel-labs/skills
+
+### Install, path B: clone and run the setup script
+
+Clone anywhere you like, then run the script for your platform:
+
+```sh
+git clone https://github.com/dirghayu101/rolling-wave-planning
+cd rolling-wave-planning
+./setup.sh                  # macOS, Linux
+```
+
+```powershell
+.\setup.ps1                 # Windows, PowerShell 7
+```
+
+The script links the six skill entries into your skills directory (`~/.agents/skills` by
+default, `--skills-dir` to change), verifies that each link resolves, reports which
+referenced skills are present or missing with the install command for each, and reports
+which of `agent-browser`, `graphify`, `node` and `git` are on PATH.
+
+| Flag | What it does |
+|---|---|
+| `--claude` | also links into `~/.claude/skills`, the only directory Claude Code reads |
+| `--check` | reports without changing anything; the health check after either install path |
+| `--dry-run` | prints what would change and exits |
+| `--force` | replaces a link that points somewhere else, and never deletes a real directory |
+
+Claude Code reads personal skills from `~/.claude/skills/<skill-name>/SKILL.md`
+(https://code.claude.com/docs/en/skills.md) and follows symlinked skill folders, so
+`--claude` is what makes the family visible there.
+
+On Windows, a real symlink needs Developer Mode enabled or an elevated shell. Without
+either, the script falls back to junctions. Junctions load the skill, but it will not
+appear in the Claude Code desktop slash menu: see github.com/anthropics/claude-code issue
+37590.
+
+### Which directory your harness reads
+
+| Directory | Read by |
+|---|---|
+| `~/.claude/skills`, `.claude/skills` | Claude Code |
+| `~/.agents/skills` | Codex, Gemini CLI, Copilot CLI |
+
+### First use
+
+In a project, say what you want in your own words and invoke `pre-rolling-wave-planning`.
+It interviews you, then scaffolds the batch directory. From there `rolling-wave-planning`
+runs the batch. Quit at any point and say "continue the flow" to resume. The first batch
+also writes `adapters.default.md` at the project root.
+
+## Referenced skills
+
+Every skill named anywhere in the kernel, with where it comes from. Names on packets are
+resolved through `02-adapters.md`, so treat the defaults below as defaults, not
+requirements. `./setup.sh --check` prints this list with present or missing per skill.
+
+**Ships in this repo.** Invoked by name, never read as files.
+
+| Skill | Role it fills |
+|---|---|
+| `rolling-wave-planning` | the router and the kernel itself |
+| `pre-rolling-wave-planning` | phases 0 to 5: intake, exploration, edge cases, blueprint, interview, scaffold |
+| `human-assisted-verification` | writes the L5 human-only rows |
+| `human-engineering-docs` | the `docs-conventions` role: reader-facing chapters, one per feature |
+| `senior-mentor` | teaching and post-task explanation; ships in the `mentor-documentation-system` bundle, not called by the kernel |
+| `mentor-documentation-system` | the bundle holding the two skills above |
+
+**Superpowers plugin.** Namespaced in the harness listing.
+
+| Skill | Role it fills |
+|---|---|
+| `superpowers:test-driven-development` | default for the `tdd` role |
+| `superpowers:systematic-debugging` | alternative for the `debugging` role |
+| `superpowers:requesting-code-review` | default for the `review` role |
+| `superpowers:receiving-code-review` | carried by the agent that fixes review findings |
+| `superpowers:brainstorming` | used in the pre-phases for genuinely fuzzy feature shapes |
+| `feature-dev:code-reviewer` | alternative for the `review` role |
+| `frontend-design:frontend-design` | default for the `ui-implementation` role |
+
+**Installed separately, typically via skills.sh.**
+
+| Skill | Role it fills |
+|---|---|
+| `ponytail` | the `simplicity` role, on every implementer packet |
+| `systematic-debugging` | default for the `debugging` role |
+| `ui-ux-pro-max` | default for `ui-guidelines`, lookup only during blueprint |
+| `adhd-design-expert`, `web-design-guidelines`, `shadcn`, `shadcn-ui` | alternatives for the UI roles |
+| `agent-browser` | default for `browser-verification` |
+| `supabase` | default for `db-backend` |
+| `supabase-security` | default for `security-review` |
+| `supabase-postgres-best-practices` | alternative for both database roles |
+| `documentation-writer` | alternative for `docs-conventions` |
+| `stripe-best-practices`, `stripe-projects` | the `payments` role |
+| `next-best-practices`, `next-cache-components`, `vercel-react-best-practices`, `tanstack-query-best-practices` | the `framework` role on a Next.js manifest |
+| `vercel-react-native-skills`, `react-native-animations`, `expo-cicd-workflows`, `sentry-react-native-sdk` | the `framework` role on a React Native or Expo manifest |
+| `grilling` | the interview method in phase 4 |
+| `grill-with-docs` | user-invoked only, for decisions that deserve durable ADRs |
+| `dispatching-parallel-agents` | parallel exploration packets in phase 1 |
+| `subagent-driven-development` | the shape of the review and fix loop |
+| `graphify` | the `code-map` role |
+
+`graphify` is the exception to the table above. `graphify install` writes it as a global
+skill into your skills directory rather than adding it as a skill repo, and Claude Code
+users link it from there into `~/.claude/skills`.
+
+**Harness built-in.** `security-review`, listed as an alternative for the
+`security-review` role.
 
 ## The problem
 
@@ -37,6 +167,11 @@ The skill answers with five things:
 3. A per-batch adapters file binding roles to the best available skill, tool or model.
 4. Fresh-context subagents that load only their role's skills.
 5. A verification ladder with two scores that directs attention where evidence is thin.
+
+It assumes you work in git and delegate implementation to subagents. It assumes no
+particular model, harness, skill set or test framework. It is deliberately heavy for a
+one-hour change; the payoff starts when an effort spans several items and more than one
+session.
 
 ## Kernel plus drivers
 
@@ -85,8 +220,8 @@ Quit at any point and resume means something specific here. The phase is a field
 STATE block of `00-plan.md`. The partial work of the current phase is in that phase's
 checkpoint file: `planning/00-intake.md`, `planning/01-exploration.md`,
 `planning/02-edge-cases.md`, `planning/03-blueprint/`, `planning/04-interview.md`. An
-interview that got three rounds in resumes at round four, with the settled questions never
-re-asked. An exploration that dispatched two of five packets resumes with the other three.
+interview three rounds in resumes at round four with settled questions never re-asked, and
+an exploration that dispatched two of five packets resumes with the other three.
 During execution the ledger row and the feature index row are the program counter, and
 `working/<item>.agent.md` holds the in-flight scratch for the open item. A resume reads
 `00-plan.md`, runs an integrity sweep that compares every stage claim against the evidence
@@ -132,8 +267,10 @@ reading it, not just the humans.
 
 Two layers.
 
-**Project defaults** live at `<features-dir>/adapters.default.md`, a sibling of the batch
-directories. It is the accumulated answer from earlier batches in the same project.
+**Project defaults** live at `<project root>/adapters.default.md`, at the git root of the
+project or monorepo. A project usually holds several feature and spec directories, each
+with its own SSOT, so the root is the one place kickoff can find the defaults without
+searching. It is the accumulated answer from earlier batches in the same project.
 
 **Batch bindings** live at `02-adapters.md` inside the batch directory. That is the file
 packets read, and it can diverge from the defaults for the life of one batch.
@@ -152,9 +289,9 @@ The stable roles, from `references/dispatch.md`:
 `browser-verification`, `mobile-verification`, `db-backend`, `security-review`,
 `docs-conventions`, `code-map`, `review`.
 
-Three more appear only when detection finds the trigger in the project manifest:
-`payments` (a `stripe` dependency) and `framework` (a `next`, `react-native` or `expo`
-dependency).
+Two more roles are stack-conditional. They appear only when detection finds the dependency
+in the project manifest: `payments` (a `stripe` dependency) and `framework` (a `next`,
+`react-native` or `expo` dependency).
 
 Tiers are bound the same way, by what the work needs rather than by a model name:
 
@@ -179,11 +316,35 @@ with no tool bound is not allowed to pass silently: it becomes a dated decision 
 verify that surface by hand instead, or accept the gap with a stated reason. Accepting the
 gap caps the `ceiling` score for features on that surface, which is what the score is for.
 
-**Code map toggle.** The `code-map` row carries `enabled: true|false`. When it is true and
-a built graph exists on disk, exploration and implementer packets carry the line "query
-the code map first, open only cited files" and opening an item refreshes the graph. Set it
-to false and both behaviors stop. That is the entire off switch; nothing has to be
-uninstalled.
+**Code map toggle.** The `code-map` row is the graphify on and off switch. It carries
+`enabled: true|false`. When it is true and a built graph exists on disk, exploration and
+implementer packets carry the line "query the code map first, open only cited files" and
+opening an item refreshes the graph. Set it to false and both behaviors stop. That is the
+entire off switch; nothing has to be uninstalled.
+
+**The code map as an example driver.** `graphify` builds a queryable map of a repository
+so agents can ask where something lives instead of reading files blind:
+
+```sh
+uv tool install graphifyy
+graphify install                     # writes a skill dir and a CLAUDE.md block into the
+                                     # config dir named by CLAUDE_CONFIG_DIR; git hooks stay opt-in
+graphify extract . --code-only       # build the graph without any LLM extraction
+graphify query "where is X" --budget 4000
+```
+
+Put secrets and build output in a `.graphifyignore` (gitignore syntax) before the first
+build. Refresh with a clean rebuild, not `graphify update`, which re-includes markdown and
+doubles a code-only graph:
+
+```sh
+rm -rf graphify-out && graphify extract . --code-only
+```
+
+Then set the `code-map` row in the project's adapters file to `enabled: true` and add
+`graphify-out/` to `.gitignore`. This is an illustration of what a driver looks like, not
+a recommendation: the kernel works with the row set to `false` and no code map installed
+at all.
 
 ## Verification and confidence
 
@@ -199,7 +360,9 @@ A layer is climbed, not skipped. Everything an agent can observe belongs to L1 t
 and is finished before anything reaches a human, so an L5 row holding a check an agent
 could have run is a review finding rather than a thorough checklist. Evidence is always a
 pointer to something you can reopen: a test path, a CI run, a screenshot, the query plus
-the row it returned.
+the row it returned. The L5 checklist has zero agent steps, each row carries the exact
+query, command or console path so you can run it yourself, and ticking every row is the
+only path from `documented` to `complete`.
 
 Two scores come off one rubric of five dimensions (unit coverage of exit points,
 integration seams exercised, real-surface verification, review findings raised versus
@@ -208,159 +371,6 @@ evidence that exists today. `ceiling` is scored with every L5 row assumed PASS. 
 says the remaining assurance is parked on you; a low ceiling says no amount of human
 ticking will fix it and the raise has to be built. Both carry a date and are re-derived
 whenever new evidence lands.
-
-L5 is human-only by construction. The checklist has zero agent steps, each row carries the
-exact query, command or console path so you can run it yourself, and ticking every row is
-the only path from `documented` to `complete`.
-
-## Referenced skills
-
-Every skill named anywhere in the kernel, with where it comes from. Names on packets are
-resolved through `02-adapters.md`, so treat the defaults below as defaults, not
-requirements.
-
-**Ships in this repo.** Invoked by name, never read as files.
-
-| Skill | Role it fills |
-|---|---|
-| `rolling-wave-planning` | the router and the kernel itself |
-| `pre-rolling-wave-planning` | phases 0 to 5: intake, exploration, edge cases, blueprint, interview, scaffold |
-| `human-assisted-verification` | writes the L5 human-only rows |
-| `human-engineering-docs` | the `docs-conventions` role: reader-facing chapters, one per feature |
-| `senior-mentor` | teaching and post-task explanation; ships in the `mentor-documentation-system` bundle, not called by the kernel |
-| `mentor-documentation-system` | the bundle holding the two skills above |
-
-**Superpowers plugin.** Namespaced in the harness listing.
-
-| Skill | Role it fills |
-|---|---|
-| `superpowers:test-driven-development` | default for the `tdd` role |
-| `superpowers:systematic-debugging` | alternative for the `debugging` role |
-| `superpowers:requesting-code-review` | default for the `review` role |
-| `superpowers:receiving-code-review` | carried by the agent that fixes review findings |
-| `superpowers:brainstorming` | used in the pre-phases for genuinely fuzzy feature shapes |
-| `feature-dev:code-reviewer` | alternative for the `review` role |
-| `frontend-design:frontend-design` | default for the `ui-implementation` role |
-
-**Installed separately, typically via skills.sh.**
-
-| Skill | Role it fills |
-|---|---|
-| `ponytail` | the `simplicity` role, on every implementer packet |
-| `systematic-debugging` | default for the `debugging` role |
-| `ui-ux-pro-max` | default for `ui-guidelines`, lookup only during blueprint |
-| `adhd-design-expert`, `web-design-guidelines`, `shadcn`, `shadcn-ui` | alternatives for the UI roles |
-| `agent-browser` | default for `browser-verification` |
-| `supabase` | default for `db-backend` |
-| `supabase-security` | default for `security-review` |
-| `supabase-postgres-best-practices` | alternative for both database roles |
-| `documentation-writer` | alternative for `docs-conventions` |
-| `stripe-best-practices`, `stripe-projects` | the `payments` role |
-| `next-best-practices`, `next-cache-components`, `vercel-react-best-practices`, `tanstack-query-best-practices` | the `framework` role on a Next.js manifest |
-| `vercel-react-native-skills`, `react-native-animations`, `expo-cicd-workflows`, `sentry-react-native-sdk` | the `framework` role on a React Native or Expo manifest |
-| `grilling` | the interview method in phase 4 |
-| `grill-with-docs` | user-invoked only, for decisions that deserve durable ADRs |
-| `dispatching-parallel-agents` | parallel exploration packets in phase 1 |
-| `subagent-driven-development` | the shape of the review and fix loop |
-| `graphify` | the `code-map` role, installed per project rather than as a skill directory |
-
-**Harness built-in.** `security-review`, listed as an alternative for the
-`security-review` role.
-
-### Installing any of them with skills.sh
-
-```sh
-npx skills add <owner/repo>                              # install a skill repo
-npx skills add <owner/repo> --list --full-depth          # see every skill, including nested ones
-npx skills add <owner/repo> --full-depth --skill <name>  # one sub-skill from a repo subdirectory
-npx skills list                                # what is installed
-npx skills update                              # update installed skills
-npx skills remove <name>                       # uninstall
-```
-
-It installs into `.claude/skills/` or `.agents/skills/`, project-local or global, and
-supports Claude Code, Codex, Gemini CLI and Cursor. Docs: https://skills.sh and
-https://github.com/vercel-labs/skills
-
-## Setup
-
-### Primary path
-
-```sh
-npx skills add dirghayu101/rolling-wave-planning
-npx skills add dirghayu101/rolling-wave-planning --full-depth --skill pre-rolling-wave-planning
-npx skills add dirghayu101/rolling-wave-planning --full-depth --skill human-assisted-verification
-npx skills add dirghayu101/rolling-wave-planning --full-depth --skill human-engineering-docs
-npx skills add dirghayu101/rolling-wave-planning --full-depth --skill senior-mentor
-```
-
-`--full-depth` matters: without it the CLI stops at the root `SKILL.md` and never sees the
-sub-skills (verified 2026-09-16 with `--list`). The CLI still asks which agents to install for,
-even with `-y`; answer the menu once.
-
-
-The root skill is the router. The sub-skills live in subdirectories of the repo:
-`skills/pre-rolling-wave-planning/` and `skills/human-assisted-verification/` directly,
-`skills/mentor-documentation-system/skills/human-engineering-docs/` and
-`skills/mentor-documentation-system/skills/senior-mentor/` inside the mentor bundle. They
-are separate installs because nested skills are not auto-discovered by the harness.
-
-### Maintainer path on macOS
-
-Clone the repo into the skills directory and link each sub-skill next to it, because a
-skill is only discovered when it sits at the top level of a skills directory:
-
-```sh
-git clone git@github.com:dirghayu101/rolling-wave-planning.git ~/.agents/skills/rolling-wave-planning
-cd ~/.agents/skills
-ln -s rolling-wave-planning/skills/pre-rolling-wave-planning pre-rolling-wave-planning
-ln -s rolling-wave-planning/skills/human-assisted-verification human-assisted-verification
-ln -s rolling-wave-planning/skills/mentor-documentation-system mentor-documentation-system
-ln -s rolling-wave-planning/skills/mentor-documentation-system/skills/human-engineering-docs human-engineering-docs
-ln -s rolling-wave-planning/skills/mentor-documentation-system/skills/senior-mentor senior-mentor
-```
-
-Relative targets keep the links valid if the skills directory itself moves.
-
-### Windows
-
-Use skills.sh. If you need the clone-and-link layout instead, the PowerShell equivalent is:
-
-```powershell
-New-Item -ItemType SymbolicLink -Path "$HOME\.agents\skills\<name>" -Target "<repo>\skills\<name>"
-```
-
-Creating a symlink needs Developer Mode enabled or an elevated shell. Junctions
-(`New-Item -ItemType Junction`) do load the skill, but it will not appear in the Claude
-Code desktop slash menu: see github.com/anthropics/claude-code issue 37590.
-
-### Which directory your harness reads
-
-| Directory | Read by |
-|---|---|
-| `~/.claude/skills` | Claude Code |
-| `~/.agents/skills` | Codex, Gemini CLI, Copilot CLI, and Claude Code when the directory is linked |
-
-### Optional: a code map, as an example driver
-
-`graphify` builds a queryable map of a repository so agents can ask where something lives
-instead of reading files blind:
-
-```sh
-uv tool install graphifyy
-graphify install                     # writes a skill dir and a CLAUDE.md block into the
-                                     # config dir named by CLAUDE_CONFIG_DIR; git hooks stay opt-in
-graphify extract . --code-only       # build the graph without any LLM extraction
-graphify query "where is X" --budget 4000
-```
-
-Put secrets and build output in a `.graphifyignore` (gitignore syntax) before the first
-build, and refresh with a clean rebuild (`rm -rf graphify-out && graphify extract . --code-only`),
-not `graphify update`, which re-includes markdown and doubles a code-only graph. Then set the
-`code-map` row in the project's adapters file to `enabled: true` and add `graphify-out/` to
-`.gitignore`. This is here as an illustration of what a driver looks
-like, not as a recommendation: the kernel works with the row set to `false` and no code
-map installed at all.
 
 ## Tests
 
@@ -380,6 +390,13 @@ have confirmed the files exist and sound right. It would not have caught a runne
 a fixture path, inventing a feature slug, or pre-filling human verdicts, things a fresh
 agent under a real prompt actually did. The table below records what each scenario found
 and what changed in response.
+
+The installer has its own runner. `tests/setup/run.sh` executes both setup scripts inside
+Docker containers, Ubuntu for bash and the official PowerShell image for pwsh, and covers
+a fresh install, an idempotent re-run, an in-place repo, check mode, safety against a real
+directory that is not a link, and dry run. On Apple silicon the PowerShell image runs
+under amd64 emulation with a memory cap, which the runner sets itself. The Windows junction
+fallback is the one path the suite cannot reach; it needs a Windows host.
 
 ### Run one
 

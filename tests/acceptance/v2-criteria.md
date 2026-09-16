@@ -44,3 +44,15 @@ agent fills the "Agent check" column with evidence before handing over; the deve
 | 36 | Human verification steps must not break the developer's flow: no "make the edit, then ask the agent to check via MCP" | Each L5 row's "Check it yourself" column holds the exact SQL/CLI/console path; no interrupt handshake | | open |
 | 37 | Ceremony (branches, PR ladder, issues), pausing, execution-slot numbering and the integrity sweep are kept intact | `references/ceremony.md`, `references/resume.md` | | open |
 | 38 | Explain in the README how to configure the best skills, models and tools without burning context, and how new tools such as graphify assimilate | README "Kernel plus drivers", "What loads when", "Adapters and roles", "Optional: a code map" | | open |
+
+Added 2026-09-16 (post-compaction review round), from the developer's follow-up:
+
+| # | Requirement (developer's brief) | Where it lives now | Agent check (evidence) | Human verdict |
+|---|---|---|---|---|
+| 39 | README leads with setup and use; people care about using it before understanding it | `README.md` Quick start and Referenced skills before The problem | | open |
+| 40 | `adapters.default.md` is created at the project root by default, since projects have several feature dirs, spec dirs and monorepos | `references/adapters.md`, `references/ssot-layout.md`, `templates/adapters.default.md`, `skills/pre-rolling-wave-planning/SKILL.md`; mashric `adapters.default.md` at the repo root | | open |
+| 41 | The generated defaults file supplies chosen values, never asks the developer to choose; comments only where they raise output quality (tool absence with detect command, invocation notes, honest gaps); machine paths only when an agent needs them; no em dashes | mashric `adapters.default.md` (93 lines); Capacitor gap closed as a row rather than narrated | | open |
+| 42 | graphify installed at `~/.agents/skills` and linked everywhere else, following the existing convention | `~/.agents/skills/graphify` real dir; `~/.claude/skills/graphify` relative symlink; `references/dispatch.md` code-map row | | open |
+| 43 | A bash script and a PowerShell script set up the symlinks and everything needed, tested in a container; the README says what the script does | `setup.sh`, `setup.ps1`, `setup/referenced-skills.txt`, `tests/setup/run.sh`; README Quick start | | open |
+| 44 | Docker installed on this machine (CLI for the tests; Desktop GUI requested as well) | colima + docker CLI running; Docker Desktop cask needs the developer's sudo password | | open |
+| 45 | Sub-skills work when installed as siblings by skills.sh, not only inside the repo | path rule in `skills/*/SKILL.md` resolves against the `rolling-wave-planning` skill dir | | open |
