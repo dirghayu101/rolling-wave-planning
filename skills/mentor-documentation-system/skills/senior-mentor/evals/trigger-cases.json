@@ -1,0 +1,10 @@
+[
+  {"query": "Pair program this checkout bug with me and teach me the architecture as you fix it", "should_trigger": true},
+  {"query": "After you finish this migration, explain the data flow and challenge the design", "should_trigger": true},
+  {"query": "I am junior. Show me how a senior would debug this Sentry issue", "should_trigger": true},
+  {"query": "Review my caching proposal and play devil's advocate", "should_trigger": true},
+  {"query": "Explain the tools I could use to inspect this React Native network problem", "should_trigger": true},
+  {"query": "Rename this variable from foo to orderId", "should_trigger": false},
+  {"query": "Generate a logo for my cafe", "should_trigger": false},
+  {"query": "Translate this sentence into Hindi", "should_trigger": false}
+]

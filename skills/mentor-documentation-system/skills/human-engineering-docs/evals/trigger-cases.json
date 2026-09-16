@@ -1,0 +1,10 @@
+[
+  {"query": "Write a human-readable explanation of the checkout work you just finished, split into small files", "should_trigger": true},
+  {"query": "Turn this four-feature rolling plan into docs I can skim, every file under 100 lines", "should_trigger": true},
+  {"query": "Create a human directory with a TLDR, code references, failure paths, and debugging entry points", "should_trigger": true},
+  {"query": "Document this batch of Sentry bugs after you verify the fixes", "should_trigger": true},
+  {"query": "Explain this migration in multiple linked markdown chapters", "should_trigger": true},
+  {"query": "Add a JSDoc comment to this function", "should_trigger": false},
+  {"query": "Fix grammar in this README sentence", "should_trigger": false},
+  {"query": "Give me a two-paragraph summary in chat", "should_trigger": false}
+]
