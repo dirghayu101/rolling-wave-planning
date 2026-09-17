@@ -15,7 +15,7 @@ have run is a rogue-check finding, not a thorough checklist.
 | **L1 unit** | one unit | each exit point behaves |
 | **L2 integration** | one seam | the boundary is really crossed |
 | **L3 real surface** | one feature | the surface a user touches actually does it |
-| **L4 cross-feature** | one item (or a defined cross-item group) | the features work together |
+| **L4 cross-feature** | one item (or a defined cross-item group) | the features work together, in the environment the plan names, within any stated limits |
 | **L5 human-only** | whatever is left | what only a human can do or perceive; verdicts written by the human only, agent hands over `open` |
 
 ### L1 unit
@@ -55,8 +55,20 @@ Drive the surface for real through the adapter bound in `02-adapters.md`.
 The item's features exercised **together**, not one after another: the flow that crosses two of
 them, the shared type or migration both depend on, the screen that renders another feature's data.
 Runs when every feature PR has merged into the item branch, and it gates the item's
-`agent-verified` stage. When the batch defines cross-item groups (a flow that only exists once
-items 2 and 5 are both in), the group's L4 pass is recorded on the later item and named in both.
+`agent-verified` stage.
+
+**It runs in the environment the card names**, copied there from `00-plan.md` § Testing plan: the
+compose stack, the local Supabase stack with its seed, or the staging deployment. An L4 pass run
+against mocks on both sides of every seam proves the mocks agree, at item scale.
+
+**Cross-item groups are defined in `00-plan.md` § Testing plan**, not invented at L4 time and not
+cross-linked between feature files. A group is a flow that only exists once two or more items are in
+(items 2 and 5 both landed); its L4 pass is recorded on the later item, named on both cards by the
+group's slug, and its row in the Testing plan moves from `pending` to `ran <date>`.
+
+**When the card's `Non-functional:` line states a criterion**, the load tool bound in
+`02-adapters.md` § Load testing measures it as part of L4, and the measured numbers (not "looks
+fine") go in the evidence log beside the command that produced them.
 
 ### L5 human-only
 
@@ -91,7 +103,7 @@ before a paused batch resumes. Note dev-time database resets too: a row you asse
 ## Confidence: `agent` and `ceiling`
 
 A **judgment against a rubric, with no prescriptive arithmetic.** A formula invites gaming and
-micromanages the implementing agent. Weigh five dimensions:
+micromanages the implementing agent. Weigh six dimensions:
 
 1. **Unit coverage of exit points**: every exit point of every changed unit has a test, per the
    one-test-per-exit-point convention, or the gap is named.
@@ -102,6 +114,10 @@ micromanages the implementing agent. Weigh five dimensions:
 4. **Review findings raised vs resolved**: an unresolved finding on the PR lowers the score.
 5. **Unverifiable effects honestly listed**: declaring "the push send is unobserved" raises trust;
    omitting it and being caught in review destroys it.
+6. **Environment fidelity and stated limits**: L2 to L4 ran in the environment the plan names
+   rather than against mocks on both sides, and any stated non-functional criterion was measured
+   with the bound tool; a real environment and a measured limit raise the score, a stated criterion
+   left unmeasured lowers it.
 
 **The same rubric is evaluated twice, and both numbers are dated:**
 
@@ -123,7 +139,10 @@ date is older than the newest evidence row is stale, and the integrity sweep tre
 the number is low. **Exhaust agent-actionable raises first:** anything an agent can execute with
 available tooling (a browser flow, an extra seam test, a machine assertion) is *done*, not listed.
 The list is only for raises needing human intervention or infrastructure that does not exist yet. An
-agent-actionable entry still sitting on the list at feature close is a red flag.
+agent-actionable entry still sitting on the list at feature close is a red flag. Two raises are
+almost always agent-actionable and therefore belong in the *done* column: running L4 in the
+environment the plan names instead of against mocks, and measuring the criterion the card's
+`Non-functional:` line states with the bound load tool.
 
 **Anti-gaming:** the rogue-check spot-checks by re-deriving one or two scores from the diff. A score
 that does not survive re-derivation is a rogue-check finding.
@@ -155,3 +174,5 @@ summarized there.
 - An L3 row left blank on a feature with a user-facing surface, with no uncovered-surface decision.
 - A ledger row at `complete` above an unticked `01-verification.md`, or ticked in a different commit.
 - An agent-actionable entry still on "what would raise this" at feature close.
+- An item at `agent-verified` whose card's `How it was tested:` line is empty.
+- A cross-item group in `00-plan.md` § Testing plan still reading `pending` when the batch reaches `done`.

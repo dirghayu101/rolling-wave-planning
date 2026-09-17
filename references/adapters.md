@@ -63,6 +63,22 @@ An external CLI on PATH that can take a self-contained prompt on stdin and write
 
 **The subagent fallback is not a failure state.** When no external CLI is bound, the docs row reads `subagent` and `templates/doc-handoff.md` is dispatched to a `heavy`-tier subagent with the identical prompt. Nothing downstream changes.
 
+### Environment: where the stack under test runs
+
+| Candidate | Exposure | Detection | Install |
+|---|---|---|---|
+| Docker | CLI + daemon | `docker info` (a CLI on PATH with a dead daemon is not an environment) | Docker Desktop, or `brew install colima docker && colima start` |
+| A compose file in the repo | file | `find . -maxdepth 3 -name '*compose*.y*ml'` | already present, or write one |
+| Supabase local stack | CLI, requires Docker | `command -v supabase` **and** `supabase/config.toml` present | `brew install supabase/tap/supabase`, then `supabase start` |
+| testcontainers | library | the dependency in the project manifest (`testcontainers`, `@testcontainers/*`, `org.testcontainers`) | `npm i -D testcontainers` |
+| Staging deployment | URL | the project's environment config or its `CLAUDE.md`/`AGENTS.md` pointer. **Never read `.env`**: ask the user for the URL, or take the committed pointer | already deployed |
+
+Each chosen row records three things: the chosen value, the one line that brings it up, and the one line that resets it to a known state (`supabase db reset`, `docker compose down -v`, a seed script).
+
+**Docker being present is what makes L2 and L4 run against real services** rather than mocks on both sides of every seam. Without it the seams are simulated, and the environment-fidelity dimension of the confidence rubric in `references/verification.md` is what records the cost. Load testing is only meaningful in such an environment for the same reason: a k6 or oha number measured against a mock measures the mock.
+
+This section holds the candidates and their invocations. The one the batch actually uses is written into `00-plan.md` § Testing plan § Environment, and each item card copies it from there when the item opens.
+
 ### Load and performance testing
 
 | Candidate | Exposure | Detection | Install |
@@ -72,7 +88,7 @@ An external CLI on PATH that can take a self-contained prompt on stdin and write
 | oha | CLI | `command -v oha` | `brew install oha` |
 | Lighthouse CI | CLI | `command -v lhci` | `npm i -g @lhci/cli` |
 
-Bind this row only when the batch has a performance acceptance criterion. Otherwise record `none (no performance criteria in this batch)`.
+Bind this row only when the batch has a performance acceptance criterion, that is, when `00-plan.md` § Testing plan § Load and performance holds a criterion rather than `none stated`. Otherwise record `none (no performance criteria in this batch)`.
 
 ### Visual diff
 
@@ -105,13 +121,14 @@ The role list is fixed in `references/dispatch.md`; the binding is generated her
 
 ## Detection procedure
 
-Run all four sweeps, then assemble.
+Run all five sweeps, then assemble.
 
 1. **CLIs**: `command -v <name>` for each candidate, and `type <name>` as well when the user mentions reaching a tool by an alias. Aliases resolve only in a profile-initialized shell, so a bare `command -v` can report absent for a tool that works interactively. When in doubt, ask the user to run `type <name>` and paste the output rather than concluding absent.
 2. **MCP servers**: presence means **the tool names are visible in this harness right now**. Not a config file on disk, not a server the user believes is installed. If the names are not in the tool listing, the MCP is absent for this batch.
 3. **Skills**: list `~/.agents/skills` and read each `SKILL.md` frontmatter `description`; then scan the harness skill listing for plugin skills, which are namespaced (`superpowers:test-driven-development`, `feature-dev:code-reviewer`, `frontend-design:frontend-design`) and do not appear in that directory. Match candidates to roles **by what the description says it triggers on**, never by the skill's name.
    `awk '/^description:/{print FILENAME": "$0}' ~/.agents/skills/*/SKILL.md`
-4. **Stack**: read the project manifest. In `package.json` dependencies and devDependencies, look for `next`, `expo`, `react-native`, `stripe`, `@supabase/*`. Each hit either fires a stack-conditional role (`payments`, `framework`) or points at a backend adapter. A monorepo has one manifest per package: sweep them all, and record which package each stack-conditional row applies to.
+4. **Environment**: `docker info`, then `find . -maxdepth 3 -name '*compose*.y*ml'`, `command -v supabase` with `supabase/config.toml`, and the manifest for a testcontainers dependency. A staging URL comes from the user or a committed pointer, never from `.env`. Docker absent is a finding, not a blank: it caps L2 and L4 at mocked seams and makes any load criterion unmeasurable, so it goes to the user in the testing round with its install command.
+5. **Stack**: read the project manifest. In `package.json` dependencies and devDependencies, look for `next`, `expo`, `react-native`, `stripe`, `@supabase/*`. Each hit either fires a stack-conditional role (`payments`, `framework`) or points at a backend adapter. A monorepo has one manifest per package: sweep them all, and record which package each stack-conditional row applies to.
 
 ## Surface coverage check
 
@@ -148,3 +165,5 @@ Silence is not one of the three. A surface with no row is what produces a featur
 - `code-map: enabled: true` with no `graphify-out/graph.json`, or packets carrying the code-map line while the row reads `false`.
 - A model-vendor name written into a skill body, a packet, or a card. Tiers go in those places; the alias lives only in `02-adapters.md`.
 - Detection re-run at dispatch time because nobody wrote the file at kickoff.
+- An Environment row reading `none (mocks only)` while `docker info` succeeds on this machine.
+- A load criterion in `00-plan.md` § Testing plan with the Load testing row still reading `none`.

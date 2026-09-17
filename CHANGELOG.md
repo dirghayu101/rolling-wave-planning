@@ -36,7 +36,14 @@ The restructure. One repo, one router, one file loaded per phase, drivers bound 
   bound until one is installed.
 - Docs chapter per feature, written on the feature branch by the docs-writer binding (an external
   CLI, or a subagent fallback that is not a failure state).
-- `tests/scenarios/`: five fresh-agent scenarios that gate a release.
+- Testing plan at three levels: the feature file's per-layer table, the card's `## Test strategy`
+  (the item's L4 flow and cross-item group, the environment, the non-functional criterion, and how
+  it was actually tested, filled at the item's open gate and closed at `agent-verified`), and
+  `00-plan.md` § Testing plan (cross-item groups, end-to-end flows, environment, load criteria,
+  written from the interview's testing round). `02-adapters.md` gained an `Environment` category
+  beside load testing (Docker, a compose file, the Supabase local stack, testcontainers, staging),
+  and the confidence rubric gained a sixth dimension, environment fidelity and stated limits.
+- `tests/scenarios/`: six fresh-agent scenarios that gate a release.
 - `README.md`, `LICENSE` (MIT), `VERSION`.
 
 ### Changed (breaking for new batches; existing batches keep `layout: v1`)

@@ -1,4 +1,4 @@
-# 12 — Notifications platform hardening
+# 12: Notifications platform hardening
 
 Fixture SSOT for the rolling-wave-planning release-gate tests. Built from `templates/00-plan.md`.
 
@@ -8,7 +8,7 @@ Fixture SSOT for the rolling-wave-planning release-gate tests. Built from `templ
 phase: executing
 layout: v2
 What: Ship push/email notification reliability and a user-facing quota indicator for the notifications platform.
-Stage: item 4 of 9 in-progress — feature 4.1 merged, feature 4.2 reviewed, feature 4.3 pending
+Stage: item 4 of 9 in-progress, feature 4.1 merged, feature 4.2 reviewed, feature 4.3 pending
 Next: drive feature 4.2 (quota-settings) through L3 with agent-browser and record the evidence, then take it to agent-verified
 ```
 
@@ -24,6 +24,32 @@ Next: drive feature 4.2 (quota-settings) through L3 with agent-browser and recor
 ## Adapters
 
 Roles, tiers and tool bindings for this batch: `02-adapters.md`.
+
+## Testing plan
+
+### Cross-item groups
+
+| Group | Flow | Items in | Recorded on | Status |
+|---|---|---|---|---|
+| `quota-mute-settings` | Mute a channel from the notification settings screen item 4 builds, then confirm both the quota banner and the mute survive a reload and a session restart | 4, 5 | 5 | pending |
+
+### End-to-end flows
+
+| Flow | Drives it | Gate |
+|---|---|---|
+| Notification round trip: change a preference, trigger a send, see the notification arrive, see it counted against the quota and listed in history | `browser-verification` | batch `done` |
+
+### Environment
+
+- Bring-up: `supabase start` (local stack, needs Docker running)
+- Seed data: `supabase/seed.sql` (three users, one at 90% of quota, one fully muted)
+- Reset: `supabase db reset`
+
+### Load and performance
+
+| Criterion | Tool | Gate | Status |
+|---|---|---|---|
+| The digest scheduler handles 500 users in under 60 s | `k6` | item 3 `agent-verified` | pending |
 
 ## Status ledger
 

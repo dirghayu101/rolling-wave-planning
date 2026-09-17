@@ -2,7 +2,7 @@
 
 The batch's entry file. Copy to `<N>-<slug>/00-plan.md` at intake and replace the bracketed text.
 
-**Soft target 100 lines.** Item cards do NOT live here; that is what kept every audited plan file growing without bound. Only STATE, decisions, the adapters pointer, the ledger, the review URLs and the deferred forward links. **Edited in place on every re-plan: never append a superseding "new plan" section.** History lives in git; four stacked re-plan narratives are what made one audited 969-line plan unskimmable. **Detail never goes in table cells**, it goes in the card, the feature file or `working/`.
+**Soft target 100 lines.** Item cards do NOT live here; that is what kept every audited plan file growing without bound. Only STATE, decisions, the adapters pointer, the batch testing plan, the ledger, the review URLs and the deferred forward links. **Edited in place on every re-plan: never append a superseding "new plan" section.** History lives in git; four stacked re-plan narratives are what made one audited 969-line plan unskimmable. **Detail never goes in table cells**, it goes in the card, the feature file or `working/`.
 
 ## STATE
 
@@ -17,7 +17,7 @@ Next: <the single next action, concrete enough to start cold>
 Keep the block at 10 lines or fewer. When the batch is paused, the first line becomes:
 
 ```
-**PAUSED <YYYY-MM-DD> — <one-line reason>.**
+**PAUSED <YYYY-MM-DD>: <one-line reason>.**
 Resume here: <next action> · owed by the developer: <verification rows, secrets, devices> · branch: <cut from what>
 ```
 
@@ -34,6 +34,45 @@ A resume reads STATE first, clears the PAUSED line, and only then takes the phas
 ## Adapters
 
 Roles, tiers and tool bindings for this batch: `02-adapters.md`. Packets read that file; never hard-code a skill, tool or model name here.
+
+## Testing plan
+
+Batch scope, written at scaffold from the interview's testing round and updated whenever an item is
+inserted. Each opening item copies its lines out of here into its card's `## Test strategy`;
+per-layer detail stays in the feature files.
+
+### Cross-item groups
+
+A flow that only exists once two or more items are in. Its L4 pass is recorded on the later item and
+named on both cards.
+
+| Group | Flow | Items in | Recorded on | Status |
+|---|---|---|---|---|
+| `<group-slug>` | <the flow that crosses those items, one sentence> | <n>, <m> | <m> | pending \| ran <YYYY-MM-DD> \| n/a |
+
+### End-to-end flows
+
+| Flow | Drives it | Gate |
+|---|---|---|
+| <the whole path through the product, one sentence> | `<role from 02-adapters.md, e.g. browser-verification>` | <item <n> `agent-verified` \| batch `done`> |
+
+### Environment
+
+How the stack under test is brought up for L2 to L4. Candidates come from `02-adapters.md`
+§ Environment; this section records which one this batch uses.
+
+- Bring-up: `<docker compose -f <file> up | supabase start | staging URL>`
+- Seed data: `<path or command the data comes from>`
+- Reset: `<one-line command>`
+
+### Load and performance
+
+| Criterion | Tool | Gate | Status |
+|---|---|---|---|
+| <the number and its unit> | `<tool bound in 02-adapters.md>` | <item <n> `agent-verified` \| batch `done`> | pending \| ran <YYYY-MM-DD> \| n/a |
+
+Nothing to measure? Replace the table with the line `none stated (raise at any item whose card names
+one)`.
 
 ## Status ledger
 

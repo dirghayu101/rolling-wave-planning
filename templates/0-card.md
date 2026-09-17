@@ -27,6 +27,18 @@ before any solution is chosen, and left standing even after the solution changes
 - [ ] <observable behaviour that must hold, phrased so a test or a human step can check it>
 - [ ] <backend need carried over from `planning/03-blueprint/inventory.md`, when this item has a screen>
 
+## Test strategy
+
+The whole-item answer, filled from `00-plan.md` § Testing plan when the item opens, except the last
+line, which is filled at `agent-verified`. Per-layer detail per feature stays in that feature file's
+test-strategy table; these four lines are what the developer reads to know how the item was tested
+without opening any of them.
+
+- **L4 flow:** <one sentence: the flow that exercises this item's features together> · <the cross-item group slug from `00-plan.md` § Testing plan this item belongs to, or `no group`>
+- **Environment:** <where L2 to L4 run, taken from `00-plan.md` § Testing plan: `compose: docker compose -f <file> up`, `supabase start` with seed `<path>`, or a staging URL>. Not the tool bindings; those stay in `02-adapters.md`.
+- **Non-functional:** <the stated criterion with its number, and the load-tool binding from `02-adapters.md` § Load testing that measures it | none stated>
+- **How it was tested:** <filled at `agent-verified`, three lines at most: what ran at L1 to L4 across this item's features, in which environment, and the evidence pointer (the feature files' evidence logs)>
+
 ## Sensitive surfaces
 
 <none | RLS | auth | payments | secrets | PII | migrations>. Flagged surfaces pull in the security pass and the `security-review` role's skill at review time.

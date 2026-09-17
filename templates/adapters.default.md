@@ -61,6 +61,20 @@ Surfaces this project has: `<web, iOS, Android, backend>`.
 - Invocation: `<how templates/doc-handoff.md is delivered, e.g. cat <prompt-file> | <docs-writer-command>>`
 - `subagent` is a normal value, not a fallback failure. It means the same prompt goes to a `heavy`-tier subagent.
 
+## Environment
+
+Where the stack under test runs for L2 to L4. This row is the project's standing answer; each batch records the environment it actually uses in its own `00-plan.md` § Testing plan § Environment.
+
+- Chosen: `<docker compose -f <file> | supabase start | testcontainers | staging <url> | none (mocks only)>`
+- Alternatives detected: `<candidate, candidate | none>`
+- Invocation: `<one-line command that brings it up>`
+- Seed data: `<path or command | none>`
+- Reset: `<one-line command that returns it to a known state, e.g. supabase db reset, docker compose down -v>`
+- Docker present: `<yes (docker info succeeds) | no>`
+- `enabled: <true | false>`
+
+Docker present is what lets L2 and L4 cross real seams instead of mocks on both sides, and it is what makes a load number mean anything.
+
 ## Load testing
 
 - Chosen: `<tool | none (no performance criteria in this project)>`

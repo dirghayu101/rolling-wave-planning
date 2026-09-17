@@ -82,6 +82,12 @@ Every settled question lands in the decisions table with its why and its rejecte
 
 **The transcript accumulates round by round** in `planning/04-interview.md`: the questions as asked, the developer's answers, and which decision-table row each answer produced. Append the round before asking the next one, so a quit mid-interview resumes at the next round with no question re-asked.
 
+**The round before the adapter round is the testing round.** Three fixed questions, asked once, whose answers become `00-plan.md` § Testing plan at Phase 5:
+
+1. **Which flows must be proven end to end, and which items does each span?** A flow that only exists once two or more items are in becomes a **cross-item group**, with a slug, the items it spans and the later item it is recorded on. A flow that spans the whole batch becomes an **end-to-end flow**, with the `02-adapters.md` role that drives it and the gate it runs at.
+2. **How does the stack under test run, and where does seed data come from?** A compose file, the local Supabase stack, testcontainers, or a staging deployment, with its bring-up line and its reset line. Detection from `references/adapters.md` § Environment supplies the candidates, so this is a choice between detected options, not an open question. Never read `.env` for it.
+3. **Which non-functional criteria exist, with numbers?** Latency, throughput, concurrency, bundle or page budgets. A criterion without a number is not one; press for the number or record `none stated`. Each criterion carries the item whose gate it is measured at.
+
 **The final round is the adapter and ceremony round.** Follow the procedure in `references/adapters.md`: read `<project root>/adapters.default.md` if it exists, run detection over installed skills and tools, and present as numbered options only the **delta** (roles whose binding changed, newly detected alternatives, roles with nothing installed) plus the ceremony level, each with a recommendation. Then:
 
 - Write `02-adapters.md` from `templates/02-adapters.md` with the agreed bindings.
@@ -92,7 +98,8 @@ Every settled question lands in the decisions table with its why and its rejecte
 
 Set `phase: scaffolded`, then build the rest of the SSOT tree that `rolling-wave-planning` defines:
 
-- `00-plan.md`: STATE, decisions table, adapters pointer, status ledger. Already created at intake; fill the ledger now.
+- `00-plan.md`: STATE, decisions table, adapters pointer, testing plan, status ledger. Already created at intake; fill the ledger now.
+- `00-plan.md` § Testing plan, written from the testing round's three answers: the cross-item groups table (every group at `pending`), the end-to-end flows table, the environment with its bring-up, seed and reset lines, and the load-and-performance table or `none stated`. Cards copy their own lines out of this section when each item opens, so a group left out here has no home later.
 - `rollout/<n>-<item>/0-card.md`: one dir per item from `templates/0-card.md`, numbered in execution order: problem, files, evidence, acceptance criteria, sensitive-surface flags. **No feature files**: features are decomposed when the item opens.
   `<n>` is an **execution slot, not an identity**: an item added mid-flight takes the slot it will actually run in and shifts the later `pending` items, so scaffold the numbers in the order the work will happen. See `rolling-wave-planning`'s "Item numbers are execution slots".
 - `01-verification.md` skeleton and an empty `verification/` directory for the per-feature human checklists.
@@ -118,3 +125,4 @@ TDD on every code item, the review cadence, and the verification ladder are fixe
 - Leaving a phase without its checkpoint file written and `phase:` advanced. The next session then resumes into work that is already done.
 - Asking the developer adapter questions the detection already answered. The round presents the delta, not the whole roster.
 - Scaffolding cards before the interview closes. Decisions still open become cards that need rewriting.
+- A scaffold whose Testing plan has empty cross-item groups while two cards name the same screen or the same table. Two items on one surface is exactly the flow that only exists once both are in.

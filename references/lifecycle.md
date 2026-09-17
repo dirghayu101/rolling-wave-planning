@@ -77,12 +77,15 @@ Each transition is a checklist. The stage in the feature index moves when every 
 - [ ] The item is decomposed into features of ≤400 changed lines each, and the **feature index is written into the card** with every feature at `pending`.
 - [ ] `working/<item>.agent.md` is created. Exactly one, for this item.
 - [ ] Ceremony ON: the item branch is cut from the batch branch and the item's tracking issue is opened as a sub-issue of the batch issue, per `references/ceremony.md`.
+- [ ] The card's `## Test strategy` has its first three lines filled from `00-plan.md` § Testing plan: the `L4 flow:` that will exercise this item's features together plus any cross-item group slug the item belongs to, the `Environment:` the plan names for L2 to L4, and the `Non-functional:` criterion with the load tool that measures it, or `none stated`.
 - [ ] Ledger row moved to `in-progress` with a one-sentence note.
 
 ### `in-progress → agent-verified`
 
 - [ ] **Every feature PR is merged** into the item branch. A feature index row reading `merged` whose PR is still open is drift; fix it before this gate, not after.
-- [ ] The **L4 cross-feature pass** has run: the features exercised together across their seams, evidence rows recorded. See `references/verification.md`.
+- [ ] The **L4 cross-feature pass** has run: the card's `L4 flow:` exercised for real **in the environment the card's `Environment:` line names**, evidence rows recorded. A cross-item group whose later item this is has run too, and its row in `00-plan.md` § Testing plan reads `ran <date>`. See `references/verification.md`.
+- [ ] The card's `Non-functional:` criterion, when it states one, has been measured with the load tool bound in `02-adapters.md`, and the numbers are in an evidence row.
+- [ ] The card's `How it was tested:` line is filled: at most three lines saying what ran at L1 to L4 across this item's features, in which environment, and where the evidence is.
 - [ ] The item PR into the batch branch is **open**, and **review point 3** is resolved on it: integration review plus the rogue-check (direction, execution architecture, tiering read from `02-adapters.md` and the recorded packet tiers). See `references/review.md`.
 
 ### `agent-verified → documented`
@@ -106,7 +109,7 @@ This is the close-out gate. **ALL of:**
 
 Only the human, or the resume sweep reading their ticks, sets `complete`. An agent never promotes an item past `documented` on its own judgement.
 
-**Batch scope.** When every item reads `complete`, the batch PR into `dev` carries review point 4 (whole-batch review and a final rogue-check) and the developer merges it. Nobody else merges that one. Set `phase: done` and run the promotion pass in `references/verification.md`.
+**Batch scope.** When every item reads `complete`, the batch PR into `dev` carries review point 4 (whole-batch review and a final rogue-check) and the developer merges it. Nobody else merges that one. Before that PR opens, **every cross-item group and every end-to-end flow in `00-plan.md` § Testing plan reads `ran <date>` or `n/a`**; review point 4 is a review, not a substitute for a flow nobody ran. Then set `phase: done` and run the promotion pass in `references/verification.md`.
 
 ## TDD is the fixed default
 
@@ -130,4 +133,6 @@ A batch that stops mid-item does not just stop, it is paused, and pausing is a c
 - A second working file for the same item, or "I'll collapse the working files at the end of the batch". Collapse is per item, at close-out.
 - An Outcome block growing past 5 bullets.
 - A feature file or card past ~100 lines: solution detail is leaking out of `working/`.
+- An item opened with its card's `## Test strategy` still holding the template's bracketed text, or closed at `agent-verified` with `How it was tested:` empty.
+- A batch heading for `done` with a cross-item group or end-to-end flow still reading `pending`.
 - A subagent dispatched without a tier, or the implementer reviewing or verifying its own work.

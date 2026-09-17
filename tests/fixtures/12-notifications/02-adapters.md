@@ -29,14 +29,14 @@ Surfaces this batch touches: `web, backend`.
 
 - Chosen: `none`
 - Alternatives detected: `none`
-- Invocation: `n/a — no iOS surface in this batch`
+- Invocation: `n/a, no iOS surface in this batch`
 - `enabled: false`
 
 ### Android
 
 - Chosen: `none`
 - Alternatives detected: `none`
-- Invocation: `n/a — no Android surface in this batch`
+- Invocation: `n/a, no Android surface in this batch`
 - `enabled: false`
 
 ### backend
@@ -55,12 +55,24 @@ Surfaces this batch touches: `web, backend`.
 - Invocation: filled `templates/doc-handoff.md` dispatched as a `heavy`-tier subagent's entire packet
 - `subagent` is a normal value, not a fallback failure.
 
+## Environment
+
+- Chosen: `supabase start` (Supabase local stack)
+- Alternatives detected: `docker compose -f docker-compose.test.yml`
+- Invocation: `supabase start`, then `supabase db reset` before each L4 run
+- Seed data: `supabase/seed.sql`
+- Reset: `supabase db reset`
+- Docker present: `yes (docker info succeeds)`
+- `enabled: true`
+
 ## Load testing
 
-- Chosen: `none (no performance criteria in this batch)`
-- Alternatives detected: `k6, autocannon`
-- Invocation: `n/a`
-- `enabled: false`
+- Chosen: `k6`
+- Alternatives detected: `autocannon`
+- Invocation: `k6 run tests/load/digest-scheduler.js`
+- `enabled: true`
+
+Bound because `00-plan.md` § Testing plan states a performance criterion (the digest scheduler and 500 users).
 
 ## Visual diff
 
@@ -92,7 +104,7 @@ Surfaces this batch touches: `web, backend`.
 | `db-backend` | `supabase` | `supabase-postgres-best-practices, supabase-security` | packets touching the database or its generated types |
 | `security-review` | `supabase-security` | `security-review (harness)` | reviewer packets on a card-flagged sensitive surface |
 | `docs-conventions` | `human-engineering-docs` | `documentation-writer` | the docs packet at feature `documented` |
-| `code-map` | `none` | `none` | disabled — see Code map section above |
+| `code-map` | `none` | `none` | disabled, see Code map section above |
 | `review` | `superpowers:requesting-code-review` | `feature-dev:code-reviewer` | every reviewer packet |
 
 Stack-conditional rows. Present only when detection found the trigger in the project manifest.

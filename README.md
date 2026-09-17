@@ -365,9 +365,24 @@ the row it returned. The L5 checklist has zero agent steps, each row carries the
 query, command or console path so you can run it yourself, and ticking every row is the
 only path from `documented` to `complete`.
 
-Two scores come off one rubric of five dimensions (unit coverage of exit points,
+The testing plan is written at three levels, each holding what the level above cannot.
+Per feature, the test-strategy table in the feature file plans and records each layer.
+Per item, the card's `## Test strategy` answers, in four lines, how this item's features
+were tested together, in which environment, against which non-functional criterion, and
+how it actually went: that is the brief answer you read for a sub-issue without opening a
+single feature file. Per batch, `00-plan.md` § Testing plan holds the cross-item groups (a
+flow that only exists once two or more items are in, recorded on the later one), the
+end-to-end flows with the role that drives each, the environment, and the load criteria.
+The environment is a first-class idea and is not the same thing as the tool bindings: it
+is where the stack under test runs, a compose file, the local Supabase stack with its
+seed, or a staging URL, with a one-line reset. Docker being present is what lets L2 and L4
+cross real seams instead of mocks on both sides, and it is what makes a load number mean
+anything, so `02-adapters.md` carries an Environment binding beside the load-testing one.
+
+Two scores come off one rubric of six dimensions (unit coverage of exit points,
 integration seams exercised, real-surface verification, review findings raised versus
-resolved, unverifiable effects honestly listed). `agent` is scored on the L1 to L4
+resolved, unverifiable effects honestly listed, and environment fidelity with stated
+limits measured). `agent` is scored on the L1 to L4
 evidence that exists today. `ceiling` is scored with every L5 row assumed PASS. A wide gap
 says the remaining assurance is parked on you; a low ceiling says no amount of human
 ticking will fix it and the raise has to be built. Both carry a date and are re-derived
@@ -375,7 +390,7 @@ whenever new evidence lands.
 
 ## Tests
 
-Five fresh-agent scenarios live under `tests/scenarios/`. Each one hands a brand-new
+Six fresh-agent scenarios live under `tests/scenarios/`. Each one hands a brand-new
 light-tier subagent nothing but the scenario's prompt and an absolute path to a fresh copy
 of a fixture from `tests/fixtures/`. The subagent acts on that alone, with no README, no
 plan, and no other scenario in view. It ends its answer with a list of every file it
@@ -386,7 +401,8 @@ test the harness, not the skill.
 
 The scenarios are built to pressure the skill, not to read through it: a cold resume
 mid-item, an interview cut off before its final round, a dispatch packet for a feature
-already at `reviewed`, a verification file with nothing yet on disk. A read-through would
+already at `reviewed`, a verification file with nothing yet on disk, a testing question
+whose answer must not cost sixteen file reads. A read-through would
 have confirmed the files exist and sound right. It would not have caught a runner guessing
 a fixture path, inventing a feature slug, or pre-filling human verdicts, things a fresh
 agent under a real prompt actually did. The table below records what each scenario found
@@ -418,6 +434,7 @@ fallback is the one path the suite cannot reach; it needs a Windows host.
 | 03 dispatch packet shape | FAIL | The runner invented a feature slug the card does not list, and the criteria described a feature the fixture holds at a different stage. | The packet template gained a required "Feature (verbatim from the card)" slot. On 2026-09-16 the criteria were corrected to match the fixture and prompt: feature 4.3 at `pending`, so an implementer packet, and `agent-browser` belongs to the later L3 packet. | PASS: the 2026-09-16 re-run produced the implementer packet for 4.3 with the card's slug, all seven slots filled, `heavy` tier, ponytail, superpowers:test-driven-development, frontend-design:frontend-design and next-best-practices resolved from `02-adapters.md`, exactly three SSOT paths, no vendor names, L3 deferred to a separate agent. |
 | 04 verification file shape | FAIL, twice | First: the runner pre-filled PASS on every human verdict and logged L5 evidence before any human had run anything. Fixed, then the re-run found rows duplicating checks L1 and L3 already proved, and the runner never invoked `human-assisted-verification`. | Verdict cells became the human's to fill, in the template, the skill, and the verification reference, with the agent handing over `open`. Then the template gained a required "Excluded because L1 to L4 prove them" slot, and the lifecycle gate now names the skill. | PASS: both skills invoked, zero duplicated rows. |
 | 05 problem fit | PASS | Named the three forces, the five mechanisms, and one file per phase, from README and SKILL.md alone. | None. | Not needed. |
+| 06 testing plan shape | FAIL before the change: read 16 files, no item-level home, environment confused with tool bindings, no batch-level home | Asked how item 5 would be tested as a whole, a cold agent read every item 4 feature file, the working file and three cards, then answered that the item-level view lives only in each feature file's L4 row plus one evidence row; it equated "environment" with the adapter tool bindings, found no home for cross-item groups or end-to-end flows and named review point 4 (a review) as the only batch-wide gate; it never mentioned load testing. | The card gained `## Test strategy` (four lines, filled at the item's open gate and closed at `agent-verified`), `00-plan.md` gained `## Testing plan` (cross-item groups, end-to-end flows, environment, load), `02-adapters.md` gained an Environment binding, the rubric gained a sixth dimension, and the lifecycle gates now fill and check all three. | pending |
 
 The acceptance checklist for this release lives at `tests/acceptance/v2-criteria.md`: the
 agent fills the evidence column for each requirement, the developer fills the verdict

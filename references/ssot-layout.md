@@ -16,7 +16,7 @@ Audits of nine real efforts found the old single-file `00-plan.md` design failin
 
 ```
 <N>-<slug>/
-  00-plan.md          STATE (phase + layout) + decisions + ledger
+  00-plan.md          STATE (phase + layout) + decisions + testing plan + ledger
   01-verification.md  human checklist index, verdict ticks
   02-adapters.md      role → driver bindings, generated at kickoff
   planning/           00-intake.md 01-exploration.md 02-edge-cases.md 03-blueprint/ 04-interview.md
@@ -36,8 +36,9 @@ Audits of nine real efforts found the old single-file `00-plan.md` design failin
 
 1. **STATE** (≤10 lines): what this effort is, `phase:`, `layout:`, and what to do next. **Edited in place on every re-plan, never by appending a superseding "new plan" section.** History lives in git; four stacked re-plan narratives are what made one audited 969-line plan unskimmable.
 2. **Decisions**, a table: `| # | Decision | Choice + why | Date |`. When a decision is reversed, rewrite its Choice cell as: was X → now Y, why the evidence wins, dated. A stale decision sitting above a contradicting ledger row is drift.
-3. **Status ledger**, one row per item: `| # | Item | Stage | Note (one sentence) |`, linking to `rollout/<n>-<item>/0-card.md`. Detail never goes in cells.
-4. **Forward links** to any deferred sibling stub dir spun out of this batch, so the discovery is findable from the batch it came from.
+3. **Testing plan**, batch scope: the cross-item groups (a flow that only exists once two or more items are in, with the item it is recorded on and its status), the end-to-end flows with the role that drives each and the gate it runs at, the environment the stack under test runs in with its seed and reset lines, and the load-and-performance criteria or `none stated`. Written at scaffold from the interview's testing round, updated when an item is inserted, and copied per item into that item's card when it opens. It is the only place cross-item and end-to-end testing is defined; cross-links improvised between feature files are drift.
+4. **Status ledger**, one row per item: `| # | Item | Stage | Note (one sentence) |`, linking to `rollout/<n>-<item>/0-card.md`. Detail never goes in cells.
+5. **Forward links** to any deferred sibling stub dir spun out of this batch, so the discovery is findable from the batch it came from.
 
 Copy the skeleton from `templates/00-plan.md`.
 
@@ -47,7 +48,7 @@ Copy the skeleton from `templates/00-plan.md`.
 
 **`planning/`**: the pre-execution record, one checkpoint per phase, written by `pre-rolling-wave-planning` as each phase closes: `00-intake.md` (the ask in the user's own words plus extracted goals, constraints and unknowns), `01-exploration.md`, `02-edge-cases.md`, `03-blueprint/` (wireframes and the control/state inventory, see `references/blueprint.md`), `04-interview.md` (rounds, in order). A phase left without its checkpoint cannot be resumed, only redone.
 
-**`rollout/<n>-<item>/0-card.md`**: the item's stable layer: problem, files involved, evidence, acceptance criteria, sensitive-surface flags, and the **feature index** (features with their stage, filled in when the item opens). **At the item's terminal stage, append `Outcome:` (≤5 bullets).** If the card's premise was overturned, use a dated correction block (assumed → actually → why it was plausible). A card approaching 100 lines means solution detail is leaking in: move it to `working/`. Template: `templates/0-card.md`.
+**`rollout/<n>-<item>/0-card.md`**: the item's stable layer: problem, files involved, evidence, acceptance criteria, the **test strategy** (four lines: the L4 flow across this item's features plus its cross-item group, the environment L2 to L4 run in, the non-functional criterion and the tool that measures it, and, filled at `agent-verified`, how it was actually tested; the first three are copied from `00-plan.md` § Testing plan when the item opens), sensitive-surface flags, and the **feature index** (features with their stage, filled in when the item opens). **At the item's terminal stage, append `Outcome:` (≤5 bullets).** If the card's premise was overturned, use a dated correction block (assumed → actually → why it was plausible). A card approaching 100 lines means solution detail is leaking in: move it to `working/`. Template: `templates/0-card.md`.
 
 **`rollout/<n>-<item>/<f>-<feature>.md`**: the human's skim surface: what and why, links, test strategy, evidence rows, the two confidence scores. **Copy the template verbatim from `templates/feature.md`**; solution detail belongs in `working/`. Item-level architecture and trade-off notes that are worth the human's time belong in that feature's `docs/` chapter, not in a side file here.
 
