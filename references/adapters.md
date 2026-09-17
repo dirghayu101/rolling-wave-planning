@@ -79,6 +79,33 @@ Each chosen row records three things: the chosen value, the one line that brings
 
 This section holds the candidates and their invocations. The one the batch actually uses is written into `00-plan.md` § Testing plan § Environment, and each item card copies it from there when the item opens.
 
+### Cleanup
+
+The other half of the Environment row: what takes down everything the batch's subagents start or write. Bound once per project, so the sweep at a gate is one line per row rather than a research task, and so nothing machine-specific reaches a packet, a card or this skill.
+
+Three things get bound:
+
+| Row | What it holds | Example shape |
+|---|---|---|
+| Scratch root | the ONE directory every packet's Ephemera slot points under | a session scratchpad path, or `<SSOT>/assets/tmp/` |
+| Teardown lines | one line per thing the environment brings up, in the order they must run | the stack's own stop line, the container runtime's compose-down line, a prune line, `rm -rf <scratch root>/<dispatch dir>` |
+| Cache to reclaim | the caches that are safe to drop, with the line that drops them, or `none` | a build cache, an image cache, a browser profile dir |
+
+Detection: whatever brought the environment up, and its documented inverse. A row is bound only when its command is verified against the tool's own help or README, never guessed. **A teardown line that nobody has run is a claim, not a binding:** run each one once at kickoff, against the environment it targets.
+
+Ephemera is swept at the item `agent-verified` gate, at the batch `done` gate and at every pause (`references/lifecycle.md`, `references/resume.md`). This section is what those sweeps read, and the item's `## Ephemera` ledger in `working/<item>.agent.md` is what says which of them are owed.
+
+### Audit
+
+How often the audit pass fires, and whether anything outside the session schedules it.
+
+| Row | What it holds | Default |
+|---|---|---|
+| `dispatches_per_audit` | N: an audit is due when the dispatch record shows N dispatches since the last `audit` row | `8` |
+| Scheduler binding | an optional harness hook that fires the audit outside the flow (a cron entry, a git hook, a harness scheduler command), or `none` | `none` |
+
+The dispatch count is the trigger the skill relies on, because it is observable in a file any session can read. **A scheduler is a binding, never part of the skill:** it lives in this section and in `02-adapters.md`, so a project with no scheduler loses nothing, and the audit still fires on the count, on every pause, and before the batch PR. What the audit checks and what it returns: `references/review.md` § Audit and `templates/audit-handoff.md`.
+
 ### Load and performance testing
 
 | Candidate | Exposure | Detection | Install |
@@ -167,3 +194,6 @@ Silence is not one of the three. A surface with no row is what produces a featur
 - Detection re-run at dispatch time because nobody wrote the file at kickoff.
 - An Environment row reading `none (mocks only)` while `docker info` succeeds on this machine.
 - A load criterion in `00-plan.md` § Testing plan with the Load testing row still reading `none`.
+- An Environment row with a bring-up line and a Cleanup section with no matching teardown line, or a scratch root nobody bound while packets name scratch paths of their own.
+- A teardown or cache line written from memory, never run against the environment it claims to tear down.
+- An audit scheduler written into a packet, a card or this skill instead of the Audit section of `02-adapters.md`.

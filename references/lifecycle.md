@@ -4,6 +4,8 @@ Reference for `rolling-wave-planning`. Loaded at phase `scaffolded` and at phase
 
 **At `executing`, do not read this as a procedure from the top.** Find the in-progress item's stage in the `00-plan.md` ledger and the in-progress feature's stage in that item's card feature index, go straight to that transition below, and satisfy its gate. The ledger is the program counter.
 
+**Before choosing that step, check whether an audit is due.** Count the rows in `working/<item>.agent.md` § Dispatch record below the last row whose Packet cell reads `audit`. When that count has reached N, the number bound in `02-adapters.md` § Audit (default 8), **the audit is the next step**, not the gate you were heading for: dispatch `templates/audit-handoff.md` on the `heavy` tier, then act on its realignment actions. The other two triggers, every pause and the one before the batch PR opens, are in `references/review.md` § Audit.
+
 ## Unit hierarchy
 
 | Unit        | Definition                                                                                                               | Planned                               |
@@ -30,7 +32,7 @@ Mapping from a `layout: v1` batch: v1 `code-done` at feature scope is v2 `merged
 
 1. **Open an item**: take the item `pending → in-progress` gate below.
 2. **Open a feature**: take the feature `pending → in-progress` gate.
-3. **Work it**, delegating the how. Every subagent dispatch follows `references/dispatch.md` and carries a tier; record the tier in `working/<item>.agent.md`. New facts that change the card's problem statement get edited into the card now, not narrated in the working file.
+3. **Work it**, delegating the how. Every subagent dispatch follows `references/dispatch.md` and carries a tier and an Ephemera slot; record the tier in `working/<item>.agent.md` § Dispatch record and every returned "Ephemera started" line in its `## Ephemera` ledger. New facts that change the card's problem statement get edited into the card now, not narrated in the working file.
 4. **Walk the feature up its stages**, one gate at a time, until it is `merged`. Then open the next feature.
 5. **Close the item** through its own gates once every feature is `merged`.
 
@@ -75,7 +77,7 @@ Each transition is a checklist. The stage in the feature index moves when every 
 
 - [ ] The card `rollout/<n>-<item>/0-card.md` is read, and its premise still holds against the repo as it is now. If it does not, the correction goes into the card first, dated.
 - [ ] The item is decomposed into features of ≤400 changed lines each, and the **feature index is written into the card** with every feature at `pending`.
-- [ ] `working/<item>.agent.md` is created. Exactly one, for this item.
+- [ ] `working/<item>.agent.md` is created with its two ledger headings, `## Dispatch record` and `## Ephemera`, both empty. Exactly one file, for this item.
 - [ ] Ceremony ON: the item branch is cut from the batch branch and the item's tracking issue is opened as a sub-issue of the batch issue, per `references/ceremony.md`.
 - [ ] The card's `## Test strategy` has its first three lines filled from `00-plan.md` § Testing plan: the `L4 flow:` that will exercise this item's features together plus any cross-item group slug the item belongs to, the `Environment:` the plan names for L2 to L4, and the `Non-functional:` criterion with the load tool that measures it, or `none stated`.
 - [ ] Ledger row moved to `in-progress` with a one-sentence note.
@@ -86,6 +88,8 @@ Each transition is a checklist. The stage in the feature index moves when every 
 - [ ] The **L4 cross-feature pass** has run: the card's `L4 flow:` exercised for real **in the environment the card's `Environment:` line names**, evidence rows recorded. A cross-item group whose later item this is has run too, and its row in `00-plan.md` § Testing plan reads `ran <date>`. See `references/verification.md`.
 - [ ] The card's `Non-functional:` criterion, when it states one, has been measured with the load tool bound in `02-adapters.md`, and the numbers are in an evidence row.
 - [ ] The card's `How it was tested:` line is filled: at most three lines saying what ran at L1 to L4 across this item's features, in which environment, and where the evidence is.
+- [ ] **Every row in `working/<item>.agent.md` § Ephemera is swept**: its teardown command has been run and `Swept on` carries the date, or the row reads `kept: <reason>`. Containers and background stacks go down through the lines in `02-adapters.md` § Cleanup; the scratch dir the packets named is removed once anything worth keeping has been copied into `assets/`.
+- [ ] **The acceptance rows this item serves are updated**: for each row number on the card's `Acceptance rows served:` line, append the evidence pointer to that row's `Agent check` column in `planning/00-acceptance.md` (an evidence-log row, a test path, a PR link). **The verdict column is the developer's**, exactly like an L5 verdict: an agent never writes `met`. Then re-count `acceptance: <n> of <m> rows met` in `00-plan.md` STATE from what the developer has actually ticked.
 - [ ] The item PR into the batch branch is **open**, and **review point 3** is resolved on it: integration review plus the rogue-check (direction, execution architecture, tiering read from `02-adapters.md` and the recorded packet tiers). See `references/review.md`.
 
 ### `agent-verified → documented`
@@ -95,7 +99,7 @@ This is the close-out gate. **ALL of:**
 - [ ] Every feature of the item has its chapter in `docs/`, and `docs/000-index.md` is updated.
 - [ ] The item's verification rows are handed over: `01-verification.md` indexes every `verification/` file for this item, and each one is complete enough for the human to execute without asking a question.
 - [ ] `Outcome:` appended to the card, ≤5 bullets.
-- [ ] `working/<item>.agent.md` deleted, or flagged `kept: <reason>` in the card.
+- [ ] `working/<item>.agent.md` deleted, or flagged `kept: <reason>` in the card. Deleting it with an unswept Ephemera row destroys the only record of what is still running; sweep first, then delete.
 - [ ] Ledger note updated, one sentence.
 - [ ] The item PR is merged into the batch branch per `references/ceremony.md`.
 
@@ -109,7 +113,14 @@ This is the close-out gate. **ALL of:**
 
 Only the human, or the resume sweep reading their ticks, sets `complete`. An agent never promotes an item past `documented` on its own judgement.
 
-**Batch scope.** When every item reads `complete`, the batch PR into `dev` carries review point 4 (whole-batch review and a final rogue-check) and the developer merges it. Nobody else merges that one. Before that PR opens, **every cross-item group and every end-to-end flow in `00-plan.md` § Testing plan reads `ran <date>` or `n/a`**; review point 4 is a review, not a substitute for a flow nobody ran. Then set `phase: done` and run the promotion pass in `references/verification.md`.
+**Batch scope.** When every item reads `complete`, the batch PR into `dev` carries review point 4 (whole-batch review and a final rogue-check) and the developer merges it. Nobody else merges that one. The batch `done` gate is a checklist too, and all of it holds before that PR opens:
+
+- [ ] **Every cross-item group and every end-to-end flow in `00-plan.md` § Testing plan reads `ran <date>` or `n/a`.** Review point 4 is a review, not a substitute for a flow nobody ran.
+- [ ] **An audit has run against this batch since the last item closed**, per `references/review.md` § Audit, and its realignment actions are done or recorded in STATE.
+- [ ] **Every row in `planning/00-acceptance.md` reads `met`, `struck: <reason>` or `deferred: <where>`**, each `met` row carrying an evidence pointer and each `deferred` row naming the sibling stub dir or the follow-up batch that took it. `met` and `struck` are the developer's verdicts, set when they sweep the list before merging the batch PR; an agent may record `deferred: <where>` for work it triaged out, and nothing else. A row still `open` blocks the gate: it is a requirement the developer stated and nobody answered, and the hand-back says so instead of the batch quietly closing over it.
+- [ ] **Every Ephemera row of every item is swept** (teardown run and dated) or carries `kept: <reason>`. A closed batch leaves no container running and no scratch dir behind.
+
+Then set `phase: done` and run the promotion pass in `references/verification.md`.
 
 ## TDD is the fixed default
 
@@ -117,7 +128,7 @@ Every code feature is built test-first through `superpowers:test-driven-developm
 
 ## The working file
 
-Exactly one live `working/<item>.agent.md` per item, holding the volatile detail and the tier recorded for each dispatch. Restructure it by editing in place. It is deleted at the item's close-out gate, or flagged `kept: <reason>` in the card. Full contract: `references/ssot-layout.md`.
+Exactly one live `working/<item>.agent.md` per item, holding the volatile detail, the `## Dispatch record` (tier and roles per dispatch) and the `## Ephemera` ledger (`| What | Where | Teardown | Swept on |`, one row per thing a dispatch started or wrote outside the repo and the SSOT). Restructure it by editing in place. It is deleted at the item's close-out gate, once the Ephemera ledger is swept, or flagged `kept: <reason>` in the card. Full contract: `references/ssot-layout.md`.
 
 ## Pausing
 
@@ -134,5 +145,9 @@ A batch that stops mid-item does not just stop, it is paused, and pausing is a c
 - An Outcome block growing past 5 bullets.
 - A feature file or card past ~100 lines: solution detail is leaking out of `working/`.
 - An item opened with its card's `## Test strategy` still holding the template's bracketed text, or closed at `agent-verified` with `How it was tested:` empty.
-- A batch heading for `done` with a cross-item group or end-to-end flow still reading `pending`.
+- A batch heading for `done` with a cross-item group or end-to-end flow still reading `pending`, or with a row in `planning/00-acceptance.md` still reading `open`.
+- An Ephemera row with an empty Teardown cell: nobody can undo what nobody wrote down. Fill it at the moment the row is written, from the returned report.
+- An item closed at `agent-verified` with unswept Ephemera rows, or a working file deleted over them.
+- An item card with no `Acceptance rows served:` line, or a gate passed without the rows it names being updated.
+- N dispatches past the audit trigger with no `audit` row in the dispatch record.
 - A subagent dispatched without a tier, or the implementer reviewing or verifying its own work.

@@ -24,6 +24,10 @@ before any solution is chosen, and left standing even after the solution changes
 
 ## Acceptance criteria
 
+`Acceptance rows served:` <row numbers from `planning/00-acceptance.md` this item answers, e.g. `3, 7, 12`, or `none (supporting work)`>
+
+The criteria below are this item's own, checkable form of those rows. The item `agent-verified` gate appends this item's evidence to each row number named above.
+
 - [ ] <observable behaviour that must hold, phrased so a test or a human step can check it>
 - [ ] <backend need carried over from `planning/03-blueprint/inventory.md`, when this item has a screen>
 

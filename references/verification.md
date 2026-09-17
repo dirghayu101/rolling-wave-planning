@@ -119,6 +119,8 @@ micromanages the implementing agent. Weigh six dimensions:
    with the bound tool; a real environment and a measured limit raise the score, a stated criterion
    left unmeasured lowers it.
 
+**`planning/00-acceptance.md` is an input to the evaluation, not a seventh dimension.** Load it at the gate that derives the scores, find the rows this item's card names on its `Acceptance rows served:` line, and read what evidence they carry. A row with no evidence **caps nothing**: the developer's requirement is not a rubric dimension, and a score is about what the code has been proven to do. It goes on the **"what would raise this" list** instead, named as the row it is (`acceptance row 7: <the developer's words>, no evidence yet`), which is how a requirement nobody has answered stays visible in the file the developer actually reads.
+
 **The same rubric is evaluated twice, and both numbers are dated:**
 
 - **`agent`**: scored on the L1 to L4 evidence that exists **today**. This is what the agent has
@@ -176,3 +178,5 @@ summarized there.
 - An agent-actionable entry still on "what would raise this" at feature close.
 - An item at `agent-verified` whose card's `How it was tested:` line is empty.
 - A cross-item group in `00-plan.md` § Testing plan still reading `pending` when the batch reaches `done`.
+- An acceptance row the card names, left with no evidence and no line on "what would raise this".
+- A verdict in `planning/00-acceptance.md` moved to `met` by an agent on its own reading, or a struck row deleted instead of kept with its reason.

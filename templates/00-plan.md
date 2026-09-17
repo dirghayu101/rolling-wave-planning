@@ -11,8 +11,11 @@ phase: intake | exploring | edge-cases | blueprint | interview | scaffolded | ex
 layout: v2
 What: <one line: what this effort delivers and for whom>
 Stage: <where the batch actually is, e.g. "item 3 of 7 in-progress, feature 3.2 in review">
+acceptance: <n> of <m> rows met
 Next: <the single next action, concrete enough to start cold>
 ```
+
+`acceptance:` is re-counted from `planning/00-acceptance.md` at every gate and every audit, and nowhere else: the count is here so a resume sees progress in one line without loading that file.
 
 Keep the block at 10 lines or fewer. When the batch is paused, the first line becomes:
 
@@ -34,6 +37,10 @@ A resume reads STATE first, clears the PAUSED line, and only then takes the phas
 ## Adapters
 
 Roles, tiers and tool bindings for this batch: `02-adapters.md`. Packets read that file; never hard-code a skill, tool or model name here.
+
+## Acceptance
+
+The developer's requirements, in their words: `planning/00-acceptance.md`, written at intake and confirmed in the interview's first round. Loaded at gates and audits, not on every resume; STATE carries the count.
 
 ## Testing plan
 

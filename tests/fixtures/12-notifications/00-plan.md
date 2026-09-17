@@ -9,6 +9,7 @@ phase: executing
 layout: v2
 What: Ship push/email notification reliability and a user-facing quota indicator for the notifications platform.
 Stage: item 4 of 9 in-progress, feature 4.1 merged, feature 4.2 reviewed, feature 4.3 pending
+acceptance: 2 of 4 rows met (planning/00-acceptance.md)
 Next: drive feature 4.2 (quota-settings) through L3 with agent-browser and record the evidence, then take it to agent-verified
 ```
 

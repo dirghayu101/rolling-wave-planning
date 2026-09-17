@@ -4,10 +4,12 @@ Reference for `rolling-wave-planning`. Loaded **first** on any resume: "continue
 
 ## Resumability protocol
 
-1. **Read `00-plan.md`** (STATE + decisions + ledger). That is the whole entry load.
+1. **Read `00-plan.md`** (STATE + decisions + ledger). That is the whole entry load. STATE's `acceptance: <n> of <m> rows met` line is the whole acceptance picture a resume needs.
 2. **Read `rollout/<n>-<item>/0-card.md` for the in-progress item, then its current feature file, then `working/<item>.agent.md`. Never the whole `rollout/` tree.** Total load is bounded regardless of batch size, which is the point of the sharding.
-3. **Run the integrity sweep** below. Cheap, and on every resume.
-4. **State the next action before editing anything.** If the sweep found drift, the next action is the remediation, not the work.
+3. **Do not load `planning/00-acceptance.md` here.** It loads at a gate (item `agent-verified`, batch `done`) and at an audit, and nowhere else. A resume that reads the whole requirement list every time is O(m) in requirements, which is exactly the growth the sharding exists to prevent.
+4. **Run the integrity sweep** below. Cheap, and on every resume.
+5. **Check whether an audit is due.** A resume is not itself a trigger (Corrected 2026-09-17: an earlier draft made every resume dispatch a `heavy` audit, which put a subagent in front of every cold start). The triggers are the dispatch count, the pause, and the batch PR, all in `references/review.md` § Audit; `references/lifecycle.md` checks the count before choosing a step, and a pause records its audit in the dispatch record. If STATE's `Resume here:` or `Next:` line carries realignment actions from an audit, those come first.
+6. **State the next action before editing anything.** If the sweep or the audit found drift, the next action is the remediation, not the work.
 
 ## Load exactly one target
 
@@ -15,7 +17,7 @@ After the sweep, mirror the router: one target, chosen by `phase:`.
 
 | `phase:` | Load | Resumes at |
 |---|---|---|
-| `intake` | invoke skill `pre-rolling-wave-planning` | Phase 0; `planning/00-intake.md` may exist already |
+| `intake` | invoke skill `pre-rolling-wave-planning` | Phase 0; `planning/00-intake.md` and `planning/00-acceptance.md` may exist already |
 | `exploring` | invoke skill `pre-rolling-wave-planning` | Phase 1, continuing from `planning/01-exploration.md` |
 | `edge-cases` | invoke skill `pre-rolling-wave-planning` | Phase 2, continuing from `planning/02-edge-cases.md` |
 | `blueprint` | invoke skill `pre-rolling-wave-planning` | Phase 3, continuing from `planning/03-blueprint/` |
@@ -31,6 +33,7 @@ A checkpoint that exists is never regenerated: settled questions are not re-aske
 
 Check each, against the files you just read:
 
+- The open item's `working/<item>.agent.md` lacks a `## Dispatch record` or a `## Ephemera` heading: add the missing one, empty, before anything else. Packets paste rows into both.
 - An item row at `complete` with an L5 row that is not PASS, or not ticked in `01-verification.md`.
 - An item row at `documented` above an unfinished handover: a feature with no chapter in `docs/`, a `verification/` file missing its index row in `01-verification.md`, or the working file still live.
 - A feature index row at `merged` whose PR never merged, or at `documented` with no chapter on the branch.
@@ -52,6 +55,8 @@ The user will report new issues mid-effort. Triage each one immediately into exa
 - **Out of scope** → a **sibling stub dir**, not a file inside this batch. Create `<M>-<slug>/README.md` next to the batch dir under the project's features dir, from `templates/deferred-README.md`, numbering `<M>` with the same sibling scan the batch used (the scan counts stub dirs as taken). Write enough context to pick it up cold, then **record a forward link in this batch's `00-plan.md`** so the discovery is findable from where it was found. Then continue the flow you interrupted.
 - **Unclear** ("might be related, not sure") → stub ledger row at stage `triage`. Classifying it is itself work; the row keeps it visible either way.
 
+**A mid-flight input that is a new requirement, not a bug, also gets a row in `planning/00-acceptance.md`**, in the developer's words, dated, under § Changes after confirmation. Triaged out of the batch, its acceptance row reads `deferred: <the stub dir>`. A requirement that exists only as a ledger row is invisible to the gate that checks the developer got what they asked for.
+
 ## Item numbers are execution slots
 
 `<n>` in `rollout/<n>-<slug>/` is **position in execution order, never an identity**; the ledger is sorted by it, and slots are assigned at open time in the planned order.
@@ -68,11 +73,14 @@ The user will report new issues mid-effort. Triage each one immediately into exa
 A batch can be paused when the developer must switch to other work. Pausing is a ceremony, not just stopping, and it is **batch-level**, recorded in STATE; the stages stay item-level and keep their values.
 
 1. Nothing is left `in-progress`: take the open feature to `merged`, or record the exact stopping point in `working/<item>.agent.md` and mark the item `blocked`, reason "paused".
+   - [ ] **Every row in `working/<item>.agent.md` § Ephemera is swept**: teardown run and `Swept on` dated, or the row carries `kept: <reason>` saying what is deliberately left running and why. Teardown lines come from `02-adapters.md` § Cleanup. A pause is where ephemera does the most damage: containers and stacks outlive the session that started them, and the next session has no record of what it inherited.
+   - [ ] **The audit has run** (`templates/audit-handoff.md`, `heavy` tier): a pause is an audit trigger, and the pause is the cheapest moment to realign, since nothing is mid-flight.
 2. Merge the batch branch into `dev` (batch PR, CI must run on it) so trunk carries everything merged. The batch issue stays OPEN with a pause comment. Delete merged item/feature branches; the batch branch may be deleted and re-cut from `dev` on resume, and STATE says which.
-3. STATE's first line becomes `**PAUSED <date> — <one-line reason>.**` above a `Resume here:` block (the whole thing under ~10 lines): the next action, every owed developer action (verification rows still open, secrets to mint, devices), and the branch to cut from. Set `phase: paused`.
+3. STATE's first line becomes `**PAUSED <date>: <one-line reason>.**` above a `Resume here:` block (the whole thing under ~10 lines): the next action, every owed developer action (verification rows still open, secrets to mint, devices), and the branch to cut from. Set `phase: paused`.
+   (Corrected 2026-09-17: this line used an em dash between the date and the reason, which no other file in the family does and which `templates/00-plan.md` spells with a colon. The template ships the literal; this file describes it, so the template wins.)
 4. Owed verification rows stay unticked in `01-verification.md`; owed out-of-scope work goes to its sibling stub dir with the pause date. Ledger rows keep their stage: `merged` is still `merged`.
 5. Update the project's state table, if one exists (a table of active efforts in the project's root agent instructions file), so the batch reads `⏸ Paused <date>` with the resume pointer. Skip the step, with no substitute, only when the project has no such table.
 
 ## Resuming a paused batch
 
-Read STATE first and find the `Resume here:` block. Cut or re-cut the branch it names. Re-run the integrity sweep above, which is where a pause most often shows drift, since the pause froze stages that other work has since moved past. Clear the `PAUSED` line and set `phase:` back to what the batch was doing (`executing` in almost every case). Then take that phase's row in the load table above.
+Read STATE first and find the `Resume here:` block. Cut or re-cut the branch it names. Re-run the integrity sweep above, which is where a pause most often shows drift, since the pause froze stages that other work has since moved past. Do the realignment actions the pause's audit left in the `Resume here:` block before anything else. Clear the `PAUSED` line and set `phase:` back to what the batch was doing (`executing` in almost every case). Then take that phase's row in the load table above.

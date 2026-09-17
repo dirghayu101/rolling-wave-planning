@@ -2,11 +2,17 @@
 
 Written at `phase: intake`, before any exploration. Copy to `planning/00-intake.md` and replace the bracketed text.
 
+**Intake writes two files.** This one, then `planning/00-acceptance.md` from `templates/00-acceptance.md`: the same rant turned into one row per requirement, in the developer's words, which every later gate checks the work against. This file holds the raw ask and what was extracted from it; that one holds what the effort owes the developer. Neither substitutes for the other.
+
 ## Rant (verbatim)
 
 <The developer's own words, pasted unedited: the problem, the ideas they already have, the
 constraints they already know. Do not summarise, reorder or correct it here. This section is the
 evidence that later sections are read against, so it stays raw even when it contradicts itself.>
+
+## Acceptance list
+
+`planning/00-acceptance.md`, written from the rant above immediately after this file, confirmed in the interview's first round. Rows: <count, filled when it is written>.
 
 ## Goals
 
@@ -35,6 +41,12 @@ Every premise here is Phase 1 work. A premise still `open` when the interview st
 | backend | yes \| no | <schema, endpoints, jobs> |
 
 The adapter round of the interview turns this table into the surface coverage decision: each `yes` needs a role and tool that can verify it.
+
+## Sensitive surfaces
+
+- <Anything the rant names that a security pass must cover: auth and permissions, payments, personal data, audit trails, secrets. One bullet each, with the sentence from the rant that flags it. Write `none` only when the rant names nothing of the kind.>
+
+Each bullet lands on a card's `## Sensitive surfaces` block at scaffold and binds the `security-review` role there; the implicit security row in `planning/00-acceptance.md` is checked against this list.
 
 ## Origin
 

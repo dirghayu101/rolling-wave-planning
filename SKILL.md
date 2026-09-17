@@ -50,6 +50,7 @@ Four rules sit around the table:
 - Working from what is in context after a gap instead of re-reading the SSOT files. Context is stale the moment the session breaks; the directory is the truth.
 - A `phase:` value that is not in the table, or STATE with no `phase:` at all.
 - A subagent dispatched without a tier (`judge`, `heavy`, `light`). Subagents inherit the driver's model, so an unstated tier silently burns the expensive one.
+- An audit trigger passed without an audit packet in the dispatch record. The triggers are counted, not remembered: `references/review.md` § Audit.
 - "The detail is in the session transcript / my context": if it isn't in the SSOT dir, it doesn't exist tomorrow.
 
 ## Version

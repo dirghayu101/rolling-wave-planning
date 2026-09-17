@@ -6,17 +6,20 @@ Loaded when the lifecycle reaches a step that hands work to a subagent: explorat
 
 Packet-writing craft (what to include, what the subagent cannot see, how to phrase stop conditions) lives in `efficient-fable` § Handoff Packets. Load that skill when you need the craft. This file states only the contract that a rolling-wave packet must satisfy.
 
-## The packet: seven required slots
+## The packet: eight required slots
 
-Every dispatch is a written packet with all seven. Copy `templates/handoff.agent.md` and fill it. A missing slot is not shorthand, it is a defect: the subagent has no chat context and cannot recover what the packet leaves out.
+Every dispatch is a written packet with all eight. Copy `templates/handoff.agent.md` and fill it. A missing slot is not shorthand, it is a defect: the subagent has no chat context and cannot recover what the packet leaves out.
 
 1. **Objective.** One sentence naming the finished state, plus the acceptance criteria copied from the item card. Not "look at X"; "make X true, proven by Y".
 2. **Scope files.** The files the subagent may open and change, and what is explicitly out of scope. For a screen feature, include the wireframe path (`planning/03-blueprint/<screen>.html`).
-3. **SSOT paths to read.** Exactly three by default: the item card (`rollout/<n>-<item>/0-card.md`), the feature file (`rollout/<n>-<item>/<f>-<feature>.md`), and the item's working file (`working/<item>.agent.md`). Never the whole `rollout/` tree, and never `00-plan.md` unless the task is batch-scoped. The O(1) resume budget applies to subagents too.
-4. **Roles → skills.** Resolve each role the task needs against the Skill roles section of `02-adapters.md` and write the resolved pair on the packet (`simplicity → ponytail`). The subagent invokes each named skill itself at task start. Never paraphrase a skill's content into a packet: paraphrase goes stale the moment the skill is updated, and the subagent then runs a fork of it.
-5. **Tier.** One of `judge`, `heavy`, `light`, chosen by role (below). The harness-specific model behind each tier is bound in the Model tiers section of `02-adapters.md`. **A packet without a tier is a red flag**: subagents inherit the orchestrator's model, so an unset tier silently spends the most expensive one.
-6. **Evidence to return.** Name the shape: files touched, line refs for every claim, exact commands run with their output, screenshots or query results where the surface allows, and an explicit uncertainties list. "It works" is not evidence.
-7. **Stop conditions.** The BLOCKED contract: if the code does not match the packet's premise, a command fails after one reasonable retry, the task needs a file outside scope, or two readings of the acceptance criteria disagree, **stop and report `BLOCKED: <what, where, what would unblock it>`**. Improvising past a blocked premise is what the stop condition exists to prevent.
+3. **Ephemera.** ONE scratch directory, named on the packet, for everything the subagent writes outside the repo and the SSOT: screenshots, diff images, captured logs, temp files, dumps. The scratch root comes from `02-adapters.md` § Cleanup, and the packet names the per-dispatch subdirectory under it. Containers, stacks and background processes come up through `02-adapters.md` § Environment and go down through its § Cleanup lines. Subagents do not clean up after each other, so an unnamed scratch dir means the next session inherits a machine nobody can audit.
+4. **SSOT paths to read.** Exactly three by default: the item card (`rollout/<n>-<item>/0-card.md`), the feature file (`rollout/<n>-<item>/<f>-<feature>.md`), and the item's working file (`working/<item>.agent.md`). Never the whole `rollout/` tree, and never `00-plan.md` unless the task is batch-scoped. The O(1) resume budget applies to subagents too.
+5. **Roles → skills.** Resolve each role the task needs against the Skill roles section of `02-adapters.md` and write the resolved pair on the packet (`simplicity → ponytail`). The subagent invokes each named skill itself at task start. Never paraphrase a skill's content into a packet: paraphrase goes stale the moment the skill is updated, and the subagent then runs a fork of it.
+6. **Tier.** One of `judge`, `heavy`, `light`, chosen by role (below). The harness-specific model behind each tier is bound in the Model tiers section of `02-adapters.md`. **A packet without a tier is a red flag**: subagents inherit the orchestrator's model, so an unset tier silently spends the most expensive one.
+7. **Evidence to return.** Name the shape: files touched, line refs for every claim, exact commands run with their output, screenshots or query results where the surface allows, an explicit uncertainties list, and the **Ephemera started** list: one row per container, background process, temp dir or temp file, with its teardown command, or `none`. "It works" is not evidence.
+8. **Stop conditions.** The BLOCKED contract: if the code does not match the packet's premise, a command fails after one reasonable retry, the task needs a file outside scope, or two readings of the acceptance criteria disagree, **stop and report `BLOCKED: <what, where, what would unblock it>`**. Improvising past a blocked premise is what the stop condition exists to prevent.
+
+(Corrected 2026-09-17: this contract read "seven required slots" and had no Ephemera slot. Subagents were leaving containers, stacks and screenshot dirs behind with nothing recording them, so no gate could sweep what nobody had written down.)
 
 ## Tiers, by role
 
@@ -42,7 +45,15 @@ Append one row per dispatch to `working/<item>.agent.md` under `## Dispatch reco
 | Date | Packet | Tier | Roles → skills | Outcome |
 ```
 
-The rogue-check reads this table plus `02-adapters.md` as evidence that the tiers and roles claimed at kickoff were the ones actually used. A dispatch that never appears here did not happen, as far as any later session can tell.
+The rogue-check reads this table plus `02-adapters.md` as evidence that the tiers and roles claimed at kickoff were the ones actually used. A dispatch that never appears here did not happen, as far as any later session can tell. The **audit** also counts rows here: its trigger is N dispatches since the last audit row, with N bound in `02-adapters.md` § Audit (see `references/review.md` § Audit).
+
+When the agent returns, transcribe its **Ephemera started** list into `## Ephemera` in the same working file:
+
+```
+| What | Where | Teardown | Swept on |
+```
+
+`Swept on` is filled only when the teardown command has been run, or replaced by `kept: <reason>`. The gates in `references/lifecycle.md` sweep this table; a row with an empty Teardown cell is a defect, because nobody later can undo what it started.
 
 ## Roles
 
@@ -88,6 +99,8 @@ Do not invent a binding and do not dispatch bare. Run the description grep:
 ## Red flags
 
 - A packet without a tier.
+- A packet with no Ephemera slot, or one naming a scratch path outside the root bound in `02-adapters.md` § Cleanup.
+- A returned report with no "Ephemera started" list, or a row of it that never reached `## Ephemera` in the working file.
 - A packet that pastes a skill's content instead of naming the skill.
 - A packet naming a skill that is not a row in `02-adapters.md`.
 - An implementer packet without `simplicity`.

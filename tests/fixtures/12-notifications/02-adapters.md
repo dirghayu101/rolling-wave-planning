@@ -65,6 +65,17 @@ Surfaces this batch touches: `web, backend`.
 - Docker present: `yes (docker info succeeds)`
 - `enabled: true`
 
+## Cleanup
+
+Teardown for the ephemera a dispatched agent starts: containers, background processes, scratch
+files, screenshots, diff images. Nothing ephemeral is written beside the code.
+
+- Scratch root: `assets/tmp/` (relative to this batch's SSOT directory; every packet gets its own
+  subdirectory under it)
+- Teardown command: `supabase stop` (stops the local stack `supabase start` brought up)
+- Teardown command: `rm -rf assets/tmp/<packet-dir>` (removes one packet's scratch directory)
+- `enabled: true`
+
 ## Load testing
 
 - Chosen: `k6`
@@ -89,6 +100,15 @@ Bound because `00-plan.md` § Testing plan states a performance criterion (the d
 - Refresh: `n/a`
 - Query: `n/a`
 - Graph present: `absent`
+
+## Audit
+
+- `dispatches_per_audit: 8` (counted on the open item's `working/<item>.agent.md` dispatch record
+  since its last audit row, or since the first row if there is none)
+- Also runs at: every pause, and before the batch PR is opened
+- Scheduler binding: `none` (no harness cron on this project; the orchestrator checks the trigger
+  at dispatch time)
+- `enabled: true`
 
 ## Skill roles
 

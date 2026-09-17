@@ -30,6 +30,16 @@ Out of scope, do not change: `<paths or areas>`
 
 `<Code-map line, only while 02-adapters.md reads enabled: true and graphify-out/graph.json exists: "Query the code map first, open only cited files. Query command: <command>.">`
 
+## Ephemera
+
+Everything you write outside the repo and the SSOT directory goes in ONE scratch directory, and nowhere else:
+
+`<scratch dir under the Scratch root bound in 02-adapters.md § Cleanup, e.g. <scratch-root>/<item>.<feature>/>`
+
+Screenshots, diff images, captured logs, temp files, dumps: all of it lands there, never beside the code and never in a directory of your own choosing. Anything that becomes evidence is copied into `assets/` before you report; everything else is torn down.
+
+Containers, background processes and stacks you start are ephemera too. Bring them up with the invocation in `02-adapters.md` § Environment and tear them down with the matching line in `02-adapters.md` § Cleanup.
+
 ## SSOT paths to read
 
 - `rollout/<n>-<item>/0-card.md`
@@ -43,6 +53,7 @@ Read these three and no others. Not the rest of `rollout/`, not `00-plan.md`.
 - Files touched, with a line ref behind every claim
 - Exact commands run, with their output
 - `<Surface evidence: screenshots at <breakpoints>, console and network capture, query results, test output>`
+- **Ephemera started:** one row per container, background process, temp dir or temp file you created, with the command that tears it down. Write `none` only if you started nothing. This list is required; a report without it is incomplete.
 - Uncertainties, listed explicitly. An empty list means you are certain, so do not write one unless you are.
 
 ## Stop conditions
@@ -64,3 +75,11 @@ Paste this row into `working/<item>.agent.md` under `## Dispatch record` at disp
 | Date | Packet | Tier | Roles → skills | Outcome |
 |---|---|---|---|---|
 | `<date>` | `<item>.<feature> <kind>` | `<tier>` | `<role → skill, role → skill>` | `<returned or BLOCKED: reason>` |
+
+## Ephemera ledger
+
+Paste one row per line of the returned "Ephemera started" list into `working/<item>.agent.md` under `## Ephemera`, when the agent returns. `Swept on` stays empty until the teardown command has actually been run.
+
+| What | Where | Teardown | Swept on |
+|---|---|---|---|
+| `<container, process, temp dir, screenshot set>` | `<path or container name>` | `<the one command that removes it>` | `<YYYY-MM-DD, or kept: reason>` |

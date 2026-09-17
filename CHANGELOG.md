@@ -25,7 +25,8 @@ The restructure. One repo, one router, one file loaded per phase, drivers bound 
 - Verification ladder L1 to L5 with a dated evidence log per feature, and the rubric evaluated
   twice: `agent` (L1 to L4) and `ceiling` (as if every human row passed). Later phases append
   evidence and re-derive; the resume sweep promotes items when human rows all read PASS.
-- Four review points per feature/item/batch, with reuse and duplication as a review dimension.
+- Five review points per feature/item/batch, with reuse and duplication as a review dimension. Four
+  ride a PR; the fifth is the audit below, which is the only one that does not.
 - `setup.sh` and `setup.ps1`: link the six skill entries into a skills directory, verify each
   resolves, report referenced skills present or missing with an install command, and report the
   tools on PATH. `--check` is the health check after either install path. `tests/setup/run.sh`
@@ -43,7 +44,38 @@ The restructure. One repo, one router, one file loaded per phase, drivers bound 
   written from the interview's testing round). `02-adapters.md` gained an `Environment` category
   beside load testing (Docker, a compose file, the Supabase local stack, testcontainers, staging),
   and the confidence rubric gained a sixth dimension, environment fidelity and stated limits.
-- `tests/scenarios/`: six fresh-agent scenarios that gate a release.
+- Ephemera cleanup. The dispatch packet has an eighth required slot, `Ephemera`: one scratch
+  directory named on the packet for everything a subagent writes outside the repo and the SSOT,
+  and a required "Ephemera started" list in the evidence it returns. Each line becomes a row in
+  the item's `## Ephemera` ledger (`| What | Where | Teardown | Swept on |`) in
+  `working/<item>.agent.md`. The item `agent-verified` gate, the batch `done` gate and the pause
+  ceremony sweep that ledger: every row teardown-run and dated, or `kept: <reason>`.
+  `02-adapters.md` gained a `Cleanup` category (scratch root, teardown lines in the order they
+  run, cache to reclaim, and the date each line was actually run once), so nothing
+  machine-specific reaches a packet.
+- Acceptance list from the rant. Pre-planning Phase 0 writes `planning/00-acceptance.md` from
+  `templates/00-acceptance.md`, one row per requirement in the developer's own words plus a fixed
+  block of implicit rows (security pass on flagged surfaces, tested as far as L1 to L4 allow,
+  a docs chapter per feature, no machine-specific binding in shared files, standing rules
+  honoured). The interview's first round confirms the list before any design question. Cards carry
+  `Acceptance rows served:`, the item `agent-verified` gate appends evidence to those rows, the
+  batch `done` gate refuses a row still reading `open`, and `00-plan.md` STATE carries
+  `acceptance: <n> of <m> rows met`. Resume does not load the file, so the entry load stays O(1).
+  Agents never write `met`; the developer does, exactly as with an L5 verdict.
+- Audit pass, the fifth review point and the only one not attached to a PR. `heavy` tier, fresh
+  context, `templates/audit-handoff.md`, reading only `00-plan.md`, `planning/00-acceptance.md`,
+  the open item's working file and `02-adapters.md`. Triggers are observable rather than
+  scheduled: N dispatches since the last `audit` row (`dispatches_per_audit` in `02-adapters.md`
+  § Audit, default 8), every pause, and before the batch PR opens. Findings and realignment actions go into `00-plan.md` STATE; the audit is recorded as a
+  dispatch row, which resets the count. A harness scheduler is an optional binding in
+  `02-adapters.md`, never part of the skill.
+- `tests/scenarios/`: eight fresh-agent scenarios that gate a release. `07-acceptance-from-the-rant`
+  (cold start from a rant; the baseline run wrote no acceptance file, RED confirmed 2026-09-17) and
+  `08-ephemera-and-audit` (fixture 12 patched with Cleanup and Audit sections and six dispatch rows;
+  the baseline run wrote no Ephemera slot and no audit packet, RED confirmed 2026-09-17). Both
+  passed against the changed skill on 2026-09-17; scenarios 01 and 03 re-ran clean on the patched fixture.
+- `TODO.md`: work that is deliberately parked, one entry per item with what is missing, why, and
+  what closes it.
 - `README.md`, `LICENSE` (MIT), `VERSION`.
 
 ### Changed (breaking for new batches; existing batches keep `layout: v1`)
@@ -70,6 +102,11 @@ The restructure. One repo, one router, one file loaded per phase, drivers bound 
 - The repo-specific project-state-table step in the pause ceremony (generalised).
 
 ### Fixed
+- `tests/setup/run.sh` skips its PowerShell cases when the Docker daemon is not amd64. The
+  `mcr.microsoft.com/powershell` image is amd64-only and crashes at startup under Docker Desktop's
+  emulation on Apple silicon (exit 134 or 139); the cases passed under colima, so `setup.ps1`
+  itself is not known to be broken. `RUN_PWSH=1` forces them to run. Building an arm64 PowerShell
+  test image so the skip stops being necessary is parked in `TODO.md`.
 - Frontmatter descriptions state only when to use. The human-assisted-verification description
   is quoted, because an unquoted colon broke strict YAML parsers (skills.sh skipped the skill).
 

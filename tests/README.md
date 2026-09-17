@@ -1,7 +1,9 @@
 # Release-gate scenarios
 
-Six fresh-agent scenarios must pass before tagging `v2.0.0` (plan decision 8, § 19, plus scenario 06 added 2026-09-17). This
-directory holds the scenario prompts and fixtures; there is deliberately **no runner script**.
+Eight fresh-agent scenarios must pass before tagging `v2.0.0` (plan decision 8, § 19, plus scenario
+06 added 2026-09-17 and scenarios 07 and 08 added 2026-09-17 for the acceptance list, the ephemera
+sweep and the audit pass). This directory holds the scenario prompts and fixtures; there is
+deliberately **no runner script**.
 
 ## How a scenario runs
 
@@ -15,9 +17,22 @@ directory holds the scenario prompts and fixtures; there is deliberately **no ru
    the subagent's written answer, never against what the orchestrator assumes happened.
 5. A run whose "Files I read" list includes anything under this repo's `tests/` directory is void:
    the scenario file is the answer key. Re-run with a fresh agent; do not grade it.
-6. A release is tagged only when **all six** scenarios pass. A failing scenario is a bug in the
+6. A release is tagged only when **all eight** scenarios pass. A failing scenario is a bug in the
    skill repo (SKILL.md, a `references/*.md` file, a template, or a sub-skill), not in the
    fixture: fix the repo, rerun the scenario fresh (a new subagent, not the same one continuing).
+
+## Scenarios
+
+| # | Scenario | Fixture | What it pressures |
+|---|---|---|---|
+| 01 | [Cold resume](scenarios/01-cold-resume.md) | `12-notifications` | O(1) resume: the per-item sharding rule and the integrity sweep |
+| 02 | [Quit mid-interview](scenarios/02-quit-mid-interview.md) | `13-onboarding` | Pausing and resuming inside a pre-planning phase |
+| 03 | [Dispatch packet shape](scenarios/03-dispatch-packet-shape.md) | `12-notifications` | The seven packet slots, role resolution, tiers instead of vendor names |
+| 04 | [Verification file shape](scenarios/04-verification-file-shape.md) | `12-notifications` | L5 files with zero agent steps and verdicts left `open` |
+| 05 | [Problem fit](scenarios/05-problem-fit.md) | `13-onboarding` | Refusing to scaffold a batch for work that is not a batch |
+| 06 | [Testing plan shape](scenarios/06-testing-plan-shape.md) | `12-notifications` | Where item-level, cross-item and end-to-end testing live |
+| 07 | [Acceptance list from the rant](scenarios/07-acceptance-from-the-rant.md) | none (empty dir) | Phase 0 turning the rant into `planning/00-acceptance.md`, in the developer's words |
+| 08 | [Ephemera slot and audit trigger](scenarios/08-ephemera-and-audit.md) | `12-notifications` | The packet Ephemera slot, the working-file ledger, and the audit packet firing on its trigger |
 
 ## Why no runner script
 
@@ -30,5 +45,15 @@ a orchestrator makes by reading the transcript, the same way a human reviewer wo
 ## Fixtures
 
 `fixtures/12-notifications/` and `fixtures/13-onboarding/` (built from this repo's own
-`templates/*`) live under `tests/fixtures/` in this repo. Before a run, copy the fixture to a scratch directory and hand the runner that absolute path as `<FIXTURE>`: runs must never modify the committed fixture, and a runner given a relative path will guess.
-fixture's path explicitly in its prompt.
+`templates/*`) live under `tests/fixtures/` in this repo. Before a run, copy the fixture to a
+scratch directory and hand the runner that absolute path as `<FIXTURE>`: runs must never modify the
+committed fixture, and a runner given a relative path will guess, so every prompt states the
+fixture's path explicitly.
+
+Scenario 07 is the exception: it has no fixture. The orchestrator creates an empty scratch
+directory and passes that path, because Phase 0 starts from nothing.
+
+Corrected 2026-09-17: the count read "Six" and "all six" before scenarios 07 and 08 were added, and
+the Fixtures paragraph ended in a dangling fragment ("fixture's path explicitly in its prompt.") left
+over from an earlier edit; the sentence is now closed where it belongs. The root `README.md` § Tests
+was corrected the same day: eight scenarios, with rows 07 and 08 in its findings table.

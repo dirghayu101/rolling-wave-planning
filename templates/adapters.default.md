@@ -75,6 +75,27 @@ Where the stack under test runs for L2 to L4. This row is the project's standing
 
 Docker present is what lets L2 and L4 cross real seams instead of mocks on both sides, and it is what makes a load number mean anything.
 
+## Cleanup
+
+The project's standing answer for taking down everything a batch's subagents start or write. Each batch copies it into its own `02-adapters.md`, where packets read it.
+
+- Scratch root: `<the ONE directory every packet's Ephemera slot points under, e.g. <session scratchpad>/<batch>/ or assets/tmp/>`
+- Teardown lines, in the order they must run:
+  1. `<line that stops the stack the Environment row brings up>`
+  2. `<line that removes its containers and volumes>`
+  3. `rm -rf <scratch root>/<dispatch dir>`
+- Cache to reclaim: `<line that drops the safe-to-drop caches | none>`
+- Verified on: `<date each line above was actually run once against this environment>`
+
+A teardown line nobody has run is a claim, not a binding.
+
+## Audit
+
+- `dispatches_per_audit: <N, default 8>`
+- Scheduler binding: `<harness hook, cron entry or git hook that fires the audit outside the flow | none>`
+
+The count is the trigger the skill relies on; the scheduler is an optional binding of this project, never part of the skill.
+
 ## Load testing
 
 - Chosen: `<tool | none (no performance criteria in this project)>`

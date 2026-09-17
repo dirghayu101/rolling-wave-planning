@@ -177,8 +177,8 @@ session.
 ## Kernel plus drivers
 
 The kernel is the part that does not change: the SSOT directory layout, the router, the
-lifecycle stages, and the gate checklists between them. It is small. `SKILL.md` is 57
-lines and the largest reference file is 157.
+lifecycle stages, and the gate checklists between them. It is small. `SKILL.md` is 58
+lines and the largest reference file is 199.
 
 Everything else is a driver. The browser tool, the mobile tool, the database inspector,
 the TDD skill, the review skill, the docs writer, the code map, the model behind each
@@ -228,29 +228,50 @@ During execution the ledger row and the feature index row are the program counte
 `00-plan.md`, runs an integrity sweep that compares every stage claim against the evidence
 behind it, and states the next action before editing anything.
 
+The rant you open with becomes a list, not just a summary. At intake,
+`planning/00-acceptance.md` gets one row per requirement in your own words, plus a fixed
+block of implicit rows every effort owes: a security pass on the flagged surfaces, tested
+as far as L1 to L4 allow, a docs chapter per feature, no machine-specific binding in
+shared files, and your standing rules. The interview's first round confirms the list
+before any design question is asked. From there each card names the rows it serves, the
+item `agent-verified` gate appends evidence to those rows, and the batch cannot reach
+`done` while a row still reads `open`. Only you write `met`. STATE carries the count, so a
+cold resume reads `acceptance: 9 of 17 rows met` without opening the file.
+
+An audit pass watches the flow itself, and fires on observables rather than a schedule: N
+dispatches since the last audit row (N is bound in `02-adapters.md`, default 8), every
+pause, and once before the batch PR opens. It runs in
+a fresh context on the `heavy` tier and reads only `00-plan.md`, the acceptance file, the
+open item's working file and `02-adapters.md`, never the source. It checks phase and stage
+consistency, every dispatch recorded with a tier, tiers used as bound, acceptance rows
+advancing, ephemera swept, and nothing load-bearing recorded outside the SSOT. It reports
+and the orchestrator edits: the realignment actions go into `00-plan.md` STATE as the next
+order of business, and the audit itself becomes a dispatch row, which is what resets the
+count.
+
 ## What loads when
 
 The router reads `00-plan.md`, takes the `phase:` field, and loads exactly one target.
 
 | `phase:` | Loads | Lines today |
 |---|---|---|
-| `intake`, `exploring`, `edge-cases`, `blueprint`, `interview` | skill `pre-rolling-wave-planning` | 120 |
-| `scaffolded` | `references/lifecycle.md` | 133 |
-| `executing` | `references/lifecycle.md` | 133 |
-| `paused` | `references/resume.md` | 78 |
-| `done` | `references/verification.md`, promotion pass only | 157 |
+| `intake`, `exploring`, `edge-cases`, `blueprint`, `interview` | skill `pre-rolling-wave-planning` | 136 |
+| `scaffolded` | `references/lifecycle.md` | 153 |
+| `executing` | `references/lifecycle.md` | 153 |
+| `paused` | `references/resume.md` | 85 |
+| `done` | `references/verification.md`, promotion pass only | 182 |
 
 The rest of the repo is reached only from inside one of those, at a named transition:
 
 | Reached at | File | Lines today |
 |---|---|---|
-| a subagent dispatch | `references/dispatch.md` | 99 |
-| a review point | `references/review.md` | 139 |
-| a verification transition | `references/verification.md` | 157 |
+| a subagent dispatch | `references/dispatch.md` | 112 |
+| a review point | `references/review.md` | 166 |
+| a verification transition | `references/verification.md` | 182 |
 | branch and PR work, once per item | `references/ceremony.md` | 152 |
 | a screen in the blueprint phase | `references/blueprint.md` | 41 |
-| kickoff, or a rebind mid-batch | `references/adapters.md` | 150 |
-| scaffolding, or `layout: v1` | `references/ssot-layout.md` | 87 |
+| kickoff, or a rebind mid-batch | `references/adapters.md` | 199 |
+| scaffolding, or `layout: v1` | `references/ssot-layout.md` | 90 |
 | writing the human-only rows | skill `human-assisted-verification` | 98 |
 
 A resume reads `00-plan.md` plus one card, one feature file and one working file,
@@ -301,6 +322,16 @@ Tiers are bound the same way, by what the work needs rather than by a model name
 | `judge` | conflicting evidence, design calls, grading a gate |
 | `heavy` | hard implementation, review, security pass, rogue-check, docs drafting |
 | `light` | mapping, search, log reduction, mechanical edits, scripted flows, screenshots |
+
+Not every category in the file is a role. **Environment** is where the stack under test
+runs, with its bring-up, seed and reset lines. **Cleanup** is the other half of it: the
+one scratch root every packet's Ephemera slot points under, the teardown lines in the
+order they must run, and the caches that are safe to reclaim. **Audit** holds
+`dispatches_per_audit` (default 8) and an optional scheduler binding, which is where a
+cron entry or a git hook belongs if you want one; the skill itself never schedules
+anything. **Load testing** names the tool that measures a non-functional criterion. All
+four are bound once per project and copied into each batch, so a gate's sweep is one line
+per row rather than a research task.
 
 Swapping a driver is one line. The `ui-implementation` row ships with
 `frontend-design:frontend-design` as its default, with `ui-ux-pro-max`,
@@ -386,11 +417,18 @@ limits measured). `agent` is scored on the L1 to L4
 evidence that exists today. `ceiling` is scored with every L5 row assumed PASS. A wide gap
 says the remaining assurance is parked on you; a low ceiling says no amount of human
 ticking will fix it and the raise has to be built. Both carry a date and are re-derived
-whenever new evidence lands.
+whenever new evidence lands. `planning/00-acceptance.md` is an input to the scoring rather
+than a seventh dimension: an acceptance row the card names with no evidence behind it caps
+nothing, and instead appears by name on the "what would raise this" list, where you will
+actually read it. Ephemera is handled the same way, by writing it down: every packet names
+one scratch directory for the screenshots, diff images and temp files a subagent produces,
+every container or process it starts becomes a row in the item's `## Ephemera` ledger with
+its teardown command, and the item, pause and batch gates refuse to pass until each row is
+swept and dated or carries `kept: <reason>`.
 
 ## Tests
 
-Six fresh-agent scenarios live under `tests/scenarios/`. Each one hands a brand-new
+Eight fresh-agent scenarios live under `tests/scenarios/`. Each one hands a brand-new
 light-tier subagent nothing but the scenario's prompt and an absolute path to a fresh copy
 of a fixture from `tests/fixtures/`. The subagent acts on that alone, with no README, no
 plan, and no other scenario in view. It ends its answer with a list of every file it
@@ -411,9 +449,12 @@ and what changed in response.
 The installer has its own runner. `tests/setup/run.sh` executes both setup scripts inside
 Docker containers, Ubuntu for bash and the official PowerShell image for pwsh, and covers
 a fresh install, an idempotent re-run, an in-place repo, check mode, safety against a real
-directory that is not a link, and dry run. On Apple silicon the PowerShell image runs
-under amd64 emulation with a memory cap, which the runner sets itself. The Windows junction
-fallback is the one path the suite cannot reach; it needs a Windows host.
+directory that is not a link, and dry run. The PowerShell half is skipped automatically
+when the Docker daemon is not amd64 (Docker Desktop on Apple silicon runs the amd64-only
+PowerShell image emulated and it crashes at startup); set `RUN_PWSH=1` to force it anyway.
+Building an arm64 PowerShell test image so this stops being necessary is an open TODO,
+tracked in `TODO.md`. The Windows junction fallback is the one path the suite cannot
+reach; it needs a Windows host.
 
 ### Run one
 
@@ -435,6 +476,8 @@ fallback is the one path the suite cannot reach; it needs a Windows host.
 | 04 verification file shape | FAIL, twice | First: the runner pre-filled PASS on every human verdict and logged L5 evidence before any human had run anything. Fixed, then the re-run found rows duplicating checks L1 and L3 already proved, and the runner never invoked `human-assisted-verification`. | Verdict cells became the human's to fill, in the template, the skill, and the verification reference, with the agent handing over `open`. Then the template gained a required "Excluded because L1 to L4 prove them" slot, and the lifecycle gate now names the skill. | PASS: both skills invoked, zero duplicated rows. |
 | 05 problem fit | PASS | Named the three forces, the five mechanisms, and one file per phase, from README and SKILL.md alone. | None. | Not needed. |
 | 06 testing plan shape | FAIL before the change: read 16 files, no item-level home, environment confused with tool bindings, no batch-level home | Asked how item 5 would be tested as a whole, a cold agent read every item 4 feature file, the working file and three cards, then answered that the item-level view lives only in each feature file's L4 row plus one evidence row; it equated "environment" with the adapter tool bindings, found no home for cross-item groups or end-to-end flows and named review point 4 (a review) as the only batch-wide gate; it never mentioned load testing. | Item cards gained a Test strategy section (L4 flow, environment, non-functional, how it was tested), the plan file gained a Testing plan (cross-item groups, end-to-end flows, environment, load), adapters gained an Environment category, the rubric a sixth dimension. Two further runs were voided because the runner opened the scenario file, so every prompt now forbids the repo's `tests/` directory; one more added the performance clause the criteria graded but the prompt never asked. | PASS: the 2026-09-17 run named the card section for all four lines, quoted the plan's environment rather than the tool bindings, attributed the batch's one load criterion to item 3 and wrote `none stated` for item 5, pointed at the existing cross-item group and end-to-end flow, and read eight files with no feature file and no `tests/`. |
+| 07 acceptance from the rant | RED baseline, 2026-09-17 | A cold start from a rant wrote the SSOT directory, `00-plan.md` and `planning/00-intake.md` and stopped there. No acceptance list existed, so nothing held the requirements the rant stated in the developer's own words, and no later gate could check the work against them. | Intake writes `planning/00-acceptance.md` from `templates/00-acceptance.md` as its fourth file, with the implicit rows every effort owes. The interview's first round confirms it before any design question, cards carry `Acceptance rows served:`, the item `agent-verified` gate appends evidence, the batch `done` gate refuses a row still reading `open`, and STATE carries the count. | PASS on all eleven criteria after two green runs on 2026-09-17. Run one wrote the acceptance file with 15 rows in the developer's words plus five implicit rows, verdicts `open`, STATE `acceptance: 0 of 20`, and named the interview's first round; it missed only the sensitive-surface flag, because the intake template had no slot for one. The template gained `## Sensitive surfaces`, and run two flagged owner-only editing and the audit trail there, with everything else unchanged. |
+| 08 ephemera and audit | RED baseline, 2026-09-17 | Against fixture 12 patched with Cleanup and Audit sections and six dispatch rows, the baseline run wrote a dispatch packet with no scratch directory named and produced no audit packet, although the dispatch count had already passed the trigger bound in the fixture's own adapters file. | The packet contract went from seven required slots to eight, with Ephemera required and an "Ephemera started" line in the evidence to return. The working file gained an `## Ephemera` ledger swept at the item, pause and batch gates; `02-adapters.md` gained Cleanup and Audit categories; the audit became review point 5, dispatched from `templates/audit-handoff.md`. | PASS on 2026-09-17 after one scenario correction and one design change. The first green run refused the prompt because it named feature 4.3 as due while the fixture held 4.2 at `reviewed`; the prompt now names the packet STATE calls for. The run also showed that firing the audit on every resume would put a heavy subagent in front of every cold start, so that trigger was dropped; the count, the pause and the batch PR remain. The final run counted the dispatch rows against the bound six, wrote a `heavy` audit packet reading only the four allowed files, with the Ephemera slot under `assets/tmp/`, the required Ephemera started list, the seven checks and an `audit` dispatch row, and no vendor names. |
 
 The acceptance checklist for this release lives at `tests/acceptance/v2-criteria.md`: the
 agent fills the evidence column for each requirement, the developer fills the verdict
@@ -443,7 +486,9 @@ column, and the tag waits for the developer to do that.
 ## Versioning
 
 Semver. `VERSION` holds the current release, `CHANGELOG.md` records what each release
-changed, and every release is a git tag.
+changed, and every release is a git tag. Work that is deliberately parked rather than
+done sits in `TODO.md`, one entry per item saying what is missing, why it was parked, and
+what would close it.
 
 `v1.0.0` is the pre-restructure snapshot: the four skills exactly as they were before they
 became one repo, committed with no content edits. It exists to be reverted to.

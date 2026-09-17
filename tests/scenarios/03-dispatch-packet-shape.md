@@ -31,7 +31,7 @@ Give the fresh agent exactly this, filling `<FIXTURE>` with the absolute path of
   (Corrected 2026-09-16: this criterion previously described 4.2 at `reviewed` and an L3 packet,
   which contradicted the Fixture and Prompt sections above; the fixture card has 4.3 at `pending`.)
 
-- [ ] All seven packet slots are filled with concrete content (objective + acceptance criteria,
+- [ ] All eight packet slots (Corrected 2026-09-17: was seven; the Ephemera slot was added) are filled with concrete content (objective + acceptance criteria,
   scope files, exactly the three SSOT paths, resolved roles → skills, a tier, evidence-to-return
   shape, stop conditions) — none left as a bracketed placeholder.
 - [ ] The tier is stated as one of `judge` / `heavy` / `light` only; no model-vendor name (opus,

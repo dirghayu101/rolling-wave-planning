@@ -11,7 +11,7 @@ Two rules hold at every point:
   both bound to an installed skill in the batch's `02-adapters.md`. Review runs on the `judge` or
   `heavy` tier, never `light`.
 
-## The four review points
+## The five review points
 
 | # | When | Scope | Lands on |
 |---|---|---|---|
@@ -19,6 +19,9 @@ Two rules hold at every point:
 | **2** | Final diff of the open feature PR, at the `documented → merged` gate | fresh-context diff review, plus the security pass when the feature's `Sensitive surfaces:` line is not `none` | the feature PR |
 | **3** | Item PR open | integration review across the item's merged features, plus the rogue-check | the item PR |
 | **4** | Batch PR open | final whole-batch review, plus the rogue-check once more | the batch PR |
+| **5** | Audit: every N dispatches, every pause, and before the batch PR opens | process drift, not code: phase and stage consistency, dispatch and tier discipline, acceptance rows advancing, ephemera swept, work outside the SSOT | `00-plan.md` STATE, as the next order of business |
+
+(Corrected 2026-09-17: this table read "The four review points". Points 1 to 4 all hang off a PR, so a batch could drift for weeks between them, which is what the audit exists to catch.)
 
 ### Point 1: spec compliance and quality, on the branch
 
@@ -119,6 +122,24 @@ file is itself the finding.)
 resolved before that PR auto-merges. Any finding that cannot be resolved inside the item goes into
 `00-plan.md` STATE as the next order of business: **never into a code comment**.
 
+## Audit
+
+The fifth review point, and the only one that is not attached to a PR. Points 1 to 4 review **the work**; the audit reviews **the process**: whether the flow is still the rolling-wave flow, and whether the record still matches what happened. It runs on a `heavy` tier, in a **fresh context**, from `templates/audit-handoff.md`.
+
+**Triggers, all observable, so no session has to remember a schedule:**
+
+1. **N dispatches.** The `## Dispatch record` in `working/<item>.agent.md` shows N rows below the last row whose Packet cell reads `audit`. N is bound in `02-adapters.md` § Audit, default 8. `references/lifecycle.md` checks this count before choosing the next step, and an audit that is due **is** the next step.
+2. **Every pause.** The pause protocol in `references/resume.md` runs it while nothing is mid-flight, and its realignment actions land in the `Resume here:` block, so the next session starts from a checked record without dispatching anything. (Corrected 2026-09-17: an earlier draft also fired it on every resume, which put a `heavy` subagent in front of every cold start.)
+3. **Before the batch PR opens**, alongside the batch `done` checklist in `references/lifecycle.md`.
+
+A harness scheduler (a cron entry, a git hook) may fire it as well. That is a **binding**, recorded in `02-adapters.md` § Audit, never part of this skill: a project without one loses nothing, because the three triggers above are all readable from the SSOT.
+
+**What it checks**, against `00-plan.md`, `planning/00-acceptance.md`, the open item's working file and `02-adapters.md`, and nothing else: phase and stage consistency; every dispatch recorded with a tier; tiers used as bound in `02-adapters.md`; acceptance rows advancing and STATE's count honest; every Ephemera row swept or flagged `kept:`; nothing load-bearing recorded outside the SSOT; no machine-specific or model-vendor name written where a tier or a role belongs. The packet holds the full list and the output shape.
+
+**Where findings land.** The auditor reports, the orchestrator edits. Realignment actions go into `00-plan.md` STATE as the next order of business (the `Resume here:` block when the batch is paused, otherwise the `Next:` line), blockers first, and the audit itself is recorded as a dispatch row with `audit` in the Packet cell. That row is what resets the counter.
+
+**Audit and rogue-check are not the same pass.** The rogue-check rides an item or batch PR and reads the diff and the evidence behind it; the audit reads only the record, fires between PRs, and never opens the code. Neither replaces the other.
+
 ## Reviews post on the PR
 
 **Reviews post as GitHub PR review comments, not chat messages.** Use the GitHub MCP review flow
@@ -140,3 +161,6 @@ chat either.
 - A confidence score that does not survive re-derivation from the diff.
 - A rogue-check finding parked in a code comment instead of `00-plan.md` STATE.
 - A model name, rather than a tier and a role, recorded on a dispatch in the working file.
+- An audit trigger passed with no `audit` row in the dispatch record, or an audit run and never recorded, which leaves the counter unreset and fires it again immediately.
+- An audit that opened the source, reviewed a diff, or edited a file. It reads the record and reports.
+- Audit findings reported in chat instead of written into `00-plan.md` STATE.

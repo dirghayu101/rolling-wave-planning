@@ -26,4 +26,4 @@ Copy the evidence in rather than linking to a session or a scratchpad. Those die
 
 ## Picking this up
 
-Invoke `pre-rolling-wave-planning`; this README is the intake seed. Its description, context and related decisions go straight into `planning/00-intake.md`, and the developer adds whatever has changed since.
+Invoke `pre-rolling-wave-planning`; this README is the intake seed. Its description, context and related decisions go straight into `planning/00-intake.md`, every requirement it records becomes a row in `planning/00-acceptance.md`, and the developer adds whatever has changed since.

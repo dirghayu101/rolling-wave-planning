@@ -17,7 +17,7 @@ Front-loads the **stable layer** of a rolling-wave effort: capture the developer
 
 | Phase | `phase:` value | Checkpoint file |
 |---|---|---|
-| 0 Intake | `intake` | `planning/00-intake.md` |
+| 0 Intake | `intake` | `planning/00-intake.md`, then `planning/00-acceptance.md` |
 | 1 Exploration | `exploring` | `planning/01-exploration.md` |
 | 2 Edge cases and risks | `edge-cases` | `planning/02-edge-cases.md` |
 | 3 Blueprint (only with a screen) | `blueprint` | `planning/03-blueprint/` |
@@ -37,10 +37,13 @@ The developer rants: the problem, the ideas they already have, the constraints, 
 1. **Create the SSOT directory.** Ask the user where it goes; suggest the project convention (for example `docs/features/<N>-<name>/`). **List sibling dirs first and take the next unused number**: a real audit found two dirs both numbered 9. The scan counts deferred stub dirs (`<M>-<slug>/README.md`) as used numbers.
 2. **Write `00-plan.md`** from `templates/00-plan.md`, with `phase: intake` and `layout: v2` in the STATE block.
 3. **Write `planning/00-intake.md`** from `templates/intake.md`: the rant verbatim first, then the extracted goals, constraints, unknowns and premises to verify, the surfaces touched (web / iOS / Android / backend), and the origin.
+4. **Write `planning/00-acceptance.md`** from `templates/00-acceptance.md`, straight from the rant, before any exploration. One row per requirement **in the developer's own words**, quoted or lightly trimmed and never paraphrased into agent vocabulary, plus the fixed block of implicit rows the template carries (security pass on card-flagged surfaces, tested as far as L1 to L4 allow with the batch Testing plan run, every feature documented, no machine-specific binding in shared skill files, the developer's standing rules honoured). A long rant carries fifteen to twenty rows; a sentence holding two requirements becomes two rows; a requirement you do not yet understand still gets a row, marked for the interview. Every verdict starts `open`, and stays `open` until the developer sets it.
+
+**Why this file exists.** A rant is read once and then compressed into goals, and the compression silently drops requirements that were stated plainly. The acceptance list is the uncompressed version, checked at every gate, and it is what the batch `done` gate reads before the effort can close.
 
 If a deferred stub `README.md` exists for this effort (a `<M>-<slug>/README.md` sibling written when an earlier batch deferred this work), **it is the intake seed**: copy its description, its context-to-pick-up-cold and its related decisions into `planning/00-intake.md` before the developer adds to them, and link the originating batch under Origin.
 
-Only when those three files exist do you continue to Phase 1. The rant lives in the session until it is written down, and the session is not storage.
+Only when those four files exist do you continue to Phase 1. The rant lives in the session until it is written down, and the session is not storage.
 
 ## Phase 1: Agentic exploration
 
@@ -76,7 +79,9 @@ No UI in this effort? Say so explicitly in one STATE line ("blueprint skipped: n
 
 Set `phase: interview` and open `planning/04-interview.md` first.
 
-Run the `grilling` frontier method over the open decisions: each round, present every currently-answerable question, numbered, each with the realistic options, the trade-offs of each side, and your recommendation. Only genuine decisions go to the developer: anything look-up-able you look up first. Challenge the developer's framing before building on it; "you're ~80% right, but the mechanism is X" beats agreement. When decisions deserve durable ADRs, suggest the user run `/grill-with-docs` (it is user-invoked only. An agent cannot trigger it).
+**The first round is the acceptance round, and it comes before any design question.** Read `planning/00-acceptance.md` back to the developer, numbered, and ask exactly three things: which requirements are missing, which rows you read wrong, and which rows they strike. Then edit the file: add the missing rows in their words, correct the misread ones, and **mark a struck row `struck: <their reason>` rather than deleting it**, so the record shows it was considered. Fill the § Interview round 1 record block with what changed and the date, and append the round to `planning/04-interview.md` like any other. A design decision taken before the list is confirmed is taken against a requirement set the developer has never seen.
+
+Then run the `grilling` frontier method over the open decisions: each round, present every currently-answerable question, numbered, each with the realistic options, the trade-offs of each side, and your recommendation. Only genuine decisions go to the developer: anything look-up-able you look up first. Challenge the developer's framing before building on it; "you're ~80% right, but the mechanism is X" beats agreement. When decisions deserve durable ADRs, suggest the user run `/grill-with-docs` (it is user-invoked only. An agent cannot trigger it).
 
 Every settled question lands in the decisions table with its why and its rejected alternative, dated.
 
@@ -100,7 +105,7 @@ Set `phase: scaffolded`, then build the rest of the SSOT tree that `rolling-wave
 
 - `00-plan.md`: STATE, decisions table, adapters pointer, testing plan, status ledger. Already created at intake; fill the ledger now.
 - `00-plan.md` § Testing plan, written from the testing round's three answers: the cross-item groups table (every group at `pending`), the end-to-end flows table, the environment with its bring-up, seed and reset lines, and the load-and-performance table or `none stated`. Cards copy their own lines out of this section when each item opens, so a group left out here has no home later.
-- `rollout/<n>-<item>/0-card.md`: one dir per item from `templates/0-card.md`, numbered in execution order: problem, files, evidence, acceptance criteria, sensitive-surface flags. **No feature files**: features are decomposed when the item opens.
+- `rollout/<n>-<item>/0-card.md`: one dir per item from `templates/0-card.md`, numbered in execution order: problem, files, evidence, acceptance criteria, sensitive-surface flags. Each card's `Acceptance rows served:` line carries the row numbers from `planning/00-acceptance.md` that this item answers, and each row's `Where it lives` cell is filled with the item that took it. **A confirmed row no card names is either an item nobody scaffolded or a row that should read `deferred:`; settle it now, not at the batch `done` gate.** **No feature files**: features are decomposed when the item opens.
   `<n>` is an **execution slot, not an identity**: an item added mid-flight takes the slot it will actually run in and shifts the later `pending` items, so scaffold the numbers in the order the work will happen. See `rolling-wave-planning`'s "Item numbers are execution slots".
 - `01-verification.md` skeleton and an empty `verification/` directory for the per-feature human checklists.
 - `docs/000-index.md` seed for the reader-facing chapters.
@@ -117,6 +122,9 @@ TDD on every code item, the review cadence, and the verification ladder are fixe
 ## Red flags
 
 - Writing step-by-step plans for item 7 before item 1 starts.
+- Leaving intake with no `planning/00-acceptance.md`, or with rows written in agent vocabulary instead of the developer's words. The list is the check on the compression, so a compressed list checks nothing.
+- A design question asked before the acceptance round confirmed the list, or a struck row deleted instead of kept with its reason.
+- A confirmed acceptance row that no card names and no `deferred:` verdict covers.
 - Asking the developer something a query or file read would answer.
 - A decision recorded without its why and rejected alternative.
 - Exploration reports trusted without reopening the load-bearing citations.
