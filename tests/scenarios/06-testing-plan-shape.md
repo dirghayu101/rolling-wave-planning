@@ -19,14 +19,18 @@ Give the fresh agent exactly this, filling `<FIXTURE>` with the absolute path of
 > `rolling-wave-planning` skill. Item 5 (mute-per-channel settings) is the next item to open.
 > Before any dispatch, the developer wants to be able to read, briefly, how item 5 will be tested
 > as a whole once its features exist (the features together, not one by one), in which environment
-> those tests run, and how the batch will do its cross-item and end-to-end testing later when items
-> that depend on each other are all in. Report exactly what you would write for each of those three
-> things and the exact file and section where each would live in this batch's SSOT, following the
+> those tests run, whether any performance criterion applies to it, and how the batch will do its
+> cross-item and end-to-end testing later when items that depend on each other are all in. Report
+> exactly what you would write for each of those things and the exact file and section where each would live in this batch's SSOT, following the
 > skill's own layout. Do not create, edit, or scaffold any file, and do not dispatch any subagent.
-> End your answer with a list titled "Files I read" naming every file you opened, in the order you
+> Do not open anything under the skill repo's `tests/` directory. End your answer with a list titled "Files I read" naming every file you opened, in the order you
 > opened them.
 
 ## Pass criteria
+
+(Corrected 2026-09-17: the prompt gained the performance-criterion clause and the file-count
+criterion reads "about ten" because the first clean run read ten files and omitted the
+non-functional line the prompt never asked about.)
 
 - [ ] Names `rollout/5-mute-channels/0-card.md` § Test strategy as the item-level home, and drafts
   its four labelled lines (`L4 flow:`, `Environment:`, `Non-functional:`, `How it was tested:`), not "each feature file's L4 row" and not a new file invented for the purpose.
@@ -43,7 +47,7 @@ Give the fresh agent exactly this, filling `<FIXTURE>` with the absolute path of
   item 5 has no non-functional criterion, so its `Non-functional:` line reads `none stated`.
 - [ ] "Files I read" contains **no** item 4 feature file (`rollout/4-quota/1-quota-banner.md`,
   `2-quota-settings.md`) and **no** working file (`working/4-quota.agent.md`): the card and the plan
-  suffice. At most about eight files in total.
+  suffice. At most about ten files in total.
 - [ ] No file was created or edited (the fixture copy's `git status`, or the absence of any write in
   the transcript).
 

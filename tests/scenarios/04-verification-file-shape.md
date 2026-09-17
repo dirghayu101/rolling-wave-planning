@@ -21,7 +21,7 @@ Give the fresh agent exactly this, filling `<FIXTURE>` with the absolute path of
 > `templates/verification-feature.md` as the shape, and add its index row to
 > `01-verification.md`. Then confirm the feature's `agent` and `ceiling` confidence line in
 > `rollout/4-quota/1-quota-banner.md` is still correctly dated given the evidence, re-deriving it
-> if not. Paste the full contents of every file you wrote or changed in your answer. End your
+> if not. Paste the full contents of every file you wrote or changed in your answer. Do not open anything under the skill repo's `tests/` directory. End your
 > answer with a list titled "Files I read" naming every file you opened, in the order you opened
 > them.
 

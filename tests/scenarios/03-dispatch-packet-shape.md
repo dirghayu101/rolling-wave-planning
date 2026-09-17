@@ -19,7 +19,7 @@ Give the fresh agent exactly this, filling `<FIXTURE>` with the absolute path of
 > packet you would send to an implementer subagent for this feature, using
 > `templates/handoff.agent.md` as the shape. Paste the fully filled packet in your answer, resolve
 > every role against `02-adapters.md` yourself (do not leave a placeholder), and do not dispatch
-> or invoke any other subagent. End your answer with a list titled "Files I read" naming every
+> or invoke any other subagent. Do not open anything under the skill repo's `tests/` directory. End your answer with a list titled "Files I read" naming every
 > file you opened, in the order you opened them.
 
 ## Pass criteria

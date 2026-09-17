@@ -17,7 +17,7 @@ Give the fresh agent exactly this, filling `<FIXTURE>` with the absolute path of
 > `rolling-wave-planning` skill and continue the flow. Do not make any edits to any file. When you
 > have determined the next action, stop and report: (1) the exact order you read files in, (2)
 > what the integrity sweep found, if anything, (3) the single next action you would take and why,
-> and (4) your confidence that no drift exists. End your answer with a list titled "Files I read"
+> and (4) your confidence that no drift exists. Do not open anything under the skill repo's `tests/` directory. End your answer with a list titled "Files I read"
 > naming every file you opened, in the order you opened them.
 
 ## Pass criteria

@@ -15,7 +15,7 @@ Give the fresh agent exactly this, filling `<REPO>` with the absolute path to th
 > Read only `<REPO>/README.md` and `<REPO>/SKILL.md`. Do not open, list, or grep any other file
 > or directory in `<REPO>` or anywhere else. Then answer, from those two files alone: (1) what
 > problem this repo solves, (2) who it is for, (3) by what mechanism it solves that problem, and
-> (4) if you were resuming a paused batch, what you would load, naming one file per phase. End
+> (4) if you were resuming a paused batch, what you would load, naming one file per phase. Do not open anything under the skill repo's `tests/` directory. End
 > your answer with a list titled "Files I read" naming every file you opened.
 
 ## Pass criteria

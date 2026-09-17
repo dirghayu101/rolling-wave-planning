@@ -21,7 +21,7 @@ Give the fresh agent exactly this, filling `<FIXTURE>` with the absolute path of
 > which rounds are already settled and that you would not re-ask them, (3) draft the exact
 > numbered questions you would ask in the next round, with their options, trade-offs and your
 > recommendation for each, (4) state explicitly whether you would create any `rollout/` cards
-> right now, and (5) say what the interview's final round covers and which file it writes. Do not create, edit, or scaffold any file. End your answer with a list titled "Files I
+> right now, and (5) say what the interview's final round covers and which file it writes. Do not create, edit, or scaffold any file. Do not open anything under the skill repo's `tests/` directory. End your answer with a list titled "Files I
 > read" naming every file you opened, in the order you opened them.
 
 ## Pass criteria

@@ -13,7 +13,9 @@ directory holds the scenario prompts and fixtures; there is deliberately **no ru
    **"Files I read"** naming every file it opened.
 4. The orchestrator (not the subagent) grades the scenario's `## Pass criteria` checklist against
    the subagent's written answer, never against what the orchestrator assumes happened.
-5. A release is tagged only when **all six** scenarios pass. A failing scenario is a bug in the
+5. A run whose "Files I read" list includes anything under this repo's `tests/` directory is void:
+   the scenario file is the answer key. Re-run with a fresh agent; do not grade it.
+6. A release is tagged only when **all six** scenarios pass. A failing scenario is a bug in the
    skill repo (SKILL.md, a `references/*.md` file, a template, or a sub-skill), not in the
    fixture: fix the repo, rerun the scenario fresh (a new subagent, not the same one continuing).
 
