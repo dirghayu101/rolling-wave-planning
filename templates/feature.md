@@ -38,7 +38,7 @@ Planned <YYYY-MM-DD>, updated at close <YYYY-MM-DD>.
 | L1 unit (one test per exit point) | <exit points to cover: return values, state changes, third-party calls> | <what exists, file paths> |
 | L2 integration (seams) | <which seams: DB, edge function, auth boundary> | <what exists> |
 | L3 real-surface (adapter bound in `02-adapters.md`) | <flows to drive, breakpoints, console/network assertions> | <what was driven, evidence> |
-| L4 cross-feature (item level) | <which sibling features are exercised together, and the flow that crosses them> | <what was run, evidence> |
+| L4 cross-feature (item level) | <see the card's `L4 flow:` line; note here what this feature contributes to it> | <what was run, evidence> |
 | L5 human-only | <`verification/<n>.<f>-<slug>.md` rows this feature owns> | <verdicts: PASS / FAIL / NEEDS-HUMAN> |
 
 Sensitive surfaces: <none | RLS | auth | payments | secrets (flagged features get the security pass, `references/review.md`)>

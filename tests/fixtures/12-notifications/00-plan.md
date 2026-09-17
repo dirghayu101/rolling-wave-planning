@@ -49,7 +49,7 @@ Roles, tiers and tool bindings for this batch: `02-adapters.md`.
 
 | Criterion | Tool | Gate | Status |
 |---|---|---|---|
-| The digest scheduler handles 500 users in under 60 s | `k6` | item 3 `agent-verified` | pending |
+| The digest scheduler handles 500 users in under 60 s | `k6` | batch `done` | pending |
 
 ## Status ledger
 

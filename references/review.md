@@ -48,6 +48,9 @@ cross-feature evidence rows in the feature files, and anything more than one fea
 
 ### Point 4: batch PR
 
+A review, not a test: before this PR opens, every end-to-end flow and cross-item group in
+`00-plan.md` § Testing plan reads `ran <date>` or `n/a` (`references/lifecycle.md`, batch scope).
+
 Final whole-batch review: are the `00-plan.md` decisions honored across every item, did duplication
 creep in across item boundaries, does the full test-suite evidence hold, and does the spread of
 `agent` and `ceiling` scores match what the diffs show. The rogue-check runs once more. The
