@@ -1,13 +1,10 @@
 # Rolling-wave planning
 
-A skill family for running large software efforts with coding agents. It is for developers
-who ship real software, work in git, review diffs, and hand implementation to subagents.
-You get an on-disk effort that survives a session exit, one file loaded per phase instead
-of the whole method, every skill and tool bound to a role in a file you can edit, and a
-five-level verification ladder that shows where the evidence is thin.
+A skill family for running large software efforts with coding agents. It is for developers who ship real software, work in git, review diffs, and hand implementation to subagents.
 
-The unit of work is a **batch**: one directory holding the plan, the items, the features,
-the verification checklists and the reader documentation.
+You get an on-disk effort that survives a session exit, one file loaded per phase instead of the whole method, every skill and tool bound to a role in a file you can edit, a before-and-after flow diagram per feature so a PR can be reviewed without archaeology, and a verification ladder that says where the evidence is thin.
+
+The unit of work is a **batch**: one directory holding the plan, the items, the features, the flows and the human verification passes.
 
 ## Quick start
 
@@ -17,15 +14,7 @@ the verification checklists and the reader documentation.
 npx skills add dirghayu101/rolling-wave-planning --full-depth
 ```
 
-`--full-depth` is required. Five skills are nested under `skills/`, and without the flag
-the CLI stops at the root `SKILL.md` and never sees them (verified 2026-09-16 with
-`--list`). The CLI still asks which agents to install for, even with `-y`; answer the menu
-once.
-
-The root skill is the router. The other five sit under `skills/`, two of them inside the
-`mentor-documentation-system` bundle, and the harness does not auto-discover nested skills.
-
-The rest of the CLI:
+`--full-depth` is required. Two skills are nested under `skills/`, and without the flag the CLI stops at the root `SKILL.md`. The CLI still asks which agents to install for; answer the menu once.
 
 ```sh
 npx skills add <owner/repo> --list --full-depth          # see every skill, including nested ones
@@ -35,13 +24,9 @@ npx skills update                                        # update installed skil
 npx skills remove <name>                                 # uninstall
 ```
 
-It installs into `~/.agents/skills` or `.claude/skills`, global or project-local, and
-supports Claude Code, Codex, Gemini CLI and Cursor. Docs: https://skills.sh and
-https://github.com/vercel-labs/skills
+It installs into `~/.agents/skills` or `.claude/skills`, global or project-local, and supports Claude Code, Codex, Gemini CLI and Cursor. Docs: https://skills.sh
 
 ### Install, path B: clone and run the setup script
-
-Clone anywhere you like, then run the script for your platform:
 
 ```sh
 git clone https://github.com/dirghayu101/rolling-wave-planning
@@ -53,146 +38,59 @@ cd rolling-wave-planning
 .\setup.ps1                 # Windows, PowerShell 7
 ```
 
-The script links the six skill entries into your skills directory (`~/.agents/skills` by
-default, `--skills-dir` to change), verifies that each link resolves, reports which
-referenced skills are present or missing with the install command for each, and reports
-which of `agent-browser`, `graphify`, `node` and `git` are on PATH.
+The script links the skill entries into your skills directory (`~/.agents/skills` by default, `--skills-dir` to change), verifies that each link resolves, and reports which referenced skills and CLIs are present.
 
 | Flag | What it does |
 |---|---|
 | `--claude` | also links into `~/.claude/skills`, the only directory Claude Code reads |
-| `--check` | reports without changing anything; the health check after either install path |
+| `--check` | reports without changing anything |
 | `--dry-run` | prints what would change and exits |
 | `--force` | replaces a link that points somewhere else, and never deletes a real directory |
 
-Claude Code reads personal skills from `~/.claude/skills/<skill-name>/SKILL.md`
-(https://code.claude.com/docs/en/skills.md) and follows symlinked skill folders, so
-`--claude` is what makes the family visible there.
-
-On Windows, a real symlink needs Developer Mode enabled or an elevated shell. Without
-either, the script falls back to junctions. Junctions load the skill, but it will not
-appear in the Claude Code desktop slash menu: see github.com/anthropics/claude-code issue
-37590.
-
-### Which directory your harness reads
-
-| Directory | Read by |
-|---|---|
-| `~/.claude/skills`, `.claude/skills` | Claude Code |
-| `~/.agents/skills` | Codex, Gemini CLI, Copilot CLI |
+On Windows, a real symlink needs Developer Mode or an elevated shell; without either the script falls back to junctions, which load but do not appear in the Claude Code slash menu.
 
 ### First use
 
-In a project, say what you want in your own words and invoke `pre-rolling-wave-planning`.
-It interviews you, then scaffolds the batch directory. From there `rolling-wave-planning`
-runs the batch. Quit at any point and say "continue the flow" to resume. The first batch
-also writes `adapters.default.md` at the project root.
-
-## Referenced skills
-
-Every skill named anywhere in the kernel, with where it comes from. Names on packets are
-resolved through `02-adapters.md`, so treat the defaults below as defaults, not
-requirements. `./setup.sh --check` prints this list with present or missing per skill.
-
-**Ships in this repo.** Invoked by name, never read as files.
-
-| Skill | Role it fills |
-|---|---|
-| `rolling-wave-planning` | the router and the kernel itself |
-| `pre-rolling-wave-planning` | phases 0 to 5: intake, exploration, edge cases, blueprint, interview, scaffold |
-| `human-assisted-verification` | writes the L5 human-only rows |
-| `human-engineering-docs` | the `docs-conventions` role: reader-facing chapters, one per feature |
-| `senior-mentor` | teaching and post-task explanation; ships in the `mentor-documentation-system` bundle, not called by the kernel |
-| `mentor-documentation-system` | the bundle holding the two skills above |
-
-**Superpowers plugin.** Namespaced in the harness listing.
-
-| Skill | Role it fills |
-|---|---|
-| `superpowers:test-driven-development` | default for the `tdd` role |
-| `superpowers:systematic-debugging` | alternative for the `debugging` role |
-| `superpowers:requesting-code-review` | default for the `review` role |
-| `superpowers:receiving-code-review` | carried by the agent that fixes review findings |
-| `superpowers:brainstorming` | used in the pre-phases for genuinely fuzzy feature shapes |
-| `feature-dev:code-reviewer` | alternative for the `review` role |
-| `frontend-design:frontend-design` | default for the `ui-implementation` role |
-
-**Installed separately, typically via skills.sh.**
-
-| Skill | Role it fills |
-|---|---|
-| `ponytail` | the `simplicity` role, on every implementer packet |
-| `systematic-debugging` | default for the `debugging` role |
-| `ui-ux-pro-max` | default for `ui-guidelines`, lookup only during blueprint |
-| `adhd-design-expert`, `web-design-guidelines`, `shadcn`, `shadcn-ui` | alternatives for the UI roles |
-| `agent-browser` | default for `browser-verification` |
-| `supabase` | default for `db-backend` |
-| `supabase-security` | default for `security-review` |
-| `supabase-postgres-best-practices` | alternative for both database roles |
-| `documentation-writer` | alternative for `docs-conventions` |
-| `stripe-best-practices`, `stripe-projects` | the `payments` role |
-| `next-best-practices`, `next-cache-components`, `vercel-react-best-practices`, `tanstack-query-best-practices` | the `framework` role on a Next.js manifest |
-| `vercel-react-native-skills`, `react-native-animations`, `expo-cicd-workflows`, `sentry-react-native-sdk` | the `framework` role on a React Native or Expo manifest |
-| `grilling` | the interview method in phase 4 |
-| `grill-with-docs` | user-invoked only, for decisions that deserve durable ADRs |
-| `dispatching-parallel-agents` | parallel exploration packets in phase 1 |
-| `subagent-driven-development` | the shape of the review and fix loop |
-| `efficient-fable` | the handoff-packet craft that `references/dispatch.md` points at |
-| `graphify` | the `code-map` role |
-
-`graphify` is the exception to the table above. `graphify install` writes it as a global
-skill into your skills directory rather than adding it as a skill repo, and Claude Code
-users link it from there into `~/.claude/skills`.
-
-**Harness built-in.** `security-review`, listed as an alternative for the
-`security-review` role.
+In a project, say what you want in your own words and invoke `pre-rolling-wave-planning`. It interviews you, then scaffolds the batch directory. From there `rolling-wave-planning` runs the batch. Quit at any point and say "continue the flow" to resume. The first batch also writes `adapters.default.md` at the project root.
 
 ## The problem
 
-A solo, deadline-driven developer ships web, mobile and backend with agents. Three forces
-compound.
+A solo, deadline-driven developer ships web, mobile and backend with agents. Three forces compound.
 
-**The ecosystem churns.** Skills, models and tools change under you, so the best choice
-for a given task is a moving target that gets re-chosen by hand, every time, from memory.
+**The ecosystem churns.** Skills, models and tools change under you, so the best choice for a task is a moving target re-chosen by hand from memory.
 
-**Context is the scarce resource.** Loading everything degrades the agent's reasoning and
-forces session exits, and work that lives only in a session dies with it.
+**Context is the scarce resource.** Loading everything degrades the agent's reasoning and forces session exits, and work that lives only in a session dies with it.
 
-**Trust is uneven.** Agents claim done without proof, so review time lands where it is not
-needed and skips the places where it is.
+**Trust is uneven.** Agents claim done without proof, so review time lands where it is not needed and skips where it is.
 
-The skill answers with five things:
+The skill answers with five things: an on-disk state machine resumed at constant cost; a router that loads one file per phase; a per-batch adapters file binding roles to the best available skill, tool or model; fresh-context subagents that load only their role's skills; and a verification ladder with two scores that directs attention where evidence is thin.
 
-1. An on-disk state machine resumed at constant cost.
-2. A router that loads one file per phase.
-3. A per-batch adapters file binding roles to the best available skill, tool or model.
-4. Fresh-context subagents that load only their role's skills.
-5. A verification ladder with two scores that directs attention where evidence is thin.
+It assumes you work in git and delegate implementation to subagents. It assumes no particular model, harness, skill set or test framework. It is deliberately heavy for a one-hour change; the payoff starts when an effort spans several items and more than one session.
 
-It assumes you work in git and delegate implementation to subagents. It assumes no
-particular model, harness, skill set or test framework. It is deliberately heavy for a
-one-hour change; the payoff starts when an effort spans several items and more than one
-session.
+## What the record is, and is not
 
-## Kernel plus drivers
+The record exists so an agent can resume and a human can review a PR. **It is not the product, and it is not reviewed.** Two layers, and only two:
 
-The kernel is the part that does not change: the SSOT directory layout, the router, the
-lifecycle stages, and the gate checklists between them. It is small. `SKILL.md` is 58
-lines and the largest reference file is 199.
+- **LOG**, append-only and immutable: dispatch rows, evidence rows, review findings. Every entry carries the SHA it was true at, and is never edited, re-pinned or corrected. A fact that stopped being true gets a new entry below it.
+- **HEAD**, rewritten in place and capped: `00-plan.md` STATE, a feature's stage line, scope, links, score, and exactly one resume block per item.
 
-Everything else is a driver. The browser tool, the mobile tool, the database inspector,
-the TDD skill, the review skill, the docs writer, the code map, the model behind each
-tier: all of them are detected at kickoff and bound to a **role** in the batch's
-`02-adapters.md`. The kernel names roles and tiers (`judge`, `heavy`, `light`) and never
-products. A packet resolves `simplicity` or `browser-verification` against that file, and
-the subagent invokes whatever skill the row names.
+One writer. The orchestrator, or one light scribe it dispatches, writes the SSOT; subagents return facts and never edit it.
 
-**This repo ships no drivers.** It ships the role contract (`references/dispatch.md`) and
-the detection procedure (`references/adapters.md`). That is the whole reason the skill can
-stay this small while the ecosystem churns: when a better browser tool lands, nothing in
-the kernel is wrong, and the fix is one edited line in one batch file. Skills are named on
-packets, never paraphrased into this repo, so an updated skill takes effect immediately
-instead of being forked into stale prose here.
+A reviewer is told, in the packet, that the feature file, the PR body, the flow file and the verification file are context and not subject matter, and that findings about them are not findings.
+
+## Layout
+
+```
+<N>-<slug>/
+  00-plan.md        STATE, decisions, testing plan, ledger, hand-back. 100 lines, hard cap.
+  planning/         intake, acceptance, exploration, edge cases, blueprint, interview
+  flows/            one file per feature: before and after Mermaid diagrams, written once
+  verification/     the verification pass, run on dev: one file per feature or group
+  runbooks/         the production stage: run by hand after the dev pass, plus 0-release.md
+  agent/            adapters, cards, feature HEAD and LOG files, resume blocks, assets, harness
+```
+
+The developer opens the first five. `agent/**` is marked `linguist-generated` in the repo's `.gitattributes`, so GitHub collapses it in every PR diff. Files under `agent/` are sharded per feature and target 150 lines, so a subagent packet loads one card, one HEAD file and one LOG file, whatever the batch size.
 
 ## How a batch flows
 
@@ -201,309 +99,109 @@ instead of being forked into stale prose here.
  |                                                          |
  +--------------- pre-rolling-wave-planning ----------------+
 
-   during executing:
+   during executing, at both item and feature scope:
 
-     item    : pending -> in-progress -> agent-verified -> documented -> complete
-     feature : pending -> in-progress -> reviewed -> agent-verified -> documented -> merged
+     open -> built -> reviewed -> merged        (merged is the agent terminal)
+
+   later, once the dev pass rows are ticked:
+
+     merged -> verified
 
    side state:
 
-     paused  <-> any phase   (STATE keeps the phase, adds a PAUSED line and "Resume here:")
+     paused <-> any phase
 ```
 
-The pre-phases are owned by the `pre-rolling-wave-planning` sub-skill, which writes one
-checkpoint file per phase under `planning/` and sets `phase:` in `00-plan.md` **before**
-doing the phase's work. Everything from `scaffolded` onward is the lifecycle: items open
-one at a time, features are decomposed only when their item opens, and each stage change
-is a checklist gate, not a feeling.
+The pre-phases are owned by `pre-rolling-wave-planning`, which writes one checkpoint per phase under `planning/` and sets `phase:` **before** doing the phase's work. Everything from `scaffolded` onward is the lifecycle: items open one at a time, features are decomposed only when their item opens, and each stage change is a checklist gate.
 
-Quit at any point and resume means something specific here. The phase is a field in the
-STATE block of `00-plan.md`. The partial work of the current phase is in that phase's
-checkpoint file: `planning/00-intake.md`, `planning/01-exploration.md`,
-`planning/02-edge-cases.md`, `planning/03-blueprint/`, `planning/04-interview.md`. An
-interview three rounds in resumes at round four with settled questions never re-asked, and
-an exploration that dispatched two of five packets resumes with the other three.
-During execution the ledger row and the feature index row are the program counter, and
-`working/<item>.agent.md` holds the in-flight scratch for the open item. A resume reads
-`00-plan.md`, runs an integrity sweep that compares every stage claim against the evidence
-behind it, and states the next action before editing anything.
+**The agent's job ends at `merged`.** It delivers the batch branch with every feature merged and every agent-side check done, plus a hand-back list. Then the code is reviewed through the PRs, the dev pass runs on `verification/`, and `runbooks/` is worked through in order: merge the batch, run the migrations, release the dashboard, tag or ship the app. The ticks on `verification/` are what reach `verified`. No agent writes a verdict cell.
 
-The rant you open with becomes a list, not just a summary. At intake,
-`planning/00-acceptance.md` gets one row per requirement in your own words, plus a fixed
-block of implicit rows every effort owes: a security pass on the flagged surfaces, tested
-as far as L1 to L4 allow, a docs chapter per feature, no machine-specific binding in
-shared files, and your standing rules. The interview's first round confirms the list
-before any design question is asked. From there each card names the rows it serves, the
-item `agent-verified` gate appends evidence to those rows, and the batch cannot reach
-`done` while a row still reads `open`. Only you write `met`. STATE carries the count, so a
-cold resume reads `acceptance: 9 of 17 rows met` without opening the file.
+## Flows
 
-An audit pass watches the flow itself, and fires on observables rather than a schedule: N
-dispatches since the last audit row (N is bound in `02-adapters.md`, default 8), every
-pause, and once before the batch PR opens. It runs in
-a fresh context on the `heavy` tier and reads only `00-plan.md`, the acceptance file, the
-open item's working file and `02-adapters.md`, never the source. It checks phase and stage
-consistency, every dispatch recorded with a tier, tiers used as bound, acceptance rows
-advancing, ephemera swept, and nothing load-bearing recorded outside the SSOT. It reports
-and the orchestrator edits: the realignment actions go into `00-plan.md` STATE as the next
-order of business, and the audit itself becomes a dispatch row, which is what resets the
-count.
+At a feature's `open` gate a `light`-tier explorer draws the **before** diagram of the flow the feature will change, pinned to the base SHA. At PR ready it draws the **after**, pinned to the head SHA. Mermaid, one file per feature under `flows/`.
 
-## What loads when
+Every node names a file plus a function or symbol, which does not go stale, and carries a GitHub permalink at the pinned SHA, which never rots. **The file is written once and never edited.** A later feature that changes the same flow writes its own file; the older one is history. Details live in code comments, not in the flow file.
 
-The router reads `00-plan.md`, takes the `phase:` field, and loads exactly one target.
+The flow file is the human's map for reviewing the PR, and the after diagram is embedded in the PR body.
 
-| `phase:` | Loads | Lines today |
-|---|---|---|
-| `intake`, `exploring`, `edge-cases`, `blueprint`, `interview` | skill `pre-rolling-wave-planning` | 136 |
-| `scaffolded` | `references/lifecycle.md` | 153 |
-| `executing` | `references/lifecycle.md` | 153 |
-| `paused` | `references/resume.md` | 85 |
-| `done` | `references/verification.md`, promotion pass only | 182 |
+## Review
 
-The rest of the repo is reached only from inside one of those, at a named transition:
+**One fresh-eyes review per feature, at the PR.** Scope: the diff, the tests, and the L3 browser evidence. The security pass rides in the same packet when the card flags a sensitive surface. Findings go to a fresh fixer, then a scoped re-review. **Two passes maximum; a third means the packet was wrong**, so the packet gets fixed rather than the loop run again.
 
-| Reached at | File | Lines today |
-|---|---|---|
-| a subagent dispatch | `references/dispatch.md` | 112 |
-| a review point | `references/review.md` | 166 |
-| a verification transition | `references/verification.md` | 182 |
-| branch and PR work, once per item | `references/ceremony.md` | 152 |
-| a screen in the blueprint phase | `references/blueprint.md` | 41 |
-| kickoff, or a rebind mid-batch | `references/adapters.md` | 199 |
-| scaffolding, or `layout: v1` | `references/ssot-layout.md` | 90 |
-| writing the human-only rows | skill `human-assisted-verification` | 98 |
-
-A resume reads `00-plan.md` plus one card, one feature file and one working file,
-regardless of how many items the batch has. Nine items cost the same as three.
-
-The context-budget argument is plain. Only a skill's frontmatter description sits in the
-agent's context every turn, whether or not the skill fires; that is the cost you always
-pay. The router body loads when the description matches. From there, each phase pulls one
-file, and every other file in the repo stays out of context behind a pointer that names
-the condition for reaching it. The design came out of an audit of nine real efforts where
-a single growing plan file reached 700 to 1,400 lines and started degrading the agents
-reading it, not just the humans.
-
-## Adapters and roles
-
-Two layers.
-
-**Project defaults** live at `<project root>/adapters.default.md`, at the git root of the
-project or monorepo. A project usually holds several feature and spec directories, each
-with its own SSOT, so the root is the one place kickoff can find the defaults without
-searching. It is the accumulated answer from earlier batches in the same project.
-
-**Batch bindings** live at `02-adapters.md` inside the batch directory. That is the file
-packets read, and it can diverge from the defaults for the life of one batch.
-
-At kickoff the defaults file is copied in, detection runs (CLIs via `command -v`, MCP
-servers by whether their tool names are visible in the harness right now, skills by
-reading frontmatter descriptions, stack by reading the project manifest), and the
-interview's final round presents **only the delta**: newly installed things that could
-replace a binding, and bindings whose tool has gone missing. Unchanged rows carry over
-silently. On the first batch in a project there is no defaults file, so the bindings come
-from detection alone and are saved back as the new default.
-
-The stable roles, from `references/dispatch.md`:
-
-`simplicity`, `tdd`, `debugging`, `ui-guidelines`, `ui-implementation`,
-`browser-verification`, `mobile-verification`, `db-backend`, `security-review`,
-`docs-conventions`, `code-map`, `review`.
-
-Two more roles are stack-conditional. They appear only when detection finds the dependency
-in the project manifest: `payments` (a `stripe` dependency) and `framework` (a `next`,
-`react-native` or `expo` dependency).
-
-Tiers are bound the same way, by what the work needs rather than by a model name:
-
-| Tier | Used for |
-|---|---|
-| `judge` | conflicting evidence, design calls, grading a gate |
-| `heavy` | hard implementation, review, security pass, rogue-check, docs drafting |
-| `light` | mapping, search, log reduction, mechanical edits, scripted flows, screenshots |
-
-Not every category in the file is a role. **Environment** is where the stack under test
-runs, with its bring-up, seed and reset lines. **Cleanup** is the other half of it: the
-one scratch root every packet's Ephemera slot points under, the teardown lines in the
-order they must run, and the caches that are safe to reclaim. **Audit** holds
-`dispatches_per_audit` (default 8) and an optional scheduler binding, which is where a
-cron entry or a git hook belongs if you want one; the skill itself never schedules
-anything. **Load testing** names the tool that measures a non-functional criterion. All
-four are bound once per project and copied into each batch, so a gate's sweep is one line
-per row rather than a research task.
-
-Swapping a driver is one line. The `ui-implementation` row ships with
-`frontend-design:frontend-design` as its default, with `ui-ux-pro-max`,
-`adhd-design-expert`, `shadcn`, `shadcn-ui` and `web-design-guidelines` as the detected
-alternatives. Edit the chosen-skill cell in `02-adapters.md` and every later packet for a
-screen feature names the new skill. Nothing in the kernel mentions either one.
-
-**Surface coverage.** Before the file is written, the batch's surfaces are read off the
-item cards (web, iOS, Android, backend) and mapped to the tool that covers each. A surface
-with no tool bound is not allowed to pass silently: it becomes a dated decision in
-`00-plan.md`, with candidates and their install commands offered from
-`references/adapters.md` (for mobile, that list is `@mobile-next/mobile-mcp`, Maestro,
-`ios-simulator-mcp`, Appium and Detox). The three acceptable answers are install it now,
-verify that surface by hand instead, or accept the gap with a stated reason. Accepting the
-gap caps the `ceiling` score for features on that surface, which is what the score is for.
-
-**Code map toggle.** The `code-map` row is the graphify on and off switch. It carries
-`enabled: true|false`. When it is true and a built graph exists on disk, exploration and
-implementer packets carry the line "query the code map first, open only cited files" and
-opening an item refreshes the graph. Set it to false and both behaviors stop. That is the
-entire off switch; nothing has to be uninstalled.
-
-**The code map as an example driver.** `graphify` builds a queryable map of a repository
-so agents can ask where something lives instead of reading files blind:
-
-```sh
-uv tool install graphifyy
-graphify install                     # writes a skill dir and a CLAUDE.md block into the
-                                     # config dir named by CLAUDE_CONFIG_DIR; git hooks stay opt-in
-graphify extract . --code-only       # build the graph without any LLM extraction
-graphify query "where is X" --budget 4000
-```
-
-Put secrets and build output in a `.graphifyignore` (gitignore syntax) before the first
-build. Refresh with a clean rebuild, not `graphify update`, which re-includes markdown and
-doubles a code-only graph:
-
-```sh
-rm -rf graphify-out && graphify extract . --code-only
-```
-
-Then set the `code-map` row in the project's adapters file to `enabled: true` and add
-`graphify-out/` to `.gitignore`. This is an illustration of what a driver looks like, not
-a recommendation: the kernel works with the row set to `false` and no code map installed
-at all.
+At the item PR one short `light`-tier integrity check asks three questions and nothing else: do the stage lines agree with the ledger, are all verdict cells still `open`, is every ephemera row swept. That is the whole of the process policing.
 
 ## Verification and confidence
 
 - **L1 unit.** Each exit point of each changed unit behaves, test-first.
-- **L2 integration.** Each seam the feature crosses is actually exercised, not mocked on
-  both sides.
-- **L3 real surface.** The surface a user touches is driven for real, through the bound
-  browser or mobile adapter.
-- **L4 cross-feature.** The item's features run together once every feature PR has merged.
+- **L2 integration.** Each seam is actually exercised, not mocked on both sides.
+- **L3 real surface.** The surface a user touches is driven for real: rendered state asserted, console and network captured, **geometry and focus read** wherever layout or keyboard behavior changed, screenshots at every claimed breakpoint. This is the pass that finds real defects.
+- **L4 cross-feature.** The item's features run together once every feature PR has merged, in the environment the plan names.
 - **L5 human-only.** What no bound tool can perform or perceive.
 
-A layer is climbed, not skipped. Everything an agent can observe belongs to L1 through L4
-and is finished before anything reaches a human, so an L5 row holding a check an agent
-could have run is a review finding rather than a thorough checklist. Evidence is always a
-pointer to something you can reopen: a test path, a CI run, a screenshot, the query plus
-the row it returned. The L5 checklist has zero agent steps, each row carries the exact
-query, command or console path so you can run it yourself, and ticking every row is the
-only path from `documented` to `complete`.
+A layer is climbed, not skipped. Evidence is always a pointer you can reopen, and every evidence entry carries the SHA it was true at.
 
-The testing plan is written at three levels, each holding what the level above cannot.
-Per feature, the test-strategy table in the feature file plans and records each layer.
-Per item, the card's `## Test strategy` answers, in four lines, how this item's features
-were tested together, in which environment, against which non-functional criterion, and
-how it actually went: that is the brief answer you read for a sub-issue without opening a
-single feature file. Per batch, `00-plan.md` § Testing plan holds the cross-item groups (a
-flow that only exists once two or more items are in, recorded on the later one), the
-end-to-end flows with the role that drives each, the environment, and the load criteria.
-The environment is a first-class idea and is not the same thing as the tool bindings: it
-is where the stack under test runs, a compose file, the local Supabase stack with its
-seed, or a staging URL, with a one-line reset. Docker being present is what lets L2 and L4
-cross real seams instead of mocks on both sides, and it is what makes a load number mean
-anything, so `02-adapters.md` carries an Environment binding beside the load-testing one.
+Confidence is **one line**: `agent N / ceiling M`. `agent` is what the L1 to L4 evidence proves today; `ceiling` is the same judgement with every L5 row assumed PASS, and it is reached only by your ticks. No re-derivation prose, no history of the number, no dated chain.
 
-Two scores come off one rubric of six dimensions (unit coverage of exit points,
-integration seams exercised, real-surface verification, review findings raised versus
-resolved, unverifiable effects honestly listed, and environment fidelity with stated
-limits measured). `agent` is scored on the L1 to L4
-evidence that exists today. `ceiling` is scored with every L5 row assumed PASS. A wide gap
-says the remaining assurance is parked on you; a low ceiling says no amount of human
-ticking will fix it and the raise has to be built. Both carry a date and are re-derived
-whenever new evidence lands. `planning/00-acceptance.md` is an input to the scoring rather
-than a seventh dimension: an acceptance row the card names with no evidence behind it caps
-nothing, and instead appears by name on the "what would raise this" list, where you will
-actually read it. Ephemera is handled the same way, by writing it down: every packet names
-one scratch directory for the screenshots, diff images and temp files a subagent produces,
-every container or process it starts becomes a row in the item's `## Ephemera` ledger with
-its teardown command, and the item, pause and batch gates refuse to pass until each row is
-swept and dated or carries `kept: <reason>`.
+A verification file has three parts: a walkthrough order over the flow file, a short replay section marked as sanity only that does not move the score, and the judgement rows only a human can make. Verdict cells are yours.
+
+**Two stages: verify on dev, then deploy through the runbooks.** Stage one is the dev pass, and it needs no production access: every row runs on dev, from the batch branch served locally against the dev database, before any merge. There is no deployed preview to point at, because that would need the merge that comes after the pass. Stage two is `runbooks/`, the production stage and the only place production appears: migrations in order with preflight, apply, post-check and rollback, the dashboard release and its tag, the app tag or OTA, the version bump, all run by hand and never by an agent. A runbook's post-check is the production-side verification of the same flow. A check that can only run against production is a runbook step, not a verification row. While a dev pass is running, `00-plan.md` STATE carries a `verification_window:` line and no agent rebuilds or reseeds dev.
+
+Every feature that needs a production step ships a numbered `runbooks/<k>-<slug>.md`: what it does in plain words, preflight, dry run, apply, post-check, rollback, known consequences. At the batch PR, `runbooks/0-release.md` sequences the whole release: merge order, the runbooks in order, the dashboard release and its tag, the app tag or OTA push, and the version bump. It links your project's release conventions rather than restating them.
+
+## Adapters and roles
+
+Two layers. **Project defaults** live at `<project root>/adapters.default.md`; **batch bindings** live at `agent/adapters.md` inside the batch directory, and that is the file packets read.
+
+At kickoff the defaults are read, detection runs (CLIs via `command -v`, MCP servers by whether their tool names are visible in the harness right now, skills by reading frontmatter descriptions, stack by reading the project manifest), and the interview's final round presents **only the delta**.
+
+Stable roles: `simplicity`, `tdd`, `debugging`, `flow-explorer`, `ui-guidelines`, `ui-implementation`, `browser-verification`, `mobile-verification`, `db-backend`, `security-review`, `code-map`, `review`. Two more are stack-conditional: `payments` and `framework`.
+
+Tiers are bound the same way, by what the work needs. The skill never names a model; the bindings live only in the two adapters files:
+
+| Tier | Used for |
+|---|---|
+| `orchestrator` | the session model: decomposition, packets, vetting, synthesis |
+| `judge` | escalations on the triggers in `references/dispatch.md` § Escalating to the judge; inert when bound to the same model as `orchestrator` |
+| `heavy` | hard implementation, fixes, review, security pass, drafting anything a human will execute |
+| `light` | mapping, search, log reduction, mechanical edits, scripted flows, captures, flow diagrams, the integrity check |
+
+**This repo ships no drivers.** It ships the role contract (`references/dispatch.md`) and the detection procedure (`references/adapters.md`). When a better browser tool lands, nothing in the kernel is wrong and the fix is one edited line in one batch file.
+
+**Surface coverage.** Before the file is written, the batch's surfaces are read off the item cards and mapped to the tool that covers each. A surface with no tool becomes a dated decision: install it now, verify by hand instead, or accept the gap with a stated reason, which caps the `ceiling` for features on that surface.
+
+## Concurrency
+
+The orchestrator decides what runs in parallel. Only the constraints that always hold are written down: a branch holds one implementer; an in-flight feature that overlaps another gets its own git worktree; one dev server per worktree, started and killed by the packet that needs it; a feature that changes the schema runs exclusively; and a packet that assumes another in-flight feature's exports names them and the SHA it read them at, so a review finding that changes them means a rebase.
+
+No model-specific, harness-specific or token-budget limits. Those change; these do not.
+
+## Commits
+
+Code and tests commit as they land. `agent/` files commit at gates only: feature `merged`, and the item PR. `flows/`, `verification/` and `runbooks/` ride the feature PR that produced them. **Never a commit whose whole diff is a record edit, made between gates.** Read history with `git log --first-parent`.
+
+## Migrating an older batch
+
+A batch whose STATE reads `layout: v1` or `layout: v2` is migrated once, not run in place. `references/migration-3.md` is the ordered procedure: the moves, the split of each working file into one resume block plus LOG entries, the strip of dated corrections and `Previously:` chains, the `.gitattributes` line, and the three commits to make.
 
 ## Tests
 
-Eight fresh-agent scenarios live under `tests/scenarios/`. Each one hands a brand-new
-light-tier subagent nothing but the scenario's prompt and an absolute path to a fresh copy
-of a fixture from `tests/fixtures/`. The subagent acts on that alone, with no README, no
-plan, and no other scenario in view. It ends its answer with a list of every file it
-opened. The orchestrator then grades that written answer against the scenario's checklist
-by reading the transcript, never against what it assumes happened. There is no runner
-script, by design: a script that drove the subagent or parsed its output for grading would
-test the harness, not the skill.
+Fresh-agent scenarios live under `tests/scenarios/`. Each hands a brand-new `light`-tier subagent nothing but the scenario's prompt and an absolute path to a fresh copy of a fixture from `tests/fixtures/`. The subagent ends its answer with a list of every file it opened, and the orchestrator grades that written answer against the scenario's checklist by reading the transcript. There is no runner script by design: a script that drove the subagent or parsed its output would test the harness, not the skill.
 
-The scenarios are built to pressure the skill, not to read through it: a cold resume
-mid-item, an interview cut off before its final round, a dispatch packet for a feature
-already at `reviewed`, a verification file with nothing yet on disk, a testing question
-whose answer must not cost sixteen file reads. A read-through would
-have confirmed the files exist and sound right. It would not have caught a runner guessing
-a fixture path, inventing a feature slug, or pre-filling human verdicts, things a fresh
-agent under a real prompt actually did. The table below records what each scenario found
-and what changed in response.
+The installer has its own runner, `tests/setup/run.sh`, which executes both setup scripts inside Docker containers.
 
-The installer has its own runner. `tests/setup/run.sh` executes both setup scripts inside
-Docker containers, Ubuntu for bash and the official PowerShell image for pwsh, and covers
-a fresh install, an idempotent re-run, an in-place repo, check mode, safety against a real
-directory that is not a link, and dry run. The PowerShell half is skipped automatically
-when the Docker daemon is not amd64 (Docker Desktop on Apple silicon runs the amd64-only
-PowerShell image emulated and it crashes at startup); set `RUN_PWSH=1` to force it anyway.
-Building an arm64 PowerShell test image so this stops being necessary is an open TODO,
-tracked in `TODO.md`. The Windows junction fallback is the one path the suite cannot
-reach; it needs a Windows host.
-
-### Run one
-
-1. Pick the scenario under `tests/scenarios/`.
-2. Copy the fixture it names to a scratch directory, e.g. `cp -r tests/fixtures/12-notifications /tmp/scratch-12`.
-3. Launch a fresh light-tier subagent with only the scenario's `## Prompt` text, replacing
-   `<FIXTURE>` with the absolute path to that scratch copy. A relative path makes the
-   runner guess, and the committed fixture itself must never be edited.
-4. Read the subagent's transcript and grade it against the scenario's `## Pass criteria`
-   yourself.
-
-### 2.0.0 release, 2026-09-16
-
-| Scenario | First run | What it found | What changed | Re-run |
-|---|---|---|---|---|
-| 01 cold resume | Invalid | The orchestrator never filled `<FIXTURE>`; the runner guessed a path inside the repo and reported files as missing. | Fixtures moved into the repo under `tests/fixtures/`; scenarios now say to hand the runner an absolute path to a fresh copy. | PASS: read `00-plan.md`, the resume protocol, item 4's card, its feature file and working file, the verification index and adapters, nothing from the other eight items; correct next action. |
-| 02 quit mid-interview | PASS | Routed to `pre-rolling-wave-planning`, resumed at round 3, did not re-ask settled questions, created no cards before the interview closed. | Re-run three times on 2026-09-16 after the path changes. Run one never named the final adapter round because the prompt never asked, so the prompt gained item (5). Run two drafted questions without the exploration evidence because the pre-planning resume rule loaded only the current checkpoint; the rule now loads every completed checkpoint. The fixture also gained its missing blueprint checkpoint. | PASS: run three routed correctly, drafted three grounded questions, named the adapter round and `02-adapters.md`, created no cards. |
-| 03 dispatch packet shape | FAIL | The runner invented a feature slug the card does not list, and the criteria described a feature the fixture holds at a different stage. | The packet template gained a required "Feature (verbatim from the card)" slot. On 2026-09-16 the criteria were corrected to match the fixture and prompt: feature 4.3 at `pending`, so an implementer packet, and `agent-browser` belongs to the later L3 packet. | PASS: the 2026-09-16 re-run produced the implementer packet for 4.3 with the card's slug, all seven slots filled, `heavy` tier, ponytail, superpowers:test-driven-development, frontend-design:frontend-design and next-best-practices resolved from `02-adapters.md`, exactly three SSOT paths, no vendor names, L3 deferred to a separate agent. |
-| 04 verification file shape | FAIL, twice | First: the runner pre-filled PASS on every human verdict and logged L5 evidence before any human had run anything. Fixed, then the re-run found rows duplicating checks L1 and L3 already proved, and the runner never invoked `human-assisted-verification`. | Verdict cells became the human's to fill, in the template, the skill, and the verification reference, with the agent handing over `open`. Then the template gained a required "Excluded because L1 to L4 prove them" slot, and the lifecycle gate now names the skill. | PASS: both skills invoked, zero duplicated rows. |
-| 05 problem fit | PASS | Named the three forces, the five mechanisms, and one file per phase, from README and SKILL.md alone. | None. | Not needed. |
-| 06 testing plan shape | FAIL before the change: read 16 files, no item-level home, environment confused with tool bindings, no batch-level home | Asked how item 5 would be tested as a whole, a cold agent read every item 4 feature file, the working file and three cards, then answered that the item-level view lives only in each feature file's L4 row plus one evidence row; it equated "environment" with the adapter tool bindings, found no home for cross-item groups or end-to-end flows and named review point 4 (a review) as the only batch-wide gate; it never mentioned load testing. | Item cards gained a Test strategy section (L4 flow, environment, non-functional, how it was tested), the plan file gained a Testing plan (cross-item groups, end-to-end flows, environment, load), adapters gained an Environment category, the rubric a sixth dimension. Two further runs were voided because the runner opened the scenario file, so every prompt now forbids the repo's `tests/` directory; one more added the performance clause the criteria graded but the prompt never asked. | PASS: the 2026-09-17 run named the card section for all four lines, quoted the plan's environment rather than the tool bindings, attributed the batch's one load criterion to item 3 and wrote `none stated` for item 5, pointed at the existing cross-item group and end-to-end flow, and read eight files with no feature file and no `tests/`. |
-| 07 acceptance from the rant | RED baseline, 2026-09-17 | A cold start from a rant wrote the SSOT directory, `00-plan.md` and `planning/00-intake.md` and stopped there. No acceptance list existed, so nothing held the requirements the rant stated in the developer's own words, and no later gate could check the work against them. | Intake writes `planning/00-acceptance.md` from `templates/00-acceptance.md` as its fourth file, with the implicit rows every effort owes. The interview's first round confirms it before any design question, cards carry `Acceptance rows served:`, the item `agent-verified` gate appends evidence, the batch `done` gate refuses a row still reading `open`, and STATE carries the count. | PASS on all eleven criteria after two green runs on 2026-09-17. Run one wrote the acceptance file with 15 rows in the developer's words plus five implicit rows, verdicts `open`, STATE `acceptance: 0 of 20`, and named the interview's first round; it missed only the sensitive-surface flag, because the intake template had no slot for one. The template gained `## Sensitive surfaces`, and run two flagged owner-only editing and the audit trail there, with everything else unchanged. |
-| 08 ephemera and audit | RED baseline, 2026-09-17 | Against fixture 12 patched with Cleanup and Audit sections and six dispatch rows, the baseline run wrote a dispatch packet with no scratch directory named and produced no audit packet, although the dispatch count had already passed the trigger bound in the fixture's own adapters file. | The packet contract went from seven required slots to eight, with Ephemera required and an "Ephemera started" line in the evidence to return. The working file gained an `## Ephemera` ledger swept at the item, pause and batch gates; `02-adapters.md` gained Cleanup and Audit categories; the audit became review point 5, dispatched from `templates/audit-handoff.md`. | PASS on 2026-09-17 after one scenario correction and one design change. The first green run refused the prompt because it named feature 4.3 as due while the fixture held 4.2 at `reviewed`; the prompt now names the packet STATE calls for. The run also showed that firing the audit on every resume would put a heavy subagent in front of every cold start, so that trigger was dropped; the count, the pause and the batch PR remain. The final run counted the dispatch rows against the bound six, wrote a `heavy` audit packet reading only the four allowed files, with the Ephemera slot under `assets/tmp/`, the required Ephemera started list, the seven checks and an `audit` dispatch row, and no vendor names. |
-
-The acceptance checklist for this release lives at `tests/acceptance/v2-criteria.md`: the
-agent fills the evidence column for each requirement, the developer fills the verdict
-column, and the tag waits for the developer to do that.
+The acceptance checklist for this release is `tests/acceptance/v3-criteria.md`: the agent fills the evidence column, the developer fills the verdict column, and the tag waits for that.
 
 ## Versioning
 
-Semver. `VERSION` holds the current release, `CHANGELOG.md` records what each release
-changed, and every release is a git tag. Work that is deliberately parked rather than
-done sits in `TODO.md`, one entry per item saying what is missing, why it was parked, and
-what would close it.
-
-`v1.0.0` is the pre-restructure snapshot: the four skills exactly as they were before they
-became one repo, committed with no content edits. It exists to be reverted to.
+Semver. `VERSION` holds the current release, `CHANGELOG.md` records what each release changed, and every release is a git tag. Work deliberately parked sits in `TODO.md`.
 
 Pin a version by installing from a tag:
 
 ```sh
-git clone --branch v1.0.0 git@github.com:dirghayu101/rolling-wave-planning.git
+git clone --branch v2.6.0 git@github.com:dirghayu101/rolling-wave-planning.git
 ```
 
-Revert an existing clone with `git checkout v1.0.0`, and read `CHANGELOG.md` for what a
-newer release breaks before you move forward again. Batches created under an older layout
-keep it: `00-plan.md` carries a `layout:` field, and the router sends a `layout: v1` batch
-through the compatibility section of `references/ssot-layout.md` before anything is
-written.
+Read `CHANGELOG.md` for what a newer release breaks before you move forward.
 
 ## License
 

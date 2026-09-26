@@ -2,11 +2,11 @@
 
 Edit this file to swap any binding; the skill reads it, never hard-codes.
 
-> **This is the project-level seed, not a batch file.** It lives at `<project root>/adapters.default.md`, at the git root of the project or monorepo, not inside any feature or spec directory. Kickoff reads it, runs detection from `references/adapters.md`, and presents **only the delta** (newly installed skills or tools, bindings whose tool has gone missing) in the interview's final round. The answers are written to the batch's `02-adapters.md`, then saved back here, so the next batch starts from today's answers.
+> **This is the project-level seed, not a batch file.** It lives at `<project root>/adapters.default.md`, at the git root of the project or monorepo. Kickoff reads it, runs detection from `references/adapters.md`, and presents **only the delta** in the interview's final round. The answers are written to the batch's `agent/adapters.md`, then saved back here.
 >
-> Editing this file changes the starting point for future batches. It does **not** change a batch already running: edit that batch's `02-adapters.md` instead.
+> Editing this file changes the starting point for future batches. It does **not** change a batch already running: edit that batch's `agent/adapters.md` instead.
 >
-> Record a one-line pointer to this path in the project's `CLAUDE.md` or `AGENTS.md`, so an agent finds the toggles without searching.
+> Record a one-line pointer to this path in the project's `CLAUDE.md` or `AGENTS.md`.
 
 Last detection sweep: `<date>`. Every row is: what was chosen, what else detection found, and the one line that invokes it.
 
@@ -14,11 +14,12 @@ Last detection sweep: `<date>`. Every row is: what was chosen, what else detecti
 
 | Tier | Alias | Used for |
 |---|---|---|
-| `judge` | `<judge-model-alias>` | conflicting evidence, design calls, grading a gate |
-| `heavy` | `<heavy-model-alias>` | hard implementation, review, security pass, rogue-check, docs drafting |
-| `light` | `<light-model-alias>` | mapping, search, log reduction, mechanical edits, scripted flows, screenshots |
+| `orchestrator` | `<orchestrator-model-alias>` | the session model: decomposition, packets, vetting, synthesis |
+| `judge` | `<judge-model-alias>` | escalations per `dispatch.md` § Escalating to the judge; one per feature by default |
+| `heavy` | `<heavy-model-alias>` | hard implementation, fixes, review, security pass, drafting anything a human will execute |
+| `light` | `<light-model-alias>` | mapping, search, log reduction, mechanical edits, scripted flows, captures, flow diagrams, the integrity check |
 
-Harness override available: `<yes | no>`. <If no: every packet still carries a tier for the record; all three resolve to the same model.>
+Harness override available: `<yes | no>`. <If no: every packet still carries a tier for the record; all four resolve to the same model.> When `judge` and `orchestrator` resolve to the same model the judge is inert: write `inert, orchestrator decides` in its Used-for cell.
 
 ## Verification tools by surface
 
@@ -29,6 +30,7 @@ Surfaces this project has: `<web, iOS, Android, backend>`.
 - Chosen: `<tool>`
 - Alternatives detected: `<tool, tool | none>`
 - Invocation: `<one-line command or MCP tool name>`
+- Geometry and focus reads: `<the command or API that reports element boxes and focus order>`
 - `enabled: <true | false>`
 
 ### iOS
@@ -54,47 +56,33 @@ Surfaces this project has: `<web, iOS, Android, backend>`.
 
 **Uncovered surfaces:** `<none | surface + the standing reason>`. A batch that actually touches an uncovered surface records its own dated decision in that batch's `00-plan.md`.
 
-## Docs writer
-
-- Chosen: `<docs-writer-command> | subagent`
-- Alternatives detected: `<command | none>`
-- Invocation: `<how templates/doc-handoff.md is delivered, e.g. cat <prompt-file> | <docs-writer-command>>`
-- `subagent` is a normal value, not a fallback failure. It means the same prompt goes to a `heavy`-tier subagent.
-
 ## Environment
 
-Where the stack under test runs for L2 to L4. This row is the project's standing answer; each batch records the environment it actually uses in its own `00-plan.md` § Testing plan § Environment.
+Where the stack under test runs for L2 to L4. This is the project's standing answer; each batch records the environment it actually uses in its own `00-plan.md` § Testing plan § Environment.
 
-- Chosen: `<docker compose -f <file> | supabase start | testcontainers | staging <url> | none (mocks only)>`
+- Chosen: `<compose file | local stack | testcontainers | staging <url> | none (mocks only)>`
 - Alternatives detected: `<candidate, candidate | none>`
-- Invocation: `<one-line command that brings it up>`
-- Seed data: `<path or command | none>`
-- Reset: `<one-line command that returns it to a known state, e.g. supabase db reset, docker compose down -v>`
+- Invocation: `<one-line command that brings it up; also the command that serves the app locally from the batch branch against dev for the dev pass>`
+- Seed data: `<path or command | none>` <only when the file it names exists>
+- Reset: `<one-line command that returns it to a known state>`
 - Docker present: `<yes (docker info succeeds) | no>`
+- Forbidden by project rules: `<candidate + the rule and file | none>`
 - `enabled: <true | false>`
-
-Docker present is what lets L2 and L4 cross real seams instead of mocks on both sides, and it is what makes a load number mean anything.
 
 ## Cleanup
 
-The project's standing answer for taking down everything a batch's subagents start or write. Each batch copies it into its own `02-adapters.md`, where packets read it.
+The project's standing answer for taking down everything a batch's subagents start or write. Each batch copies it into its own `agent/adapters.md`.
 
-- Scratch root: `<the ONE directory every packet's Ephemera slot points under, e.g. <session scratchpad>/<batch>/ or assets/tmp/>`
+- Scratch root: `<the ONE directory every packet's Ephemera slot points under>`
 - Teardown lines, in the order they must run:
   1. `<line that stops the stack the Environment row brings up>`
   2. `<line that removes its containers and volumes>`
-  3. `rm -rf <scratch root>/<dispatch dir>`
+  3. `<line that kills a dev server started per worktree>`
+  4. `rm -rf <scratch root>/<dispatch dir>`
 - Cache to reclaim: `<line that drops the safe-to-drop caches | none>`
 - Verified on: `<date each line above was actually run once against this environment>`
 
 A teardown line nobody has run is a claim, not a binding.
-
-## Audit
-
-- `dispatches_per_audit: <N, default 8>`
-- Scheduler binding: `<harness hook, cron entry or git hook that fires the audit outside the flow | none>`
-
-The count is the trigger the skill relies on; the scheduler is an optional binding of this project, never part of the skill.
 
 ## Load testing
 
@@ -119,7 +107,7 @@ The count is the trigger the skill relies on; the scheduler is an optional bindi
 - Query: `<one-line command>`
 - Graph present: `<path to graph.json | absent>`
 
-Both `enabled: true` and a present graph are required before packets carry the line "query the code map first, open only cited files". Flipping `enabled` to `false` is the whole off switch.
+Both `enabled: true` and a present graph are required before packets carry "query the code map first, open only cited files". Flipping `enabled` to `false` is the whole off switch.
 
 ## Skill roles
 
@@ -128,17 +116,17 @@ One row per role. Roles are defined in `references/dispatch.md`; only the bindin
 | Role | Chosen skill | Alternatives detected | When applied |
 |---|---|---|---|
 | `simplicity` | `<skill>` | `<skill, skill or none>` | every implementer packet |
-| `tdd` | `<skill>` | `<skill or none>` | every packet writing production code |
+| `tdd` | `<skill>` | `<skill or none>` | every packet writing production code, including fixers |
 | `debugging` | `<skill>` | `<skill or none>` | any packet starting from a symptom |
+| `flow-explorer` | `none (template only)` | `<skill or none>` | feature `open` and PR ready, `light` tier, from `templates/flow.md` |
 | `ui-guidelines` | `<skill>` | `<skill, skill or none>` | blueprint phase only |
 | `ui-implementation` | `<skill>` | `<skill, skill or none>` | screen features, wireframe path in scope |
 | `browser-verification` | `<skill>` | `<skill or none>` | web features at L3 |
-| `mobile-verification` | `<skill or none, bound to the mobile tool row>` | `<skill or none>` | iOS or Android features at L3 |
+| `mobile-verification` | `<skill or none>` | `<skill or none>` | iOS or Android features at L3 |
 | `db-backend` | `<skill>` | `<skill, skill or none>` | packets touching the database or its generated types |
-| `security-review` | `<skill>` | `<skill, skill or none>` | reviewer packets on a card-flagged sensitive surface |
-| `docs-conventions` | `<skill>` | `<skill or none>` | the docs packet at feature `documented` |
+| `security-review` | `<skill>` | `<skill, skill or none>` | the reviewer packet on a card-flagged sensitive surface |
 | `code-map` | `<skill or none>` | `<skill or none>` | only while the Code map section reads `enabled: true` and the graph exists |
-| `review` | `<skill>` | `<skill or none>` | every reviewer packet |
+| `review` | `<skill>` | `<skill or none>` | the one reviewer packet per feature |
 
 Stack-conditional rows. Present only when detection found the trigger in the project manifest.
 

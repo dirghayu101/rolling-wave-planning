@@ -1,166 +1,67 @@
 # Review
 
-Reference for `rolling-wave-planning`. **Load this at a review point, not every session.**
-`references/lifecycle.md` names the transition that sends you here.
+Reference for `rolling-wave-planning`. **Load this at the feature PR, not every session.**
 
-Two rules hold at every point:
+One review per feature. It happens once, on the feature PR, and it is the only review in the flow.
 
-- **The reviewer did not write the code.** A fresh-context subagent reviews; a different fresh
-  subagent fixes; the reviewer re-reviews. One agent never occupies two of those seats.
-- **Roles, not names.** The reviewer role is `review`, the security reviewer is `security-review`,
-  both bound to an installed skill in the batch's `02-adapters.md`. Review runs on the `judge` or
-  `heavy` tier, never `light`.
+Two rules hold:
 
-## The five review points
+- **The reviewer did not write the code.** A fresh-context subagent reviews; a different fresh subagent fixes; the reviewer re-reviews in scope. One agent never occupies two of those seats.
+- **Roles, not names.** The reviewer role is `review`, the security reviewer is `security-review`, both bound in `agent/adapters.md`. Review runs on the `heavy` tier, never `light`. A reviewer finding the orchestrator is inclined to dismiss may go to the `judge` (`references/dispatch.md` § Escalating to the judge).
 
-| # | When | Scope | Lands on |
-|---|---|---|---|
-| **1** | L1 tests green on the feature branch, before the feature PR opens | spec compliance, then code quality and reuse | `working/<item>.agent.md` (no PR exists yet) |
-| **2** | Final diff of the open feature PR, at the `documented → merged` gate | fresh-context diff review, plus the security pass when the feature's `Sensitive surfaces:` line is not `none` | the feature PR |
-| **3** | Item PR open | integration review across the item's merged features, plus the rogue-check | the item PR |
-| **4** | Batch PR open | final whole-batch review, plus the rogue-check once more | the batch PR |
-| **5** | Audit: every N dispatches, every pause, and before the batch PR opens | process drift, not code: phase and stage consistency, dispatch and tier discipline, acceptance rows advancing, ephemera swept, work outside the SSOT | `00-plan.md` STATE, as the next order of business |
+## Scope
 
-(Corrected 2026-09-17: this table read "The four review points". Points 1 to 4 all hang off a PR, so a batch could drift for weeks between them, which is what the audit exists to catch.)
+**Three things, and nothing else:**
 
-### Point 1: spec compliance and quality, on the branch
+1. **The diff.** Correctness, reuse, project conventions.
+2. **The tests.** Do the exit points the tests claim to cover match the ones the code has.
+3. **The L3 browser evidence.** Does it show the surface actually doing what the feature claims, at the breakpoints it claims.
 
-Two stages in order: first does the code deliver what the feature file's "What & why" and the
-card's acceptance criteria state, then is it good code by the dimensions below. Run both stages the
-way the `subagent-driven-development` skill defines them: name the skill in the packet and let the
-subagent load it. Point 1 predates the PR, so its findings and their resolution live in
-`working/<item>.agent.md`, and the PR description written at point 2 summarizes them.
+**Security rides in the same packet** when the card's `Sensitive surfaces:` line is not `none`: auth boundaries, tenant isolation, key handling, policy tests. One reviewer, one packet, one pass. The `security-review` role's skill goes on that packet alongside `review`.
 
-### Point 2: feature PR, final diff
+## The record is not reviewable material
 
-The PR was opened at the `reviewed` gate (see `references/lifecycle.md`) and has since collected L3 evidence and the docs chapter. A reviewer with no memory of the implementation reads the final diff against the feature file and the
-item card. It reports findings; it does not fix. The feature PR auto-merges only when every finding
-is resolved, which is also the gate that moves the feature to `merged`.
+**State this in the reviewer packet, in these words:**
 
-**Security pass.** An **additional** security-focused review (RLS, auth, payments, secrets handling)
-runs only on features whose `Sensitive surfaces:` line is not `none`. Flag those surfaces in the
-item card at planning time so the feature inherits the flag. The security review runs under the
-`security-review` role from `02-adapters.md`, posts on the feature PR, and must be resolved before
-auto-merge.
+> The feature file, the PR body, the flow file and the verification file are context, not subject matter. Do not report findings about them. A stale line number, a count that disagrees with another file, a wording nit in the record: none of these is a finding. Report only what is wrong in the diff, the tests, or the browser evidence.
 
-### Point 3: item PR
+Findings about the record are what turned 88 findings on one feature into 4 real ones. The reviewer is reading the record to understand the diff, not to grade it.
 
-Integration review of the item's features **as one unit**: the seams between them, the L4
-cross-feature evidence rows in the feature files, and anything more than one feature touched
-(migrations, shared types, shared modules). The rogue-check runs here too.
+## Two passes maximum
 
-### Point 4: batch PR
+1. The reviewer posts findings on the PR, each actionable and located: file, line, what is wrong, what would satisfy it.
+2. A **fresh** subagent fixes them, carrying `superpowers:receiving-code-review` or whatever the project binds.
+3. The reviewer role re-reviews on fresh context, **scoped to the findings and their blast radius**, not the whole diff again.
+4. Zero open findings, and the PR merges.
 
-A review, not a test: before this PR opens, every end-to-end flow and cross-item group in
-`00-plan.md` § Testing plan reads `ran <date>` or `n/a` (`references/lifecycle.md`, batch scope).
+The loop's shape belongs to `subagent-driven-development`. Invoke it; do not restate it here.
 
-Final whole-batch review: are the `00-plan.md` decisions honored across every item, did duplication
-creep in across item boundaries, does the full test-suite evidence hold, and does the spread of
-`agent` and `ceiling` scores match what the diffs show. The rogue-check runs once more. The
-developer merges this PR; the agent never does.
+**A third pass means the packet was wrong.** Stop, fix the packet (missing scope file, missing acceptance criterion, wrong premise), and say so in the feature's `.log.md`. Do not run the loop a third time hoping it converges.
+
+## Where findings land
+
+On the PR, as review comments, through the platform's review flow. The PR is the durable review record. One appended entry per pass in the feature's `.log.md`, carrying the SHA reviewed and the counts: findings raised, findings fixed, findings skipped with a reason. **That entry is never edited afterwards.**
+
+With ceremony OFF, the findings go in the `.log.md` and nowhere else. Never in chat, never in a code comment.
 
 ## Review dimensions
 
-Every point applies dimensions 1 to 3. Dimension 4 applies only when the feature is flagged.
+1. **Correctness.** Does it do what the feature file says, including the edge cases in `planning/02-edge-cases.md` for this item.
+2. **Reuse and duplication.** Walk the ladder and report the first rung that fails: does it already exist in this repo; is the type generated from its source rather than hand-written beside a generated file; native or standard library before a dependency, and an installed dependency before a new one. A new dependency with no argument in the PR description is a finding.
+3. **Project conventions.** The repo's own patterns, naming, file placement, error handling and test conventions win over the reviewer's preferences. Cite the existing file the convention comes from.
+4. **Security**, only when the card flags the surface.
 
-1. **Correctness.** Does it do what the feature file says, including the edge cases recorded in
-   `planning/02-edge-cases.md` for this item? Are the exit points the tests claim to cover the ones
-   the code actually has?
-2. **Reuse and duplication.** Walk the reuse ladder in order, and report the first rung that fails:
-   - **Does it already exist in this repo?** A helper, a hook, a policy, a migration pattern. Search
-     before accepting new code.
-   - **Is the type generated from its source?** A hand-written type that duplicates a generated
-     database types file is a finding, not a style preference: the generated file is re-derived from
-     the schema and its hand-written twin rots silently. Same for any generated client, route map or
-     manifest.
-   - **Native or standard library before a dependency**, and an already-installed dependency before
-     a new one. A new dependency in a feature diff is a finding unless the PR description argues it.
-3. **Project conventions.** The repo's own patterns, naming, file placement, error handling and test
-   conventions win over the reviewer's preferences. Cite the existing file the convention comes from.
-4. **Security**, when the feature's `Sensitive surfaces:` line is not `none`. Scope as the security
-   pass above.
+## The integrity check is not a review
 
-## Findings, then a fresh fix subagent, then a scoped re-review
-
-1. The reviewer posts findings, each one actionable and located (file, line, what is wrong, what
-   would satisfy it).
-2. A **fresh** subagent fixes them. Not the implementer, whose context produced the finding in the
-   first place, and not the reviewer, who would then grade its own fix.
-3. The reviewer role re-reviews on fresh context, **scoped to the findings and their blast radius**,
-   not the whole diff again.
-4. Repeat until zero open findings. Only then does the PR auto-merge.
-
-The loop shape and the two-stage spec-then-quality split belong to the `subagent-driven-development`
-skill. Invoke it; do not restate it here.
-
-## Rogue-check
-
-An audit by a **fresh-context reviewer who did not execute the work.** Runs at **every item PR**,
-and **once more at the batch PR**. No other cadence: moment-to-moment agent work is deliberately
-unconstrained; this replaces step-level policing.
-
-**(a) Direction.** Are the `00-plan.md` decisions honored? Any silent scope creep? Are the ledger
-stages truthful (the classic drift: a row reading `complete` above an unchecked
-`01-verification.md`, or `merged` before the PR actually merged)? Do the `agent` and `ceiling`
-confidence scores survive a spot-check re-derivation from the diff (re-derive one or two)? Does any
-L5 row hold a check an agent could have run at L1 to L4? Is `working/` clean?
-
-**(b) Execution architecture.** Was subagent-driven development actually used (one orchestrator
-handing bounded tasks to subagents), or did one agent grind the whole item in a single rotting
-context? Evidence: task decomposition in the working file, distinct subagent handoffs, feature
-branches with independent commit clusters.
-
-**(c) Tier and role discipline.** Did hard implementation and review run on the `heavy` or `judge`
-tier, and mechanical or minor work on `light`? Did each packet take its skill from the role binding
-in `02-adapters.md` instead of a hard-coded name? Evidence: the **tier and role recorded on each
-dispatch** in the working file, read against the role rows of `02-adapters.md`. (Corrected
-2026-09-16: this check read the model name recorded per dispatch. v2 records tier plus role, and
-which model serves a tier is bound per batch in `02-adapters.md`, so a model name in the working
-file is itself the finding.)
-
-**Where findings land.** On the item PR (or the batch PR for the final pass), as review comments,
-resolved before that PR auto-merges. Any finding that cannot be resolved inside the item goes into
-`00-plan.md` STATE as the next order of business: **never into a code comment**.
-
-## Audit
-
-The fifth review point, and the only one that is not attached to a PR. Points 1 to 4 review **the work**; the audit reviews **the process**: whether the flow is still the rolling-wave flow, and whether the record still matches what happened. It runs on a `heavy` tier, in a **fresh context**, from `templates/audit-handoff.md`.
-
-**Triggers, all observable, so no session has to remember a schedule:**
-
-1. **N dispatches.** The `## Dispatch record` in `working/<item>.agent.md` shows N rows below the last row whose Packet cell reads `audit`. N is bound in `02-adapters.md` § Audit, default 8. `references/lifecycle.md` checks this count before choosing the next step, and an audit that is due **is** the next step.
-2. **Every pause.** The pause protocol in `references/resume.md` runs it while nothing is mid-flight, and its realignment actions land in the `Resume here:` block, so the next session starts from a checked record without dispatching anything. (Corrected 2026-09-17: an earlier draft also fired it on every resume, which put a `heavy` subagent in front of every cold start.)
-3. **Before the batch PR opens**, alongside the batch `done` checklist in `references/lifecycle.md`.
-
-A harness scheduler (a cron entry, a git hook) may fire it as well. That is a **binding**, recorded in `02-adapters.md` § Audit, never part of this skill: a project without one loses nothing, because the three triggers above are all readable from the SSOT.
-
-**What it checks**, against `00-plan.md`, `planning/00-acceptance.md`, the open item's working file and `02-adapters.md`, and nothing else: phase and stage consistency; every dispatch recorded with a tier; tiers used as bound in `02-adapters.md`; acceptance rows advancing and STATE's count honest; every Ephemera row swept or flagged `kept:`; nothing load-bearing recorded outside the SSOT; no machine-specific or model-vendor name written where a tier or a role belongs. The packet holds the full list and the output shape.
-
-**Where findings land.** The auditor reports, the orchestrator edits. Realignment actions go into `00-plan.md` STATE as the next order of business (the `Resume here:` block when the batch is paused, otherwise the `Next:` line), blockers first, and the audit itself is recorded as a dispatch row with `audit` in the Packet cell. That row is what resets the counter.
-
-**Audit and rogue-check are not the same pass.** The rogue-check rides an item or batch PR and reads the diff and the evidence behind it; the audit reads only the record, fires between PRs, and never opens the code. Neither replaces the other.
-
-## Reviews post on the PR
-
-**Reviews post as GitHub PR review comments, not chat messages.** Use the GitHub MCP review flow
-(`pull_request_review_write` create → `add_comment_to_pending_review` → submit) or the `gh api`
-equivalents. The PR is the durable review record: the diff, the discussion, and the commit list
-persist forever, which is why "PR" is the drill-down link in the feature file. Point 1 is the single
-exception, because no PR exists yet; it records into `working/<item>.agent.md` instead, never into
-chat either.
+At the item PR, one short `light`-tier check runs (`templates/integrity-check.md`): stage lines agree with the ledger, verdict cells untouched, ephemera swept. Three questions, a table, no source files opened, no diff read. It exists so nobody ships an item whose ledger lies, and it is the whole of the process policing in this skill.
 
 ## Red flags
 
-- A review delivered in chat instead of on the PR (or, at point 1, into the working file).
+- A finding about the record: a stale line pin, a count mismatch, a wording preference in a card or a PR body.
+- A third review pass on one feature.
 - The implementer fixing its own review findings, or the reviewer fixing what it found.
 - A re-review that re-reads the whole diff instead of the findings and their blast radius.
-- A feature or item PR merged with unresolved review findings.
+- A flagged feature merged with no security section in the reviewer's report.
+- A review delivered in chat.
+- A `.log.md` review entry edited after the fact to reflect a later commit.
 - A hand-written type sitting beside the generated file it duplicates.
-- A new dependency in a feature diff with no argument for it in the PR description.
-- A flagged feature (`Sensitive surfaces:` not `none`) merged without the security pass.
-- A confidence score that does not survive re-derivation from the diff.
-- A rogue-check finding parked in a code comment instead of `00-plan.md` STATE.
-- A model name, rather than a tier and a role, recorded on a dispatch in the working file.
-- An audit trigger passed with no `audit` row in the dispatch record, or an audit run and never recorded, which leaves the counter unreset and fires it again immediately.
-- An audit that opened the source, reviewed a diff, or edited a file. It reads the record and reports.
-- Audit findings reported in chat instead of written into `00-plan.md` STATE.

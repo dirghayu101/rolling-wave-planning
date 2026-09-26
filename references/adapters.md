@@ -1,54 +1,56 @@
 # Adapters
 
-Loaded once per batch, at kickoff, by the interview's final round. It turns "what is installed on this machine, in this project, today" into the batch's `02-adapters.md`: one binding per role, written down so every later packet resolves a role to a concrete skill, tool or model alias without re-detecting anything.
+Loaded once per batch, at kickoff, by the interview's final round. It turns "what is installed on this machine, in this project, today" into the batch's `agent/adapters.md`: one binding per role, written down so every later packet resolves a role to a concrete skill, tool or model alias without re-detecting anything.
 
-**Kernel plus drivers.** This repo ships no drivers. It ships the role contract (`references/dispatch.md`) and the detection procedure below. Every skill, tool and model is a driver, chosen per project and swapped by editing one file. That is why model-vendor names appear in this file only as examples of an option family, and in `templates/02-adapters.md` only as `<placeholders>`.
+**Kernel plus drivers.** This repo ships no drivers. It ships the role contract (`references/dispatch.md`) and the detection procedure below. Every skill, tool and model is a driver, chosen per project and swapped by editing one file.
 
-Also loaded mid-batch when a dispatch needs a role that `02-adapters.md` has no row for, or when the user installs something and asks for the bindings to be refreshed.
+Also loaded mid-batch when a dispatch needs a role `agent/adapters.md` has no row for, or when the user installs something and asks for a refresh.
 
 ## Two config layers
 
-1. **Project defaults**: `<project root>/adapters.default.md`, at the git root of the project or monorepo. A project usually has several feature directories and several `spec` directories, each holding its own SSOT, so the root is the one location a kickoff can find the defaults in without searching; the project's `CLAUDE.md` or `AGENTS.md` may carry a one-line pointer to it. It is the accumulated answer from earlier batches in this project.
-2. **Batch bindings**: `02-adapters.md` inside the batch directory. This is what packets read. It can diverge from the defaults for the life of one batch.
+1. **Project defaults**: `<project root>/adapters.default.md`, at the git root. It is the accumulated answer from earlier batches in this project.
+2. **Batch bindings**: `agent/adapters.md` inside the batch directory. This is what packets read, and it can diverge from the defaults for the life of one batch.
 
 Kickoff procedure:
 
-1. Read `<project root>/adapters.default.md` if it exists. If it does not, this is the project's first v2 batch: skip to step 2 and generate from detection alone.
+1. Read `<project root>/adapters.default.md` if it exists. If it does not, this is the project's first batch: generate from detection alone.
 2. Run detection (below).
-3. Diff detection against the defaults file. **Present only the delta** in the interview's final round: newly installed skills or tools that could replace a current binding, and bindings whose tool is now missing. Numbered options, each with a one-line trade-off and **your recommendation**. Unchanged rows are not a question; carry them over silently.
-4. Write `02-adapters.md` from `templates/02-adapters.md` with the answers.
-5. Save the result back to `<project root>/adapters.default.md` (from `templates/adapters.default.md` on first creation), so the next batch starts from today's answers and its delta is genuinely small.
+3. Diff detection against the defaults. **Present only the delta** in the interview's final round: newly installed skills or tools that could replace a binding, and bindings whose tool is now missing. Numbered options, each with a one-line trade-off and your recommendation. Unchanged rows are not a question.
+4. Write `agent/adapters.md` from `templates/02-adapters.md`.
+5. Save the result back to `<project root>/adapters.default.md` (from `templates/adapters.default.md` on first creation).
 
-A missing defaults file is normal, not an error. So is a delta of zero rows: then the adapter round is one sentence confirming the carry-over.
+A missing defaults file is normal. So is a delta of zero rows.
 
 ## Option families
 
-Candidates researched 2026-09-16. Presence of a candidate here is not an endorsement, and the list is not exhaustive. **Verify an install command against the tool's own README before running it.**
+Presence of a candidate here is not an endorsement, and the list is not exhaustive. **Verify an install command against the tool's own README before running it.**
 
 ### Model tiers
 
-Three role tiers, bound to whatever aliases this harness exposes: `judge`, `heavy`, `light`. Examples of the alias strings a harness might expose: `opus`, `sonnet`, `haiku`, and non-Anthropic driver CLIs such as `codex` or `gemini` where the harness can dispatch to them. Bind by capability, not by name recognition: the `light` tier must still be able to run a scripted browser flow and report exact output.
+Four tiers, each bound explicitly in `adapters.default.md` and the batch's `agent/adapters.md`: `orchestrator` (the session model), `judge`, `heavy`, `light`. **The skill never names a model.** Swapping a model is an edit to those two tables and nothing else. Bind by capability, not by name recognition: the `light` tier must still be able to run a scripted browser flow and report exact output.
 
-Detection: the model names the harness accepts on a subagent dispatch. If the harness exposes no override, record `judge/heavy/light → <harness default>` and note that tiering is unavailable, so every packet still carries a tier for the record even though it resolves to one model.
+There is no "one tier above" rule: each binding is written down. When `judge` and `orchestrator` are bound to the same model, the judge is inert, and its Used-for cell says so (`references/dispatch.md` § Escalating to the judge).
+
+Detection: record which model aliases the harness accepts on a subagent dispatch, and which one the session runs on. If the harness exposes no override, record every tier as `<harness default>`, which makes the judge inert; every packet still carries a tier for the record.
 
 ### Browser verification (web surface)
 
 | Candidate | Exposure | Detection | Install |
 |---|---|---|---|
-| `agent-browser` | CLI | `command -v agent-browser`; the `agent-browser` skill in the skills listing | already the standing tool on this machine |
-| Playwright CLI | CLI | `command -v playwright`, or `playwright` in the project's devDependencies | `npm i -D @playwright/test && npx playwright install` |
+| `agent-browser` | CLI | `command -v agent-browser`; the skill in the listing | per its README |
+| Playwright CLI | CLI | `command -v playwright`, or `playwright` in devDependencies | `npm i -D @playwright/test && npx playwright install` |
 
-On this machine a standing rule makes `agent-browser` the only browser tool; record it and move on.
+The binding must support **geometry and focus reads**, not only screenshots: the L3 pass measures boxes and focus order, and a tool that cannot report them caps L3 at "it rendered".
 
 ### Mobile verification (iOS, Android surfaces)
 
 | Candidate | Exposure | Detection | Install |
 |---|---|---|---|
-| `@mobile-next/mobile-mcp` | MCP | mobile tool names visible in the harness | MCP server entry running `npx -y @mobile-next/mobile-mcp@latest` |
+| `@mobile-next/mobile-mcp` | MCP | mobile tool names visible in the harness | MCP server running `npx -y @mobile-next/mobile-mcp@latest` |
 | Maestro + `maestro mcp` | CLI + MCP | `command -v maestro` | `curl -Ls https://get.maestro.mobile.dev \| bash` |
-| `ios-simulator-mcp` | MCP | simulator tool names visible in the harness | MCP server entry running `npx -y ios-simulator-mcp` |
+| `ios-simulator-mcp` | MCP | simulator tool names visible in the harness | MCP server running `npx -y ios-simulator-mcp` |
 | Appium | CLI | `command -v appium` | `npm i -g appium` |
-| Detox (React Native) | CLI | `detox` in the project's devDependencies | `npm i -D detox` |
+| Detox (React Native) | CLI | `detox` in devDependencies | `npm i -D detox` |
 
 ### Backend and database inspection
 
@@ -57,54 +59,38 @@ On this machine a standing rule makes `agent-browser` the only browser tool; rec
 | Supabase MCP (read-only) | MCP | `supabase` tool names visible in the harness | configure the MCP server read-only |
 | `supabase` CLI | CLI | `command -v supabase` | `brew install supabase/tap/supabase` |
 
-### Docs writer
-
-An external CLI on PATH that can take a self-contained prompt on stdin and write a file, or a subagent. Detection: `type <candidate>` for each CLI the user names, remembering that **an alias resolves only in a profile-initialized shell**, so `command -v` alone can report absent for a CLI the user reaches daily.
-
-**The subagent fallback is not a failure state.** When no external CLI is bound, the docs row reads `subagent` and `templates/doc-handoff.md` is dispatched to a `heavy`-tier subagent with the identical prompt. Nothing downstream changes.
-
 ### Environment: where the stack under test runs
 
 | Candidate | Exposure | Detection | Install |
 |---|---|---|---|
-| Docker | CLI + daemon | `docker info` (a CLI on PATH with a dead daemon is not an environment) | Docker Desktop, or `brew install colima docker && colima start` |
+| Docker | CLI + daemon | `docker info` (a CLI with a dead daemon is not an environment) | Docker Desktop, or `brew install colima docker && colima start` |
 | A compose file in the repo | file | `find . -maxdepth 3 -name '*compose*.y*ml'` | already present, or write one |
 | Supabase local stack | CLI, requires Docker | `command -v supabase` **and** `supabase/config.toml` present | `brew install supabase/tap/supabase`, then `supabase start` |
-| testcontainers | library | the dependency in the project manifest (`testcontainers`, `@testcontainers/*`, `org.testcontainers`) | `npm i -D testcontainers` |
-| Staging deployment | URL | the project's environment config or its `CLAUDE.md`/`AGENTS.md` pointer. **Never read `.env`**: ask the user for the URL, or take the committed pointer | already deployed |
+| testcontainers | library | the dependency in the project manifest | `npm i -D testcontainers` |
+| A remote dev project | hosted | the project's committed apply and seed scripts plus the project rules naming the dev target | already provisioned; reset is the project's apply script |
+| Staging deployment | URL | the project's environment config or its agent-instructions pointer. **Never read `.env`**: ask the user | already deployed |
 
-Each chosen row records three things: the chosen value, the one line that brings it up, and the one line that resets it to a known state (`supabase db reset`, `docker compose down -v`, a seed script).
+Each chosen row records three things: the chosen value, the line that brings it up, and the line that resets it to a known state.
 
-**Docker being present is what makes L2 and L4 run against real services** rather than mocks on both sides of every seam. Without it the seams are simulated, and the environment-fidelity dimension of the confidence rubric in `references/verification.md` is what records the cost. Load testing is only meaningful in such an environment for the same reason: a k6 or oha number measured against a mock measures the mock.
+The Environment row is also what the dev pass runs against: the app is served locally from the batch branch against the dev database, so the start command recorded here is the one that pass uses. A deployed preview is not a candidate, because it would need a merge to dev that has not happened while the pass runs.
 
-This section holds the candidates and their invocations. The one the batch actually uses is written into `00-plan.md` § Testing plan § Environment, and each item card copies it from there when the item opens.
+**Read the project's own rules before choosing a row.** A candidate the project forbids detects exactly as cleanly as an allowed one, and is recorded as `present, forbidden by <rule, file>` and never chosen. **A seed line is recorded only when the seed file it names exists**: open the path and check.
+
+Docker being present is what makes L2 and L4 run against real services rather than mocks on both sides of every seam, and it is what makes a load number mean anything.
 
 ### Cleanup
 
-The other half of the Environment row: what takes down everything the batch's subagents start or write. Bound once per project, so the sweep at a gate is one line per row rather than a research task, and so nothing machine-specific reaches a packet, a card or this skill.
-
-Three things get bound:
+The other half of the Environment row: what takes down everything the batch's subagents start or write.
 
 | Row | What it holds | Example shape |
 |---|---|---|
-| Scratch root | the ONE directory every packet's Ephemera slot points under | a session scratchpad path, or `<SSOT>/assets/tmp/` |
-| Teardown lines | one line per thing the environment brings up, in the order they must run | the stack's own stop line, the container runtime's compose-down line, a prune line, `rm -rf <scratch root>/<dispatch dir>` |
-| Cache to reclaim | the caches that are safe to drop, with the line that drops them, or `none` | a build cache, an image cache, a browser profile dir |
+| Scratch root | the ONE directory every packet's Ephemera slot points under | a session scratchpad path |
+| Teardown lines | one line per thing the environment brings up, in the order they must run | the stack's stop line, the compose-down line, `rm -rf <scratch root>/<dispatch dir>` |
+| Cache to reclaim | caches safe to drop, with the line that drops them, or `none` | a build cache, an image cache, a browser profile dir |
 
-Detection: whatever brought the environment up, and its documented inverse. A row is bound only when its command is verified against the tool's own help or README, never guessed. **A teardown line that nobody has run is a claim, not a binding:** run each one once at kickoff, against the environment it targets.
+**A teardown line nobody has run is a claim, not a binding:** run each one once at kickoff, against the environment it targets.
 
-Ephemera is swept at the item `agent-verified` gate, at the batch `done` gate and at every pause (`references/lifecycle.md`, `references/resume.md`). This section is what those sweeps read, and the item's `## Ephemera` ledger in `working/<item>.agent.md` is what says which of them are owed.
-
-### Audit
-
-How often the audit pass fires, and whether anything outside the session schedules it.
-
-| Row | What it holds | Default |
-|---|---|---|
-| `dispatches_per_audit` | N: an audit is due when the dispatch record shows N dispatches since the last `audit` row | `8` |
-| Scheduler binding | an optional harness hook that fires the audit outside the flow (a cron entry, a git hook, a harness scheduler command), or `none` | `none` |
-
-The dispatch count is the trigger the skill relies on, because it is observable in a file any session can read. **A scheduler is a binding, never part of the skill:** it lives in this section and in `02-adapters.md`, so a project with no scheduler loses nothing, and the audit still fires on the count, on every pause, and before the batch PR. What the audit checks and what it returns: `references/review.md` § Audit and `templates/audit-handoff.md`.
+Ephemera is swept at the item PR, at batch close and at every pause.
 
 ### Load and performance testing
 
@@ -115,7 +101,7 @@ The dispatch count is the trigger the skill relies on, because it is observable 
 | oha | CLI | `command -v oha` | `brew install oha` |
 | Lighthouse CI | CLI | `command -v lhci` | `npm i -g @lhci/cli` |
 
-Bind this row only when the batch has a performance acceptance criterion, that is, when `00-plan.md` § Testing plan § Load and performance holds a criterion rather than `none stated`. Otherwise record `none (no performance criteria in this batch)`.
+Bind this row only when `00-plan.md` § Testing plan holds a numbered criterion. Otherwise record `none (no performance criteria in this batch)`.
 
 ### Visual diff
 
@@ -125,75 +111,52 @@ Bind this row only when the batch has a performance acceptance criterion, that i
 | pixelmatch | library | `pixelmatch` in the project's dependencies | `npm i pixelmatch` |
 | BackstopJS | CLI | `command -v backstop` | `npm i -g backstopjs` |
 
-Used by the blueprint phase's L3 comparison: screenshot through the browser adapter, diff against `planning/03-blueprint/<screen>.html` through this one.
+Used by the blueprint phase's L3 comparison.
 
 ### Code map
 
-`safishamsi/graphify`. Install `uv tool install graphifyy`, then `graphify install`, then build code-only with `graphify extract . --code-only` (secrets and build output excluded via `.graphifyignore`, gitignore syntax; docs and images are skipped so no LLM call is made). Queries: `graphify query "<question>" --budget N`, `graphify explain`, `graphify affected`, `graphify path`. Refresh: `rm -rf graphify-out && graphify extract . --code-only`. Corrected 2026-09-16: previously read `/graphify .` and `graphify update .`; measured on a real monorepo, `update` re-includes markdown and doubled the graph, and `--code-only` merges into an existing graph so deleted code lingers without the clean rebuild. Output lands in `graphify-out/`, which belongs in `.gitignore`. `graphify install` installs the `graphify` skill once, globally, into the config dir named by `CLAUDE_CONFIG_DIR`; only the graph is per project.
+`safishamsi/graphify`. Install `uv tool install graphifyy`, then `graphify install`, then build code-only with `graphify extract . --code-only`. Queries: `graphify query "<question>" --budget N`, `graphify explain`, `graphify affected`, `graphify path`. Refresh with a clean rebuild, `rm -rf graphify-out && graphify extract . --code-only`: `graphify update` re-includes markdown and doubles a code-only graph. Output lands in `graphify-out/`, which belongs in `.gitignore`.
 
-Detection: `command -v graphify` **and** `graphify-out/graph.json` exists in the project. A graph that was never built is the same as no code map.
+Detection: `command -v graphify` **and** `graphify-out/graph.json` exists. A graph that was never built is the same as no code map.
 
-**The `enabled: true|false` toggle.** The code-map row in `adapters.default.md` and `02-adapters.md` carries this flag, and it is the documented off switch: flipping it to `false` is the whole disable procedure, with no uninstall required. Two conditions must both hold before the code map influences anything:
+**The `enabled: true|false` toggle** is the documented off switch. Two conditions must both hold before the code map influences anything: `enabled: true` in `agent/adapters.md`, and the graph present. Then every exploration and implementer packet carries the line *"query the code map first, open only cited files"*, and opening an item runs the clean rebuild first.
 
-- `enabled: true` in `02-adapters.md`, and
-- `graphify-out/graph.json` exists.
-
-When both hold: every exploration and implementer packet carries the line *"query the code map first, open only cited files"*, and opening an item runs the clean code-only rebuild (`rm -rf graphify-out && graphify extract . --code-only`) first. When either fails, packets carry no code-map line and no refresh runs. Do not treat a stale graph as absent: refresh it, or set `enabled: false` and say why in the row.
-
-Build code only. Docs and media extraction is what triggers LLM calls, so leave that unconfigured. Check `graphify --help` or the README for the exclusion mechanism before building a monorepo root that holds secrets (env files, keystores, auth keys); if no exclusion mechanism exists, build per package instead, which excludes root secrets by construction. Git hooks are a separate opt-in (`graphify hook install|uninstall|status`) and stay off.
+Build code only. Docs and media extraction is what triggers LLM calls. Check the README for the exclusion mechanism before building a monorepo root that holds secrets; if none exists, build per package.
 
 ### Skill roles
 
-The role list is fixed in `references/dispatch.md`; the binding is generated here. For each stable role, and for each stack-conditional role whose manifest trigger fired, write a row: role, chosen skill, alternatives detected, when applied.
+The role list is fixed in `references/dispatch.md`; the binding is generated here. For each stable role, and each stack-conditional role whose manifest trigger fired, write a row: role, chosen skill, alternatives detected, when applied.
+
+`flow-explorer` usually binds to no skill: it is a `light` dispatch working from `templates/flow.md` plus the `code-map` row when one is enabled. Record it as `none (template only)` rather than leaving the row out.
 
 ## Detection procedure
 
 Run all five sweeps, then assemble.
 
-1. **CLIs**: `command -v <name>` for each candidate, and `type <name>` as well when the user mentions reaching a tool by an alias. Aliases resolve only in a profile-initialized shell, so a bare `command -v` can report absent for a tool that works interactively. When in doubt, ask the user to run `type <name>` and paste the output rather than concluding absent.
-2. **MCP servers**: presence means **the tool names are visible in this harness right now**. Not a config file on disk, not a server the user believes is installed. If the names are not in the tool listing, the MCP is absent for this batch.
-3. **Skills**: list `~/.agents/skills` and read each `SKILL.md` frontmatter `description`; then scan the harness skill listing for plugin skills, which are namespaced (`superpowers:test-driven-development`, `feature-dev:code-reviewer`, `frontend-design:frontend-design`) and do not appear in that directory. Match candidates to roles **by what the description says it triggers on**, never by the skill's name.
+1. **CLIs**: `command -v <name>`, plus `type <name>` when the user reaches a tool by an alias. Aliases resolve only in a profile-initialized shell.
+2. **MCP servers**: presence means **the tool names are visible in this harness right now**. Not a config file on disk.
+3. **Skills**: list `~/.agents/skills` and read each `SKILL.md` frontmatter `description`; then scan the harness listing for namespaced plugin skills. Match by what the description says it triggers on, never by the name.
    `awk '/^description:/{print FILENAME": "$0}' ~/.agents/skills/*/SKILL.md`
-4. **Environment**: `docker info`, then `find . -maxdepth 3 -name '*compose*.y*ml'`, `command -v supabase` with `supabase/config.toml`, and the manifest for a testcontainers dependency. A staging URL comes from the user or a committed pointer, never from `.env`. Docker absent is a finding, not a blank: it caps L2 and L4 at mocked seams and makes any load criterion unmeasurable, so it goes to the user in the testing round with its install command.
-5. **Stack**: read the project manifest. In `package.json` dependencies and devDependencies, look for `next`, `expo`, `react-native`, `stripe`, `@supabase/*`. Each hit either fires a stack-conditional role (`payments`, `framework`) or points at a backend adapter. A monorepo has one manifest per package: sweep them all, and record which package each stack-conditional row applies to.
+4. **Environment**: `docker info`, `find . -maxdepth 3 -name '*compose*.y*ml'`, `command -v supabase` with `supabase/config.toml`, and the manifest for testcontainers. **Read the project's rules in the same sweep** before any local stack is a candidate, and confirm that any seed file a candidate names actually exists.
+5. **Stack**: read the project manifest for `next`, `expo`, `react-native`, `stripe`, `@capacitor/core`, `@supabase/*`. A monorepo has one manifest per package: sweep them all.
 
 ## Surface coverage check
 
-Before writing the file, list the **surfaces this batch touches**: web, iOS, Android, backend. Read them off the item cards, not off the repo as a whole; a batch can live entirely in one surface of a three-surface project.
+Before writing the file, list the **surfaces this batch touches**, read off the item cards: web, iOS, Android, backend. Map each to its binding.
 
-Then map surface to tool:
-
-| Surface | Covered by |
-|---|---|
-| web | the browser-verification binding |
-| iOS | the mobile-verification binding |
-| Android | the mobile-verification binding |
-| backend | the backend/DB inspection binding |
-
-**An uncovered surface is a recorded kickoff decision, not a silent gap.** Put it to the user in the adapter round with the candidates from the family above and their install commands, and record the answer in the decisions table of `00-plan.md` with its date. The three acceptable answers:
-
-- **Install now.** Record which candidate, then re-run detection for that row.
-- **Human-only verification for that surface.** Every feature touching it carries its L3 evidence as L5 human rows instead; the verification ladder must show this, so it is visible where the confidence score is read rather than buried here.
-- **Accept the gap.** Only with a stated reason. The `ceiling` score for features on that surface is then capped by unverifiable effects, which is exactly what the score is for.
-
-Silence is not one of the three. A surface with no row is what produces a feature marked verified with nothing behind it.
-
-## What the rogue-check reads
-
-`references/review.md`'s rogue-check treats this file as evidence: the chosen model tiers and role bindings here, against the actual `Tier` and `Roles → skills` values in `working/<item>.agent.md`'s dispatch record. A batch whose kickoff bound `heavy` to hard implementation and whose dispatch record shows every implementer on `light` has drifted, and the rogue-check is where that surfaces.
+**An uncovered surface is a recorded kickoff decision, not a silent gap.** Three acceptable answers: install a candidate now, verify that surface by hand instead (its L3 work becomes L5 rows), or accept the gap with a stated reason, which caps the `ceiling` score for features on that surface. Silence is not one of them.
 
 ## Red flags
 
-- A `02-adapters.md` written from what the agent assumes is installed rather than from a detection sweep run in this session.
-- An MCP recorded as present because a config file mentions it, without its tool names visible in the harness.
+- An `agent/adapters.md` written from what the agent assumes is installed rather than a detection sweep run in this session.
+- An MCP recorded as present because a config file mentions it.
 - A CLI recorded as absent on `command -v` alone when the user reaches it through an alias.
 - A surface touched by the batch with no tool row and no recorded decision.
+- A browser binding that cannot report geometry or focus.
 - A skill bound to a role because its name sounded right, with its description unread.
-- `code-map: enabled: true` with no `graphify-out/graph.json`, or packets carrying the code-map line while the row reads `false`.
-- A model-vendor name written into a skill body, a packet, or a card. Tiers go in those places; the alias lives only in `02-adapters.md`.
-- Detection re-run at dispatch time because nobody wrote the file at kickoff.
-- An Environment row reading `none (mocks only)` while `docker info` succeeds on this machine.
-- A load criterion in `00-plan.md` § Testing plan with the Load testing row still reading `none`.
-- An Environment row with a bring-up line and a Cleanup section with no matching teardown line, or a scratch root nobody bound while packets name scratch paths of their own.
+- `code-map: enabled: true` with no graph on disk.
+- A model-vendor name written into a skill body, a packet, or a card.
+- A `judge` binding equal to `orchestrator` with no note that the tier is inert.
+- An Environment row reading `none (mocks only)` while `docker info` succeeds.
+- An Environment row chosen against a project rule that forbids it, or a seed line naming a file that does not exist.
 - A teardown or cache line written from memory, never run against the environment it claims to tear down.
-- An audit scheduler written into a packet, a card or this skill instead of the Audit section of `02-adapters.md`.
