@@ -1,10 +1,10 @@
-# Intake — Notifications platform hardening
+# Intake: Notifications platform hardening
 
 Written at `phase: intake`, before any exploration.
 
 ## Rant (verbatim)
 
-"Push notifications are flaky — tokens go stale and we never notice, the digest email job
+"Push notifications are flaky: tokens go stale and we never notice, the digest email job
 sometimes double-sends, and support keeps getting tickets from users who blew past some invisible
 send quota with no warning. I want the whole notifications path hardened, and I want users to
 actually see when they're near their quota instead of just failing silently."
@@ -19,7 +19,7 @@ actually see when they're near their quota instead of just failing silently."
 ## Constraints
 
 - FCM is the existing push provider (Decision 1); no provider migration in this batch.
-- Quota state lives in Postgres already (`notification_quota` table) — reuse it, do not shadow it.
+- Quota state lives in Postgres already (`notification_quota` table): reuse it, do not shadow it.
 - Web-only for the quota UI; native app screens are out of scope for this batch.
 
 ## Unknowns and premises to verify

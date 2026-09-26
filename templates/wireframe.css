@@ -1,0 +1,49 @@
+/*
+  wireframe.css
+
+  Shared readability sheet for blueprint wireframes and their index.
+  Copied once into planning/03-blueprint/ beside the wireframes; every file links it.
+  Greys only: no brand colour, no component library, no framework class, no script.
+  It makes a wireframe readable in a browser. It does not make it a mockup.
+  Sections are native <details>/<summary>, so the file still carries no script.
+  details.questions is the optional fourth block, for a wireframe that carries open questions.
+
+  Last created: September 18th, 2026
+*/
+
+body { font: 15px/1.5 system-ui, -apple-system, "Segoe UI", sans-serif; color: #222; background: #fff; max-width: 960px; margin: 0 auto; padding: 24px 16px 64px; }
+a { color: #333; }
+nav { font-size: 13px; margin-bottom: 14px; }
+h1 { font-size: 21px; margin: 0 0 14px; }
+
+/* Page header: the identity block, always visible. */
+header { border: 1px solid #bbb; background: #f7f7f7; padding: 12px 14px; margin-bottom: 22px; }
+header dl { display: grid; grid-template-columns: 7.5em 1fr; gap: 4px 14px; margin: 0; }
+header dt { font-weight: 700; color: #555; }
+header dd { margin: 0; }
+
+/* Screen sections: collapsible, first one open. */
+details.box { border: 1px solid #bbb; margin: 10px 0; }
+details.box > summary { font-weight: 700; background: #f2f2f2; padding: 8px 10px; cursor: pointer; }
+details.box[open] > summary { border-bottom: 1px solid #ccc; font-size: 16px; }
+details.box > :not(summary) { margin-left: 20px; margin-right: 10px; }
+details.box > :not(summary):first-of-type { margin-top: 8px; }
+details.box > :last-child { margin-bottom: 8px; }
+details.box details.box { margin-left: 20px; border-color: #ccc; }
+
+label { display: block; margin: 5px 0; }
+span.ctl { font-family: ui-monospace, Menlo, Consolas, monospace; font-size: 13px; color: #333; background: #f0f0f0; border: 1px solid #ddd; padding: 1px 5px; }
+em.open { font-style: normal; font-size: 12px; font-weight: 700; letter-spacing: 0.03em; color: #444; background: #eee; border: 1px solid #aaa; padding: 0 4px; }
+
+/* The three inventories: collapsible, closed by default, each summary reads as a heading. */
+details.states, details.roles, details.backend, details.questions { border: 1px solid #999; margin: 16px 0; }
+details.states > summary, details.roles > summary, details.backend > summary, details.questions > summary { font-size: 17px; font-weight: 700; background: #eaeaea; padding: 9px 10px; cursor: pointer; }
+details.states[open] > summary, details.roles[open] > summary, details.backend[open] > summary, details.questions[open] > summary { border-bottom: 1px solid #999; }
+details.states ul, details.roles ul, details.backend ul, details.questions ul { margin: 10px 0; padding-left: 36px; }
+details.states li, details.roles li, details.backend li, details.questions li { margin: 5px 0; }
+
+/* Index table. */
+table { border-collapse: collapse; width: 100%; font-size: 14px; }
+th, td { border: 1px solid #bbb; padding: 5px 8px; text-align: left; vertical-align: top; }
+th { background: #f2f2f2; }
+ol { padding-left: 24px; }

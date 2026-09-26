@@ -1,86 +1,79 @@
 # Resume
 
-Reference for `rolling-wave-planning`. Loaded **first** on any resume: "continue the flow", "pick this back up", a cold session on an existing batch, or a new input arriving mid-effort. It is also the target for phase `paused`. Run the protocol, then load the one target for the phase.
+Reference for `rolling-wave-planning`. Loaded **first** on any resume: "continue the flow", a cold session on an existing batch, or a new input arriving mid-effort. It is also the target for phase `paused`. Run the protocol, then load the one target for the phase.
 
 ## Resumability protocol
 
-1. **Read `00-plan.md`** (STATE + decisions + ledger). That is the whole entry load. STATE's `acceptance: <n> of <m> rows met` line is the whole acceptance picture a resume needs.
-2. **Read `rollout/<n>-<item>/0-card.md` for the in-progress item, then its current feature file, then `working/<item>.agent.md`. Never the whole `rollout/` tree.** Total load is bounded regardless of batch size, which is the point of the sharding.
-3. **Do not load `planning/00-acceptance.md` here.** It loads at a gate (item `agent-verified`, batch `done`) and at an audit, and nowhere else. A resume that reads the whole requirement list every time is O(m) in requirements, which is exactly the growth the sharding exists to prevent.
-4. **Run the integrity sweep** below. Cheap, and on every resume.
-5. **Check whether an audit is due.** A resume is not itself a trigger (Corrected 2026-09-17: an earlier draft made every resume dispatch a `heavy` audit, which put a subagent in front of every cold start). The triggers are the dispatch count, the pause, and the batch PR, all in `references/review.md` § Audit; `references/lifecycle.md` checks the count before choosing a step, and a pause records its audit in the dispatch record. If STATE's `Resume here:` or `Next:` line carries realignment actions from an audit, those come first.
-6. **State the next action before editing anything.** If the sweep or the audit found drift, the next action is the remediation, not the work.
+1. **Read `00-plan.md`**: STATE, decisions, ledger, hand-back. That is the whole entry load.
+2. **Read `agent/<n>-<item>/resume.md` for the open item.** One block, current by construction.
+3. **Read the open feature's HEAD file, and its `.log.md` only if the next step needs an evidence or finding entry.** Never the whole `agent/` tree.
+4. **Do not load `planning/00-acceptance.md` here.** It loads at the item PR and at batch close.
+5. **Run the integrity sweep** below. Cheap, and on every resume.
+6. **State the next action before editing anything.** If the sweep found drift, the next action is the remediation.
 
 ## Load exactly one target
 
-After the sweep, mirror the router: one target, chosen by `phase:`.
-
 | `phase:` | Load | Resumes at |
 |---|---|---|
-| `intake` | invoke skill `pre-rolling-wave-planning` | Phase 0; `planning/00-intake.md` and `planning/00-acceptance.md` may exist already |
-| `exploring` | invoke skill `pre-rolling-wave-planning` | Phase 1, continuing from `planning/01-exploration.md` |
-| `edge-cases` | invoke skill `pre-rolling-wave-planning` | Phase 2, continuing from `planning/02-edge-cases.md` |
-| `blueprint` | invoke skill `pre-rolling-wave-planning` | Phase 3, continuing from `planning/03-blueprint/` |
-| `interview` | invoke skill `pre-rolling-wave-planning` | Phase 4, at the round after the last one in `planning/04-interview.md` |
+| `intake` to `interview` | invoke skill `pre-rolling-wave-planning` | the phase its STATE names, from that phase's checkpoint |
 | `scaffolded` | `references/lifecycle.md` | opening the first item |
 | `executing` | `references/lifecycle.md` | the transition matching the ledger stage |
-| `paused` | § Resuming a paused batch below, then the row for the phase STATE says the batch was in | the `Resume here:` block |
+| `paused` | § Resuming a paused batch below, then the phase row | the resume block |
 | `done` | `references/verification.md` | the promotion pass only |
 
-A checkpoint that exists is never regenerated: settled questions are not re-asked, explored ground is not re-explored. If `layout: v1`, read `references/ssot-layout.md` § v1 batches before writing any file.
+A checkpoint that exists is never regenerated. If `layout:` reads `v1` or `v2`, read `references/migration-3.md` before writing any file.
 
 ## Integrity sweep
 
-Check each, against the files you just read:
+Check each against the files you just read:
 
-- The open item's `working/<item>.agent.md` lacks a `## Dispatch record` or a `## Ephemera` heading: add the missing one, empty, before anything else. Packets paste rows into both.
-- An item row at `complete` with an L5 row that is not PASS, or not ticked in `01-verification.md`.
-- An item row at `documented` above an unfinished handover: a feature with no chapter in `docs/`, a `verification/` file missing its index row in `01-verification.md`, or the working file still live.
-- A feature index row at `merged` whose PR never merged, or at `documented` with no chapter on the branch.
-- A row at `agent-verified` with no L1 to L3 evidence rows in the feature file, or an item at `agent-verified` with no L4 cross-feature pass.
-- A terminal row with a live working file, or more than one live working file for the same item.
-- A feature stage ahead of its item's stage, or `phase: executing` with no item at `in-progress`.
+- An item row at `verified` with a verdict cell in its `verification/` files that is not PASS.
+- An item at `merged` with a `verification/` file that is not named in `00-plan.md` § Hand-back, or a `runbooks/` file that is not either.
+- A feature index row at `merged` whose PR never merged.
+- A feature at `built` with no evidence entries in its `.log.md`, or an item at `built` with no L4 entry.
+- A feature at `open` with no `flows/` file and no line in one saying the before flow does not exist yet.
+- A `flows/` file whose diagram was edited after it was written (compare against the pinned SHA in its header).
+- A `.log.md` entry with no SHA, or one that reads as a correction of an earlier entry.
+- A second resume block for one item, an addendum, or a "supersedes" line anywhere under `agent/`.
+- A feature stage ahead of its item's stage, or `phase: executing` with no item at `open`.
 - Decisions contradicted by the ledger. Rows without cards, cards without rows.
+- With `planning/03-blueprint/` present: a `round-<n>-answers.md` with no matching round in `planning/04-interview.md`. Record it before anything else; every later decision rests on answers sitting outside the SSOT.
 - A deferred sibling stub dir with no forward link in `00-plan.md`.
 
-For each hit, **restore truth in the cheaper direction: demote the stage to match the evidence** when the step itself is missing, or **complete the missed step** when it was done but not recorded. One remediation may clear several flags at once. Anything bigger goes into STATE as the first order of business. Never start new work on top of known drift.
+For each hit, **restore truth in the cheaper direction**: demote the stage to match the evidence when the step is missing, or complete the missed step when it was done but not recorded. Anything bigger goes into STATE as the first order of business. Never start new work on top of known drift.
 
-**The sweep also promotes.** When the human has ticked every L5 row for an item and they all read PASS, the sweep moves that item from `documented` to `complete` in the same commit as the tick, re-derives the item's `agent` and `ceiling` scores now that the human evidence exists, and dates them (`references/verification.md`). Promotion on ticks is the only path an agent may take to `complete`; a row the human has not ticked stays where it is, however finished the work looks.
+**The sweep also promotes.** When the developer has ticked every row in an item's `verification/` files and they all read PASS, the sweep moves that item from `merged` to `verified` in the same commit as the tick it is acting on, and strikes the matching line from § Hand-back. A group file promotes every item it spans. A row the developer has not ticked stays where it is, however finished the work looks.
 
 ## Mid-flight inputs
 
-The user will report new issues mid-effort. Triage each one immediately into exactly one of:
+Triage each one immediately into exactly one of:
 
-- **In scope** → its own ledger row + card, even a stub, **at the execution slot it will actually run in, shifting the still-`pending` items, per "Item numbers are execution slots"** (the next unused number is almost never the right one). Never handle a discovered bug as narrative inside another item's log (an audited batch did both in consecutive weeks; the narrated one is invisible in the ledger). **An improvement to a feature this batch already built is in scope by definition**: the batch owns that surface, so it is an insert, not a deferral.
-- **Out of scope** → a **sibling stub dir**, not a file inside this batch. Create `<M>-<slug>/README.md` next to the batch dir under the project's features dir, from `templates/deferred-README.md`, numbering `<M>` with the same sibling scan the batch used (the scan counts stub dirs as taken). Write enough context to pick it up cold, then **record a forward link in this batch's `00-plan.md`** so the discovery is findable from where it was found. Then continue the flow you interrupted.
-- **Unclear** ("might be related, not sure") → stub ledger row at stage `triage`. Classifying it is itself work; the row keeps it visible either way.
+- **In scope**: its own ledger row and card, **at the execution slot it will actually run in**, shifting the still-unopened items. Never handle a discovered bug as narrative inside another item's log. **An improvement to a feature this batch already built is in scope by definition.**
+- **Out of scope**: a **sibling stub dir**, not a file inside this batch. Create `<M>-<slug>/README.md` next to the batch dir from `templates/deferred-README.md`, numbering with the same sibling scan the batch used. Write enough context to pick it up cold, then **record a forward link in `00-plan.md`**.
+- **Minor**: a ruling on a routed question, a copy or style tweak, a one-screen fix, anything under roughly a hundred changed lines with no schema change and no new screen. It is a feature `<n>.<k>` on the item that owns the code, even when that item is already `merged`: one branch, one PR onto the item branch (or straight onto the batch branch when the item branch is gone), tests, `test:all`, merge. No new item, no issue, no card edit beyond one feature-index line, no flow file, no verification file unless an existing verification row is now wrong (then fix that row), no L4, no integrity check, no acceptance row. The feature file is ten lines or fewer and the log holds the dispatch and merge rows. Size decides the lane, not the agent's taste for records: when in doubt between minor and in scope, minor. (Added 3.2.0 after the developer stopped a five-agent ceremony for four one-line rulings on 2026-09-25.)
+- **Unclear**: a stub ledger row at stage `blocked`, reason "triage". Classifying it is itself work; the row keeps it visible.
 
-**A mid-flight input that is a new requirement, not a bug, also gets a row in `planning/00-acceptance.md`**, in the developer's words, dated, under § Changes after confirmation. Triaged out of the batch, its acceptance row reads `deferred: <the stub dir>`. A requirement that exists only as a ledger row is invisible to the gate that checks the developer got what they asked for.
+**A mid-flight input that is a new requirement, not a bug, also gets a row in `planning/00-acceptance.md`**, in the developer's words, dated. Triaged out of the batch, its acceptance row reads `deferred: <the stub dir>`.
 
 ## Item numbers are execution slots
 
-`<n>` in `rollout/<n>-<slug>/` is **position in execution order, never an identity**; the ledger is sorted by it, and slots are assigned at open time in the planned order.
+`<n>` in `agent/<n>-<item>/` is **position in execution order, never an identity**.
 
-- **Insert that will execute NEXT** (the normal case, since inserts land at "now"): it takes slot `(highest item opened so far) + 1` and **every still-`pending` item shifts +1**: rename its `rollout/<n>-…` dir and, if the working file carries a number prefix, `working/<item>.agent.md`, retitle its issue `[<N>.<i>]`, and fix every reference in `00-plan.md` (ledger, STATE, and any decision that spells out the order, adding a dated note there, never a silent rewrite).
-- **Insert that will execute LATER** (rare): it takes the slot after the item it follows; only items after it shift.
-- **Never renumber an item that has a branch, PR, or merged code**: those numbers are frozen in git history. If a shift would require it, the insert goes at the END and STATE must say explicitly that it executed out of numeric order. That is the one allowed exception, and it is loud on purpose.
-- Feature numbers `<i>.<f>` are per-item and unaffected by a shift, except that `<i>` follows its item. `docs/` chapter numbers (`docs/045-…`) are READING order, not item numbers: they never shift. No fractional or letter suffixes (`1.5`, `1a`, `1.1`) for an insert: `<N>.<i>.<f>` is already the feature grammar, so `10.1.1` is a feature, never an item.
-
-**Why:** batch 10 gave a mid-flight item the next unused number, 4 (2026-09-04), while it actually executed second and items 2–3 were still pending: the number implied it ran last and cost the developer a long, confused session. Renumbered 2026-09-10.
+- **Insert that will execute NEXT**: it takes slot `(highest item opened so far) + 1` and every still-unopened item shifts by one. Rename its `agent/<n>-…` dir, retitle its issue, and fix every reference in `00-plan.md`.
+- **Insert that will execute LATER**: it takes the slot after the item it follows; only items after it shift.
+- **Never renumber an item that has a branch, PR, or merged code.** If a shift would require it, the insert goes at the END and STATE says explicitly that it executed out of numeric order.
+- Feature numbers `<i>.<f>` are per-item and unaffected by a shift, except that `<i>` follows its item. No fractional or letter suffixes: `<N>.<i>.<f>` is already the feature grammar, so `10.1.1` is a feature, never an item.
 
 ## Pausing a batch
 
-A batch can be paused when the developer must switch to other work. Pausing is a ceremony, not just stopping, and it is **batch-level**, recorded in STATE; the stages stay item-level and keep their values.
+Pausing is a ceremony, not just stopping, and it is batch-level.
 
-1. Nothing is left `in-progress`: take the open feature to `merged`, or record the exact stopping point in `working/<item>.agent.md` and mark the item `blocked`, reason "paused".
-   - [ ] **Every row in `working/<item>.agent.md` § Ephemera is swept**: teardown run and `Swept on` dated, or the row carries `kept: <reason>` saying what is deliberately left running and why. Teardown lines come from `02-adapters.md` § Cleanup. A pause is where ephemera does the most damage: containers and stacks outlive the session that started them, and the next session has no record of what it inherited.
-   - [ ] **The audit has run** (`templates/audit-handoff.md`, `heavy` tier): a pause is an audit trigger, and the pause is the cheapest moment to realign, since nothing is mid-flight.
-2. Merge the batch branch into `dev` (batch PR, CI must run on it) so trunk carries everything merged. The batch issue stays OPEN with a pause comment. Delete merged item/feature branches; the batch branch may be deleted and re-cut from `dev` on resume, and STATE says which.
-3. STATE's first line becomes `**PAUSED <date>: <one-line reason>.**` above a `Resume here:` block (the whole thing under ~10 lines): the next action, every owed developer action (verification rows still open, secrets to mint, devices), and the branch to cut from. Set `phase: paused`.
-   (Corrected 2026-09-17: this line used an em dash between the date and the reason, which no other file in the family does and which `templates/00-plan.md` spells with a colon. The template ships the literal; this file describes it, so the template wins.)
-4. Owed verification rows stay unticked in `01-verification.md`; owed out-of-scope work goes to its sibling stub dir with the pause date. Ledger rows keep their stage: `merged` is still `merged`.
-5. Update the project's state table, if one exists (a table of active efforts in the project's root agent instructions file), so the batch reads `⏸ Paused <date>` with the resume pointer. Skip the step, with no substitute, only when the project has no such table.
+1. Nothing is left mid-feature: take the open feature to `merged`, or write the exact stopping point into `agent/<n>-<item>/resume.md` and mark the item `blocked`, reason "paused".
+2. **Every ephemera row is swept**: teardown run and `Swept on` dated, or `kept: <reason>`. A pause is where ephemera does the most damage.
+3. Merge the batch branch into the trunk (batch PR, CI must run on it). The batch issue stays OPEN with a pause comment. Delete merged item and feature branches; the batch branch may be deleted and re-cut on resume.
+4. STATE's first line becomes `**PAUSED <date>: <one-line reason>.**` above a resume line naming the next action and the branch to cut from. Set `phase: paused`. Everything the developer owes is already in § Hand-back.
+5. Update the project's state table, if one exists, so the batch reads paused with its resume pointer.
 
 ## Resuming a paused batch
 
-Read STATE first and find the `Resume here:` block. Cut or re-cut the branch it names. Re-run the integrity sweep above, which is where a pause most often shows drift, since the pause froze stages that other work has since moved past. Do the realignment actions the pause's audit left in the `Resume here:` block before anything else. Clear the `PAUSED` line and set `phase:` back to what the batch was doing (`executing` in almost every case). Then take that phase's row in the load table above.
+Read STATE, cut or re-cut the branch it names, re-run the integrity sweep (a pause is where drift shows, since the pause froze stages other work has since moved past), clear the `PAUSED` line, set `phase:` back to what the batch was doing, then take that phase's row.

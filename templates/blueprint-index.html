@@ -1,0 +1,240 @@
+<!DOCTYPE html>
+<!--
+  Blueprint index for batch <N>-<slug>: one row per wireframe, copied from each file's header block
+  (Screen, Route, Roles, Item). Updated in the same edit as any wireframe it lists.
+
+  This file also carries the blueprint round's ANSWER SHEET: the numbered questions, a draft saved in
+  the browser, and Download / Copy of the answers as Markdown. That is why this file, and only this
+  file, carries a script. No wireframe in 03-blueprint/ ever carries one; see references/blueprint.md
+  step 8 and its red flags. The script is plain DOM code, no framework, no network request, and
+  nothing leaves the browser.
+-->
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Blueprint index: &lt;N&gt;-&lt;slug&gt;</title>
+<link rel="stylesheet" href="wireframe.css">
+</head>
+<body>
+
+<h1>Blueprint index: &lt;N&gt;-&lt;slug&gt;</h1>
+
+<header>
+<dl>
+  <dt>Batch</dt><dd>&lt;N&gt;: &lt;title&gt;</dd>
+  <dt>Written</dt><dd>&lt;date&gt;</dd>
+  <dt>How to read</dt><dd>Wireframes are feature inventories, not designs. Review each one, note every control you would change or question; each note becomes an interview question. Each screen section is collapsible: open one at a time.</dd>
+  <dt>Inventory</dt><dd>The control and state inventory, the acceptance-row mapping and the pending questions are in <a href="inventory.md">inventory.md</a> (open it in your editor; the browser shows it as text).</dd>
+  <dt>Questions</dt><dd>The numbered questions for this round are at the foot of this page, with a box for each answer.</dd>
+</dl>
+</header>
+
+<h2>Screens (in provisional item order)</h2>
+<table>
+<tr><th>Wireframe</th><th>Screen</th><th>Route</th><th>Roles</th><th>Item</th><th>Questions</th></tr>
+<tr>
+  <td><a href="&lt;screen&gt;.html">&lt;screen&gt;.html</a></td>
+  <td>&lt;Screen name from the header&gt;</td>
+  <td>&lt;Route from the header&gt;</td>
+  <td>&lt;Roles from the header&gt;</td>
+  <td>agent/&lt;n&gt;-&lt;item&gt;/0-card.md</td>
+  <td>&lt;question numbers or packet prefix in inventory.md&gt;</td>
+</tr>
+</table>
+
+<details class="box" open>
+  <summary>Reading order suggested</summary>
+  <ol>
+    <li>&lt;screen&gt;.html (&lt;why it comes first: the model the others display&gt;)</li>
+  </ol>
+</details>
+
+<h2>Round &lt;n&gt; questions (&lt;count&gt;)</h2>
+
+<p>Answer what you can. Pick "Discuss in chat" for anything you want to talk through, and use the Note box for a condition or a counter-proposal. Your answers are saved in this browser as you go, so you can close the page and come back. When you are done, click <b>Copy answers as Markdown</b> and paste the result into the chat, or click <b>Download answers</b> and hand over the file. The recommendation is marked on the option it belongs to; it is a starting point, not a default, and a question you leave blank is asked again in the next round.</p>
+
+<p><button type="button" id="q-download">Download answers</button> <button type="button" id="q-copy">Copy answers as Markdown</button> <span id="q-status"></span></p>
+
+<p id="q-count">0 of 0 answered</p>
+
+<!--
+  One <details class="questions"> per screen or per packet, each holding one
+  <details class="question"> per question. Three examples follow, showing the shape: an id that
+  matches the id in inventory.md, the question, the realistic options each with its one-line
+  trade-off, the recommendation marked on the option it belongs to, and a free-text note.
+  Keep radio `name` equal to the question id: the script reads the ids off the radios.
+-->
+<div id="round-questions">
+<details class="questions">
+  <summary>&lt;Screen name&gt; (&lt;screen&gt;.html): A1, A2</summary>
+  <details class="question">
+    <summary><b>A1</b> &lt;The decision, as a short noun phrase.&gt;</summary>
+    <p>&lt;One or two sentences of context: what the wireframe draws today and what in the evidence makes this open.&gt; Options: (a) &lt;option, with its one-line trade-off&gt;; (b) &lt;option, with its one-line trade-off&gt;; (c) &lt;option, with its one-line trade-off&gt;. Recommendation: (b), because &lt;the reason, tied to a decision, an acceptance row or a file read in exploration&gt;.</p>
+    <fieldset>
+      <legend>Answer</legend>
+      <label><input type="radio" name="A1" value="a"> (a) &lt;option&gt;</label>
+      <label><input type="radio" name="A1" value="b"> (b) &lt;option&gt; (recommended)</label>
+      <label><input type="radio" name="A1" value="c"> (c) &lt;option&gt;</label>
+      <label><input type="radio" name="A1" value="discuss"> Discuss in chat</label>
+    </fieldset>
+    <label>Note <textarea data-note="A1" rows="2" cols="60"></textarea></label>
+  </details>
+  <details class="question">
+    <summary><b>A2</b> &lt;A two-option question: use two options when there are honestly two.&gt;</summary>
+    <p>&lt;Context.&gt; Options: (a) &lt;option, with its trade-off&gt;; (b) &lt;option, with its trade-off&gt;. Recommendation: (a), because &lt;the reason&gt;.</p>
+    <fieldset>
+      <legend>Answer</legend>
+      <label><input type="radio" name="A2" value="a"> (a) &lt;option&gt; (recommended)</label>
+      <label><input type="radio" name="A2" value="b"> (b) &lt;option&gt;</label>
+      <label><input type="radio" name="A2" value="discuss"> Discuss in chat</label>
+    </fieldset>
+    <label>Note <textarea data-note="A2" rows="2" cols="60"></textarea></label>
+  </details>
+</details>
+<details class="questions">
+  <summary>&lt;Second screen name&gt; (&lt;second-screen&gt;.html): B1</summary>
+  <details class="question">
+    <summary><b>B1</b> &lt;A question with no recommendation, because the call is the developer's alone.&gt;</summary>
+    <p>&lt;Context.&gt; Options: (a) &lt;option, with its trade-off&gt;; (b) &lt;option, with its trade-off&gt;. No recommendation: &lt;why this one is not an agent's to take, for example it widens a security ceiling or it costs money&gt;.</p>
+    <fieldset>
+      <legend>Answer</legend>
+      <label><input type="radio" name="B1" value="a"> (a) &lt;option&gt;</label>
+      <label><input type="radio" name="B1" value="b"> (b) &lt;option&gt;</label>
+      <label><input type="radio" name="B1" value="discuss"> Discuss in chat</label>
+    </fieldset>
+    <label>Note <textarea data-note="B1" rows="2" cols="60"></textarea></label>
+  </details>
+</details>
+</div>
+
+<script>
+// The blueprint round's answer sheet: draft persistence in localStorage, plus Download and Copy of
+// the answers as Markdown. This is the ONE script the blueprint directory carries, and it lives in
+// this file only.
+(function () {
+  // Fill ROUND with the interview round these questions belong to. It names the localStorage draft,
+  // the downloaded file and the Markdown title, so it is the only value to change per round.
+  // NOTE: the draft name is held in DRAFT_STORAGE_NAME, not in a variable called KEY. A variable
+  // named KEY holding a string trips the generic-api-key rule of a pre-commit secret scanner, and
+  // this file is committed. Keep the name.
+  var ROUND = "<n>";
+  var DRAFT_STORAGE_NAME = "<batch-slug>-round-" + ROUND;
+  var ids = [];
+  var radios = document.querySelectorAll('#round-questions input[type="radio"]');
+  for (var i = 0; i < radios.length; i++) {
+    if (ids.indexOf(radios[i].name) === -1) ids.push(radios[i].name);
+  }
+  var status = document.getElementById("q-status");
+  var counter = document.getElementById("q-count");
+
+  function noteFor(id) { return document.querySelector('textarea[data-note="' + id + '"]'); }
+  function pickedFor(id) { return document.querySelector('input[name="' + id + '"]:checked'); }
+
+  function collect() {
+    var data = {};
+    ids.forEach(function (id) {
+      var picked = pickedFor(id);
+      var note = noteFor(id);
+      data[id] = { answer: picked ? picked.value : "", note: note && note.value ? note.value : "" };
+    });
+    return data;
+  }
+
+  function save() {
+    try { window.localStorage.setItem(DRAFT_STORAGE_NAME, JSON.stringify(collect())); }
+    catch (e) { status.textContent = "Draft not saved in this browser: " + e.message; }
+  }
+
+  function restore() {
+    var raw = null;
+    try { raw = window.localStorage.getItem(DRAFT_STORAGE_NAME); }
+    catch (e) { status.textContent = "Saved drafts are unavailable in this browser: " + e.message; return; }
+    if (!raw) return;
+    var data;
+    try { data = JSON.parse(raw); } catch (e) { return; }
+    ids.forEach(function (id) {
+      var row = data[id];
+      if (!row) return;
+      if (row.answer) {
+        var input = document.querySelector('input[name="' + id + '"][value="' + row.answer + '"]');
+        if (input) input.checked = true;
+      }
+      var note = noteFor(id);
+      if (note && row.note) note.value = row.note;
+    });
+  }
+
+  function answeredIds() {
+    return ids.filter(function (id) {
+      var note = noteFor(id);
+      return pickedFor(id) || (note && note.value.trim());
+    });
+  }
+
+  function updateCount() {
+    counter.textContent = answeredIds().length + " of " + ids.length + " answered";
+  }
+
+  function cell(text) { return text.replace(/\|/g, "\\|").replace(/\s*\n\s*/g, " ").trim(); }
+
+  function markdown() {
+    var done = answeredIds();
+    var lines = ["# Round " + ROUND + " answers (blueprint questions)", "",
+                 "Answered on: " + new Date().toISOString(), "",
+                 "| Question | Answer | Note |", "|---|---|---|"];
+    done.forEach(function (id) {
+      var picked = pickedFor(id);
+      var note = noteFor(id);
+      lines.push("| " + id + " | " + (picked ? picked.value : "") + " | " + cell(note ? note.value : "") + " |");
+    });
+    var open = ids.filter(function (id) { return done.indexOf(id) === -1; });
+    if (open.length) { lines.push("", "## Unanswered", "", open.join(", ")); }
+    return lines.join("\n") + "\n";
+  }
+
+  function download() {
+    try {
+      var blob = new Blob([markdown()], { type: "text/markdown" });
+      var url = URL.createObjectURL(blob);
+      var a = document.createElement("a");
+      a.href = url;
+      a.download = "round-" + ROUND + "-answers.md";
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      setTimeout(function () { URL.revokeObjectURL(url); }, 1000);
+      status.textContent = "Downloaded";
+    } catch (e) { status.textContent = "Download failed: " + e.message; }
+  }
+
+  function copyFallback(text) {
+    var area = document.createElement("textarea");
+    area.value = text;
+    area.setAttribute("aria-hidden", "true");
+    document.body.appendChild(area);
+    area.select();
+    var ok = false;
+    try { ok = document.execCommand("copy"); } catch (e) { ok = false; }
+    document.body.removeChild(area);
+    status.textContent = ok ? "Copied" : "Copy failed, select the text and copy it by hand";
+  }
+
+  function copy() {
+    var text = markdown();
+    if (navigator.clipboard && navigator.clipboard.writeText) {
+      navigator.clipboard.writeText(text).then(function () { status.textContent = "Copied"; },
+        function () { copyFallback(text); });
+    } else { copyFallback(text); }
+  }
+
+  document.getElementById("round-questions").addEventListener("input", function () { save(); updateCount(); });
+  document.getElementById("round-questions").addEventListener("change", function () { save(); updateCount(); });
+  document.getElementById("q-download").addEventListener("click", download);
+  document.getElementById("q-copy").addEventListener("click", copy);
+  restore();
+  updateCount();
+})();
+</script>
+
+</body>
+</html>

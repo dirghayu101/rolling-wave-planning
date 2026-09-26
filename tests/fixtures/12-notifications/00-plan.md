@@ -6,25 +6,29 @@ Fixture SSOT for the rolling-wave-planning release-gate tests. Built from `templ
 
 ```
 phase: executing
-layout: v2
-What: Ship push/email notification reliability and a user-facing quota indicator for the notifications platform.
-Stage: item 4 of 9 in-progress, feature 4.1 merged, feature 4.2 reviewed, feature 4.3 pending
-acceptance: 2 of 4 rows met (planning/00-acceptance.md)
-Next: drive feature 4.2 (quota-settings) through L3 with agent-browser and record the evidence, then take it to agent-verified
+layout: v3 (migrated from v2 on 2026-09-10; items 1 to 3 merged before the migration and have no flows/ files)
+What: Ship push and email notification reliability plus a user-facing quota indicator.
+Stage: item 4 of 9 open; feature 4.1 merged, feature 4.2 reviewed, feature 4.3 not opened yet
+acceptance: 2 of 4 rows met
+Next: write verification/4.2-quota-settings.md with human-assisted-verification, then merge PR 221 into the item branch
 ```
 
 ## Decisions
 
 | # | Decision | Choice + why | Date |
 |---|---|---|---|
-| 1 | Push provider | FCM chosen over OneSignal; the mobile apps already ship Firebase | 2026-09-08 |
-| 2 | Quota surfacing | Persistent header banner + a dedicated settings screen, chosen over a toast-only warning, so the limit is discoverable outside the moment of failure | 2026-09-09 |
-| 3 | Docs writer | `subagent` (heavy tier); no docs-writer CLI on PATH for this project | 2026-09-09 |
-| 4 | Ceremony level | ON (issues + PRs), matching the project default | 2026-09-09 |
+| 1 | Push provider | FCM over OneSignal; the mobile apps already ship Firebase | 2026-09-08 |
+| 2 | Quota surfacing | Persistent header banner plus a dedicated settings screen, over a toast-only warning, so the limit is discoverable outside the moment of failure | 2026-09-09 |
+| 3 | Ceremony level | ON (issues and PRs), matching the project default | 2026-09-09 |
+| 4 | L2 to L4 environment | Local Supabase stack over the hosted dev project; the digest cron has to be triggered by hand, which the hosted project forbids | 2026-09-09 |
 
 ## Adapters
 
-Roles, tiers and tool bindings for this batch: `02-adapters.md`.
+Roles, tiers and tool bindings: `agent/adapters.md`.
+
+## Acceptance
+
+The developer's requirements in their words: `planning/00-acceptance.md`.
 
 ## Testing plan
 
@@ -32,13 +36,13 @@ Roles, tiers and tool bindings for this batch: `02-adapters.md`.
 
 | Group | Flow | Items in | Recorded on | Status |
 |---|---|---|---|---|
-| `quota-mute-settings` | Mute a channel from the notification settings screen item 4 builds, then confirm both the quota banner and the mute survive a reload and a session restart | 4, 5 | 5 | pending |
+| `quota-mute-settings` | Mute a channel from the settings screen item 4 builds, then confirm the quota banner and the mute both survive a reload and a session restart | 4, 5 | 5 | pending |
 
 ### End-to-end flows
 
 | Flow | Drives it | Gate |
 |---|---|---|
-| Notification round trip: change a preference, trigger a send, see the notification arrive, see it counted against the quota and listed in history | `browser-verification` | batch `done` |
+| Change a preference, trigger a send, see it arrive, see it counted against the quota and listed in history | `browser-verification` | batch close |
 
 ### Environment
 
@@ -50,28 +54,35 @@ Roles, tiers and tool bindings for this batch: `02-adapters.md`.
 
 | Criterion | Tool | Gate | Status |
 |---|---|---|---|
-| The digest scheduler handles 500 users in under 60 s | `k6` | batch `done` | pending |
+| The digest scheduler handles 500 users in under 60 s | `k6` | batch close | pending |
 
 ## Status ledger
 
 | # | Item | Stage | Note |
 |---|---|---|---|
-| 1 | [Push token registration](rollout/1-push-tokens/0-card.md) | complete | FCM tokens persisted and refreshed on rotation |
-| 2 | [Notification preferences schema](rollout/2-notif-prefs/0-card.md) | complete | per-channel opt-in columns, RLS in place |
-| 3 | [Digest email scheduler](rollout/3-digest-scheduler/0-card.md) | complete | daily digest via pg_cron |
-| 4 | [In-app quota indicator](rollout/4-quota/0-card.md) | in-progress | 4.1 merged, 4.2 in review, 4.3 pending |
-| 5 | [Mute-per-channel settings](rollout/5-mute-channels/0-card.md) | pending | |
-| 6 | [Notification history log](rollout/6-notif-history/0-card.md) | pending | |
-| 7 | [Admin broadcast tool](rollout/7-admin-broadcast/0-card.md) | pending | |
-| 8 | [FCM rate-limit backoff](rollout/8-fcm-backoff/0-card.md) | pending | |
-| 9 | [Notification analytics dashboard](rollout/9-notif-analytics/0-card.md) | pending | |
+| 1 | [Push token registration](agent/1-push-tokens/0-card.md) | merged | FCM tokens persisted and refreshed on rotation |
+| 2 | [Notification preferences schema](agent/2-notif-prefs/0-card.md) | merged | per-channel opt-in columns, RLS in place |
+| 3 | [Digest email scheduler](agent/3-digest-scheduler/0-card.md) | merged | daily digest via pg_cron; L5 pass still owed |
+| 4 | [In-app quota indicator](agent/4-quota/0-card.md) | open | 4.1 merged, 4.2 reviewed, 4.3 not opened |
+| 5 | [Mute-per-channel settings](agent/5-mute-channels/0-card.md) | open | not started; opens after item 4 |
+| 6 | [Notification history log](agent/6-notif-history/0-card.md) | open | not started |
+| 7 | [Admin broadcast tool](agent/7-admin-broadcast/0-card.md) | open | not started |
+| 8 | [FCM rate-limit backoff](agent/8-fcm-backoff/0-card.md) | open | not started |
+| 9 | [Notification analytics dashboard](agent/9-notif-analytics/0-card.md) | open | not started |
+
+## Hand-back
+
+| # | What | File | Note |
+|---|---|---|---|
+| 1 | run the dev pass for the digest scheduler | `verification/3.1-idempotent-digest-run.md` | row 2 reads a cron log, so run it first |
+
+Items 1 and 2 have no human-verifiable surface; the substitute for each is recorded in its card.
 
 ## Review URLs
 
 - Batch tracking issue: https://example.invalid/notifications/issues/12
-- Batch branch: `batch/12-notifications`
+- Batch branch: `12-notifications`
 - Batch PR: not yet opened
-- Item PRs: recorded on each item's card, not here.
 
 ## Deferred
 

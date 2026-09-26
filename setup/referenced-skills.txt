@@ -1,13 +1,16 @@
-# Skills the rolling-wave-planning family names by name, and how to get them.
-# Source: the role tables in references/dispatch.md plus the skills named in
-# skills/*/SKILL.md and references/*.md. Install hints come from the skills.sh lock
-# file of the machine this list was built on (2026-09-16); run `npx skills find <name>`
-# if a source has moved.
+# Skills that can fill a rolling-wave role, and how to get them: the defaults the family
+# names by name, plus the alternatives detection commonly offers for each role. The kernel
+# names only the defaults; the alternatives live here so the adapter round has install
+# commands to hand. Source: the role table in references/dispatch.md, the skills named in
+# skills/*/SKILL.md and references/*.md, and the detection families in
+# references/adapters.md. Install hints come from the skills.sh lock file of the machine
+# this list was built on (2026-09-16); run `npx skills find <name>` if a source has moved.
 #
 # Format: <skill-name><TAB><install hint>. '#' starts a comment.
 # A line reading '[plugin]' starts the block of harness or plugin skills, which are not
 # directories on disk and cannot be checked; their second field is the plugin name.
 # None of these affect the exit code of setup.sh or setup.ps1. They are advice.
+#
 
 ponytail	npx skills add dietrichgebert/ponytail --skill ponytail
 systematic-debugging	npx skills add obra/superpowers --skill systematic-debugging
@@ -20,7 +23,6 @@ agent-browser	npx skills add vercel-labs/agent-browser --skill agent-browser
 supabase	npx skills add supabase/agent-skills --skill supabase
 supabase-postgres-best-practices	npx skills add supabase/agent-skills --skill supabase-postgres-best-practices
 supabase-security	npx skills add omer-metin/skills-for-antigravity --skill supabase-security
-documentation-writer	npx skills add github/awesome-copilot --skill documentation-writer
 graphify	uv tool install graphifyy && graphify install (see README, Adapters and roles)
 stripe-best-practices	find with: npx skills find stripe-best-practices
 stripe-projects	npx skills add stripe/ai --skill stripe-projects

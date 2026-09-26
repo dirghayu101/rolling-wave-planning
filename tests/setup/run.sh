@@ -49,21 +49,16 @@ PASSED=0; FAILED=0
 ok()  { echo "PASS  $1"; PASSED=$((PASSED + 1)); }
 bad() { echo "FAIL  $1: $2"; FAILED=$((FAILED + 1)); }
 eq()  { if [ "$2" = "$3" ]; then ok "$1"; else bad "$1" "expected [$3], got [$2]"; fi; }
-NAMES="rolling-wave-planning pre-rolling-wave-planning human-assisted-verification mentor-documentation-system human-engineering-docs senior-mentor"
+NAMES="rolling-wave-planning pre-rolling-wave-planning human-assisted-verification"
 # A clone-like copy of the repo, without the git dir.
 mkclone() { mkdir -p "$(dirname "$1")"; cp -a /repo "$1"; rm -rf "$1/.git"; }
 # The status column of the one output line for entry $2.
 status_of() { sed -n "s|^\(.*\)  $2  ->  .*|\1|p" "$1" | head -1; }
 fingerprint() { for n in $NAMES; do stat -c '%i %Y' "$1/$n" 2>/dev/null || echo "-"; done; }
-# mentor-documentation-system is a bundle with no SKILL.md of its own, so it resolves on
-# the directory. This mirrors the rule in setup.sh / setup.ps1.
-BUNDLES=" mentor-documentation-system "
-entry_resolves() {
-  [ -r "$1/$2/SKILL.md" ] && return 0
-  case "$BUNDLES" in *" $2 "*) [ -d "$1/$2" ] && [ -r "$1/$2" ] && return 0 ;; esac
-  return 1
-}
-# Prints the entries that do not resolve under skills dir $1, or "0" when all six do.
+# Every entry is a skill in its own right, so each resolves on its own SKILL.md. This
+# mirrors the rule in setup.sh / setup.ps1.
+entry_resolves() { [ -r "$1/$2/SKILL.md" ]; }
+# Prints the entries that do not resolve under skills dir $1, or "0" when all three do.
 unresolved() { u=""; for n in $NAMES; do entry_resolves "$1" "$n" || u="$u $n"; done; echo "${u:-0}"; }
 PRE
 
@@ -78,8 +73,8 @@ export HOME=/home/t
 mkclone /home/t/src/rolling-wave-planning
 bash \$SH >/tmp/b1.out 2>&1; rc=\$?
 eq "B1 exit 0" "\$rc" "0"
-eq "B1 six entries resolve" "\$(unresolved "\$HOME/.agents/skills")" "0"
-if grep -q '^6/6 skills resolve\$' /tmp/b1.out; then ok "B1 summary line"; else bad "B1 summary line" "\$(grep 'skills resolve' /tmp/b1.out)"; fi
+eq "B1 three entries resolve" "\$(unresolved "\$HOME/.agents/skills")" "0"
+if grep -q '^3/3 skills resolve\$' /tmp/b1.out; then ok "B1 summary line"; else bad "B1 summary line" "\$(grep 'skills resolve' /tmp/b1.out)"; fi
 
 # --- B2 idempotent --------------------------------------------------------------------
 before=\$(fingerprint "\$HOME/.agents/skills")
@@ -103,13 +98,13 @@ for n in \$NAMES; do
   t=\$(readlink "\$HOME/.agents/skills/\$n")
   case "\$t" in rolling-wave-planning/*) ;; *) b3bad="\$b3bad \$n=[\$t]" ;; esac
 done
-eq "B3 five relative sub-skill links" "\$b3bad" ""
-eq "B3 six entries resolve" "\$(unresolved "\$HOME/.agents/skills")" "0"
+eq "B3 two relative sub-skill links" "\$b3bad" ""
+eq "B3 three entries resolve" "\$(unresolved "\$HOME/.agents/skills")" "0"
 
 # --- B4 check mode --------------------------------------------------------------------
 export HOME=/home/t
 bash \$SH --check >/tmp/b4a.out 2>&1; eq "B4 --check exits 0 after install" "\$?" "0"
-if grep -q '^6/6 skills resolve\$' /tmp/b4a.out; then ok "B4 --check reports 6/6"; else bad "B4 --check reports 6/6" "\$(grep 'skills resolve' /tmp/b4a.out)"; fi
+if grep -q '^3/3 skills resolve\$' /tmp/b4a.out; then ok "B4 --check reports 3/3"; else bad "B4 --check reports 3/3" "\$(grep 'skills resolve' /tmp/b4a.out)"; fi
 mkdir -p /home/t4/empty
 bash \$SH --check --skills-dir /home/t4/empty >/tmp/b4b.out 2>&1; eq "B4 --check exits 1 on an empty skills dir" "\$?" "1"
 eq "B4 --check made no changes" "\$(ls -A /home/t4/empty | wc -l)" "0"
@@ -132,8 +127,8 @@ export HOME=/home/t6
 bash \$SH --claude >/tmp/b6.out 2>&1; rc=\$?
 eq "B6 exit 0" "\$rc" "0"
 nolink=""; for n in \$NAMES; do [ -L "\$HOME/.claude/skills/\$n" ] || nolink="\$nolink \$n"; done
-eq "B6 six symlinks under \\\$HOME/.claude/skills" "\${nolink:-0}" "0"
-eq "B6 six entries resolve through them" "\$(unresolved "\$HOME/.claude/skills")" "0"
+eq "B6 three symlinks under \\\$HOME/.claude/skills" "\${nolink:-0}" "0"
+eq "B6 three entries resolve through them" "\$(unresolved "\$HOME/.claude/skills")" "0"
 
 # --- B7 dry run creates nothing -------------------------------------------------------
 export HOME=/home/t7
@@ -178,8 +173,8 @@ export HOME=/home/t
 mkclone /home/t/src/rolling-wave-planning
 run >/tmp/p1.out 2>&1; rc=\$?
 eq "P1 exit 0" "\$rc" "0"
-eq "P1 six entries resolve" "\$(unresolved "\$HOME/.agents/skills")" "0"
-if grep -q '^6/6 skills resolve\$' /tmp/p1.out; then ok "P1 summary line"; else bad "P1 summary line" "\$(cat /tmp/p1.out)"; fi
+eq "P1 three entries resolve" "\$(unresolved "\$HOME/.agents/skills")" "0"
+if grep -q '^3/3 skills resolve\$' /tmp/p1.out; then ok "P1 summary line"; else bad "P1 summary line" "\$(cat /tmp/p1.out)"; fi
 
 # --- P2 idempotent --------------------------------------------------------------------
 before=\$(fingerprint "\$HOME/.agents/skills")

@@ -1,12 +1,12 @@
-# Intake — New-user onboarding flow
+# Intake: New-user onboarding flow
 
 Written at `phase: intake`, before any exploration.
 
 ## Rant (verbatim)
 
 "New users sign up and land straight in an empty dashboard with no idea what to do first. We lose
-a chunk of them right there. I want some kind of guided setup — get their workspace named, maybe
-invite their team, connect something, see one real result — before we just dump them on the empty
+a chunk of them right there. I want some kind of guided setup: get their workspace named, maybe
+invite their team, connect something, see one real result, before we just dump them on the empty
 state. Not sure how many steps, not sure if it should be skippable, not sure if we build this as a
 modal or a real page. Web only for now, the mobile apps don't have signup."
 

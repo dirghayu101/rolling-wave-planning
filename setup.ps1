@@ -20,8 +20,8 @@ setup.ps1 - install the rolling-wave-planning skill family.
 Usage: pwsh -File setup.ps1 [options]
 
   -SkillsDir <path>  Skills directory to link into (default: $HOME/.agents/skills).
-  -Claude            Also link the six entries into $HOME/.claude/skills.
-  -Check             Report state only, change nothing. Exit 0 if all six resolve.
+  -Claude            Also link the three entries into $HOME/.claude/skills.
+  -Check             Report state only, change nothing. Exit 0 if all three resolve.
   -DryRun            Print what would be done, change nothing.
   -Force             Replace a symlink or junction that points elsewhere. Never deletes
                      a real file or directory.
@@ -35,17 +35,12 @@ Exit codes: 0 ok, 1 an entry is unresolved or skipped, 2 not a rolling-wave-plan
 $homeDir = if ($env:HOME) { $env:HOME } else { $env:USERPROFILE }
 if (-not $SkillsDir) { $SkillsDir = Join-Path $homeDir '.agents/skills' }
 
-# The six skills-directory entries and their path inside the repo ('' = the repo root).
+# The three skills-directory entries and their path inside the repo ('' = the repo root).
+# Every entry is a skill in its own right and resolves on its own SKILL.md.
 $entries = @(
   @{ Name = 'rolling-wave-planning';       Rel = '' },
   @{ Name = 'pre-rolling-wave-planning';   Rel = 'skills/pre-rolling-wave-planning' },
-  @{ Name = 'human-assisted-verification'; Rel = 'skills/human-assisted-verification' },
-  # `mentor-documentation-system` is a bundle, not a skill: it has no SKILL.md of its own,
-  # only a README and the two nested skills that are entries in their own right. It is
-  # linked so that paths inside it stay reachable, and it resolves on the directory alone.
-  @{ Name = 'mentor-documentation-system'; Rel = 'skills/mentor-documentation-system'; Bundle = $true },
-  @{ Name = 'human-engineering-docs';      Rel = 'skills/mentor-documentation-system/skills/human-engineering-docs' },
-  @{ Name = 'senior-mentor';               Rel = 'skills/mentor-documentation-system/skills/senior-mentor' }
+  @{ Name = 'human-assisted-verification'; Rel = 'skills/human-assisted-verification' }
 )
 
 $script:Problems = 0
@@ -181,9 +176,7 @@ foreach ($e in $entries) {
 
 $resolved = 0
 foreach ($e in $entries) {
-  $isBundle = $e.ContainsKey('Bundle')
   if (Test-Path -LiteralPath "$SkillsDir/$($e.Name)/SKILL.md") { $resolved++ }
-  elseif ($isBundle -and (Test-Path -LiteralPath "$SkillsDir/$($e.Name)" -PathType Container)) { $resolved++ }
 }
 Write-Output ''
 Write-Output "$resolved/$($entries.Count) skills resolve"

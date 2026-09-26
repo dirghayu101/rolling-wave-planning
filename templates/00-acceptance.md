@@ -4,7 +4,7 @@ Written at `phase: intake`, immediately after `planning/00-intake.md`, straight 
 
 **This is the developer's own list, not a restatement of the plan.** One row per requirement they stated, in **their words**, quoted or lightly trimmed, never paraphrased into agent vocabulary: a paraphrase is already an interpretation, and the whole point of the list is to check the work against what was actually asked. A rant of twenty sentences usually holds fifteen to twenty rows. Split a sentence that carries two requirements into two rows; keep a requirement you do not yet understand and mark it for the interview.
 
-**It is checked at every gate.** Cards name the rows they serve (`Acceptance rows served:` on `templates/0-card.md`), the item `agent-verified` gate appends evidence to those rows, and the batch `done` gate refuses to close while a row still reads `open`. `00-plan.md` STATE carries the count (`acceptance: <n> of <m> rows met`), so a cold session sees progress without loading this file.
+**It is checked at two points.** Cards name the rows they serve (`Acceptance rows served:` on `templates/0-card.md`), the item PR gate appends evidence to those rows, and the batch cannot close while a row reads `open` without a line in `00-plan.md` § Hand-back. STATE carries the count (`acceptance: <n> of <m> rows met`), so a cold session sees progress without loading this file.
 
 **Verdicts are the developer's.** An agent fills the `Agent check` column with a pointer to evidence and stops there, exactly as it hands over an L5 row at `open`. The four verdict values:
 
@@ -30,10 +30,10 @@ Every project gets these, whether or not the rant says them. Keep the numbering 
 
 | # | Requirement | Where it lives | Agent check (evidence) | Human verdict |
 |---|---|---|---|---|
-| <i> | Every surface flagged as sensitive gets a security pass | the card's `Sensitive surfaces:` line, review point 2's security pass (`references/review.md`) | <the security review on each flagged feature's PR> | open |
+| <i> | Every surface flagged as sensitive gets a security pass | the card's `Sensitive surfaces:` line, the security pass inside the feature review (`references/review.md`) | <the security section of each flagged feature's review> | open |
 | <i+1> | Tested as far as L1 to L4 allow, with the batch Testing plan actually run | `references/verification.md` ladder, `00-plan.md` § Testing plan (every group and flow at `ran <date>` or `n/a`) | <the evidence logs, the Testing plan rows> | open |
-| <i+2> | Every feature is documented for a human reader | `docs/NNN-<slug>.md` per feature, indexed in `docs/000-index.md` | <the chapters and the index rows> | open |
-| <i+3> | No machine-specific binding is written into shared skill files | bindings live in `02-adapters.md` and `<project root>/adapters.default.md` only | <the audit's check for machine-specific bindings and vendor names> | open |
+| <i+2> | Every feature carries a before and after flow a reviewer can follow | `flows/<n>.<f>-<slug>.md` per feature | <the flow files, with their pinned SHAs> | open |
+| <i+3> | No machine-specific binding is written into shared skill files | bindings live in `agent/adapters.md` and `<project root>/adapters.default.md` only | <a grep for model and product names outside those two files> | open |
 | <i+4> | The developer's standing rules are honoured | their global rules file, plus the project's own agent instructions | <name the rules that bear on this effort, and where each is satisfied> | open |
 
 ## Interview round 1 record
@@ -47,7 +47,7 @@ Filled when the list is confirmed, before any design question is asked. `plannin
 
 ## Changes after confirmation
 
-A requirement arriving mid-effort is a new row here, dated, as well as a mid-flight input triaged per `references/resume.md`. Never rewrite a confirmed row in place: strike it and add its replacement, so the audit trail survives.
+A requirement arriving mid-effort is a new row here, dated, as well as a mid-flight input triaged per `references/resume.md`. Never rewrite a confirmed row in place: strike it and add its replacement.
 
 | Date | Row | What changed | Why |
 |---|---|---|---|

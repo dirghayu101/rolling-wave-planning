@@ -1,9 +1,9 @@
-# Interview — New-user onboarding flow
+# Interview: New-user onboarding flow
 
 Set at `phase: interview`. Transcript accumulates round by round; a settled question is never
 re-asked.
 
-## Round 1 — 2026-09-14
+## Round 1, 2026-09-14
 
 1. **Entry point: modal over the dashboard, or a real page at its own route?**
    - Modal: faster to build, but not resumable from a reopened email link, and doesn't survive a
@@ -19,7 +19,7 @@ re-asked.
    - Recommendation: fixed 4 steps for v1; revisit if usage data says otherwise.
    - **Answer: fixed 4 steps.** → Decision 2.
 
-## Round 2 — 2026-09-15
+## Round 2, 2026-09-15
 
 3. **Skip affordance: allowed from step 1, or only from step 2 onward?**
    - From step 1: maximum flexibility, but workspace name is a hard dependency for every later
@@ -28,7 +28,7 @@ re-asked.
    - Recommendation: step 2 onward, since step 1 has no fallback default worth shipping.
    - **Answer: step 2 onward.** → Decision 3.
 
-## Round 3 — not yet asked
+## Round 3, not yet asked
 
 Next questions, per `planning/02-edge-cases.md`: progress persistence (server-side vs
 browser-local), the data-source step's provider scope, and whether an SSO-provisioned

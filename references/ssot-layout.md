@@ -1,90 +1,94 @@
 # SSOT layout
 
-Reference for `rolling-wave-planning`. Load it when a batch is being scaffolded, when a file's home is in question, or when `00-plan.md` reads `layout: v1`.
+Reference for `rolling-wave-planning`. Load it when a batch is being scaffolded, or when a file's home is in question. A batch whose STATE reads `layout: v1` or `layout: v2` loads `references/migration-3.md` instead.
 
-## Why the record is sharded
+## The split
 
-Audits of nine real efforts found the old single-file `00-plan.md` design failing on resume cost: plans grew to 700–1,400 lines of accumulated item cards and outcome prose, overwhelming the agents reading them, not just humans. Sharding is the fix, and it is load-bearing: a tiny entry file, one card per item, one file per feature, so a resume reads the entry file, the current item's card, the current feature file and that item's working file, whatever the batch size.
-
-## Step 0: creating the directory
-
-1. **Ask the user where it goes;** suggest the project convention (for example `docs/features/<N>-<name>/`). **List sibling dirs first and take the next unused number**: a real audit found two dirs both numbered 9. The scan must expect **deferred stub dirs**: a `<M>-<slug>/` holding only a `README.md` is a real sibling that owns its number, and skipping it collides two efforts on one number.
-2. **Everything a later session needs lives INSIDE this directory.** If a bootstrap plan, interview record, or triage note exists elsewhere (a session scratchpad, a harness plans directory), copy it in. External pointers die with the session that made them.
-3. Write `layout: v2` into the STATE block at creation. It is how a future session knows which of the two trees below it is standing in.
-
-## The v2 tree
+Five directories the developer opens. One the developer never opens.
 
 ```
 <N>-<slug>/
-  00-plan.md          STATE (phase + layout) + decisions + testing plan + ledger
-  01-verification.md  human checklist index, verdict ticks
-  02-adapters.md      role → driver bindings, generated at kickoff
-  planning/           00-intake.md 00-acceptance.md 01-exploration.md 02-edge-cases.md 03-blueprint/ 04-interview.md
-  rollout/
-    <n>-<item-slug>/  numbered in execution order
-      0-card.md       the item's stable card
-      <f>-<feature>.md  per-feature file
-  verification/       <n>.<f>-<slug>.md  group-<slug>.md   (L5, human-only)
-  working/<item>.agent.md        JIT volatile detail, exactly ONE live file per item
-  docs/               NNN-<slug>.md reader chapters, one per feature
-  assets/             screenshots, captured logs (copy expiring evidence in)
+  00-plan.md        STATE, decisions, testing plan, ledger, hand-back list. Under 100 lines.
+  planning/         intake, acceptance, exploration, edge cases, blueprint, interview
+  flows/            one file per feature: before and after Mermaid diagrams, written once
+  verification/     the verification pass, run on dev: one file per feature or per group
+  runbooks/         the production stage: run by hand after the dev pass, numbered, plus 0-release.md
+  agent/            everything else
 ```
+
+`agent/` holds the machinery:
+
+```
+  agent/
+    adapters.md            role to driver bindings, generated at kickoff
+    <n>-<item>/
+      0-card.md            HEAD: the item's stable card
+      <f>-<slug>.md        HEAD: one file per feature (scope, links, test strategy, score)
+      <f>-<slug>.log.md    LOG: append-only, one per feature
+      resume.md            HEAD: ONE resume block per item, overwritten
+    assets/                kept captures: screenshots, exported logs, traces
+    harness/               scripts a dispatch wrote that are worth replaying
+```
+
+**Mark `agent/` generated.** At scaffold, add one line to the repo's `.gitattributes`:
+
+```
+<path to batch dir>/agent/** linguist-generated=true
+```
+
+GitHub then collapses `agent/**` in every PR diff, so a reviewer sees code, flows and verification without scrolling past machinery. Add the line in the scaffold commit, not later.
 
 ## Per-file contracts
 
-**`00-plan.md`**: the entry point. Item cards do NOT live here; that is what kept every audited plan file growing without bound. ONLY:
+**`00-plan.md`** (HEAD). The entry point. **Under 100 lines.** Rewritten in place, never appended to. ONLY:
 
-1. **STATE** (≤10 lines): what this effort is, `phase:`, `layout:`, `acceptance: <n> of <m> rows met` (counted from `planning/00-acceptance.md` at each gate and each audit, so a cold session sees progress without loading that file), and what to do next. **Edited in place on every re-plan, never by appending a superseding "new plan" section.** History lives in git; four stacked re-plan narratives are what made one audited 969-line plan unskimmable.
-2. **Decisions**, a table: `| # | Decision | Choice + why | Date |`. When a decision is reversed, rewrite its Choice cell as: was X → now Y, why the evidence wins, dated. A stale decision sitting above a contradicting ledger row is drift.
-3. **Testing plan**, batch scope: the cross-item groups (a flow that only exists once two or more items are in, with the item it is recorded on and its status), the end-to-end flows with the role that drives each and the gate it runs at, the environment the stack under test runs in with its seed and reset lines, and the load-and-performance criteria or `none stated`. Written at scaffold from the interview's testing round, updated when an item is inserted, and copied per item into that item's card when it opens. It is the only place cross-item and end-to-end testing is defined; cross-links improvised between feature files are drift.
-4. **Status ledger**, one row per item: `| # | Item | Stage | Note (one sentence) |`, linking to `rollout/<n>-<item>/0-card.md`. Detail never goes in cells.
-5. **Forward links** to any deferred sibling stub dir spun out of this batch, so the discovery is findable from the batch it came from.
+1. **STATE**, 10 lines or fewer: what this effort is, `phase:`, `layout: v3`, `acceptance: <n> of <m> rows met`, and the single next action.
+2. **Decisions**, a table: `| # | Decision | Choice + why | Date |`. A reversed decision is rewritten in place as `was X, now Y`.
+3. **Testing plan**, batch scope: cross-item groups, end-to-end flows with the role that drives each, the environment with its bring-up, seed and reset lines, and the load criteria or `none stated`.
+4. **Status ledger**, one row per item: `| # | Item | Stage | Note |`, linking to `agent/<n>-<item>/0-card.md`. Detail never goes in cells.
+5. **Hand-back list**: what the developer owes, one line each. Verification files waiting for a pass, runbooks waiting to be run, secrets to mint, devices to test on. This is the list the developer reads when the agent stops.
+6. **Forward links** to deferred sibling stub dirs.
 
-Copy the skeleton from `templates/00-plan.md`.
+Copy `templates/00-plan.md`.
 
-**`01-verification.md`**: the human checklist **index**: one row per verification file in `verification/`, with its tick. The rows themselves live in `verification/<n>.<f>-<slug>.md` (per feature) and `verification/group-<slug>.md` (cross-feature), authored per the `human-assisted-verification` skill. Ticking is what promotes an item to `complete`; the same-commit rule and the promotion mechanics are in `references/verification.md`. Audits found ledgers asserting DONE above fully unchecked checklists in 2 of 4 batches. No human-verifiable surface (pure tooling)? Record the substitute (fault injection, CI gates) in the item's card, never drop the file silently.
+**`planning/`**: the pre-execution record, one checkpoint per phase, written by `pre-rolling-wave-planning`: `00-intake.md`, `00-acceptance.md`, `01-exploration.md`, `02-edge-cases.md`, `03-blueprint/`, `04-interview.md`. A phase left without its checkpoint cannot be resumed, only redone.
 
-**`02-adapters.md`**: the batch's driver table: every role bound to a chosen skill, tool or tier, with its detected alternatives and a one-line invocation. Generated at kickoff by copying the project defaults file `<project root>/adapters.default.md` and re-running detection, so the interview only has to resolve the delta; the first batch in a project generates it from detection alone and saves it back as the defaults file. The user re-binds a role by editing this file, and packets read the binding rather than naming a product. Procedure, role list and the template: `references/adapters.md` and `templates/02-adapters.md`.
+**`flows/<n>.<f>-<slug>.md`**: the human's map for reviewing the PR. Before and after Mermaid diagrams of the flow the feature changes, each node naming a file plus a function or symbol and carrying a GitHub permalink at a pinned SHA. **Written once, never edited.** Shape and rules: `templates/flow.md`.
 
-**`planning/`**: the pre-execution record, one checkpoint per phase, written by `pre-rolling-wave-planning` as each phase closes: `00-intake.md` (the ask in the user's own words plus extracted goals, constraints and unknowns), `00-acceptance.md` (below), `01-exploration.md`, `02-edge-cases.md`, `03-blueprint/` (wireframes and the control/state inventory, see `references/blueprint.md`), `04-interview.md` (rounds, in order). A phase left without its checkpoint cannot be resumed, only redone.
+**`verification/<n>.<f>-<slug>.md`**, and `verification/group-<slug>.md` for a cross-feature group: **the dev pass, run entirely on dev.** Walkthrough order over the flow file, a short replay section, then the judgement rows only a human can make. Every row runs against the app started locally from the batch branch against the dev database, plus the dev database console. **Nothing here names production**, not a console, not a credential, not a `*:prod` command, not a migration push; that work is a runbook step, and the production post-check that proves it landed is the second stage of the same flow. Verdict cells are filled by hand, never by an agent. Authored per the `human-assisted-verification` skill; shape in `templates/verification-feature.md`.
 
-**`planning/00-acceptance.md`**: the batch's acceptance list, written at intake straight from the rant, one row per requirement **in the developer's own words**, plus the implicit rows every project gets (security pass on the surfaces the cards flag, tested as far as L1 to L4 allow, every feature documented, no machine-specific binding in shared skill files, the developer's standing rules honoured). The interview's first round confirms it before any design question. Cards name the rows they serve, gates append evidence to those rows, and the batch cannot reach `done` while a row is still `open`. It is its own file, not a section of `00-plan.md`, so that the entry file stays skimmable and the list is loaded only at gates and audits. Template: `templates/00-acceptance.md`.
+**`runbooks/<k>-<slug>.md`**: a production procedure run by hand, never by an agent, numbered in run order. Written only for a feature that needs a production step (a migration, a secret, a key cutover, a config flip, a store submission). It holds what it does in plain words, preflight, dry run, apply, the post-check SQL or command that proves it landed, rollback, and known consequences. Production evidence lives here and is never duplicated into `verification/`. Template: `templates/runbook.md`.
 
-**`rollout/<n>-<item>/0-card.md`**: the item's stable layer: problem, files involved, evidence, acceptance criteria, the **test strategy** (four lines: the L4 flow across this item's features plus its cross-item group, the environment L2 to L4 run in, the non-functional criterion and the tool that measures it, and, filled at `agent-verified`, how it was actually tested; the first three are copied from `00-plan.md` § Testing plan when the item opens), sensitive-surface flags, and the **feature index** (features with their stage, filled in when the item opens). **At the item's terminal stage, append `Outcome:` (≤5 bullets).** If the card's premise was overturned, use a dated correction block (assumed → actually → why it was plausible). A card approaching 100 lines means solution detail is leaking in: move it to `working/`. Template: `templates/0-card.md`.
+**`runbooks/0-release.md`**: one per batch, written at the batch PR gate. It sequences the whole release: merge order, the numbered runbooks in the order to run them, the dashboard release and its tag, the app tag or OTA push, and the version bump. It links the project's own release conventions and never restates them. Template: `templates/release-runbook.md`.
 
-**`rollout/<n>-<item>/<f>-<feature>.md`**: the human's skim surface: what and why, links, test strategy, evidence rows, the two confidence scores. **Copy the template verbatim from `templates/feature.md`**; solution detail belongs in `working/`. Item-level architecture and trade-off notes that are worth the human's time belong in that feature's `docs/` chapter, not in a side file here.
+Runbooks are **deleted after the push they describe**, in the commit that records the push. A runbooks directory that outlives its deploy is stale instructions.
 
-**`verification/`**: L5 files: human-only steps, zero agent steps, each row an action plus an observation with the exact path to it. Authored per `human-assisted-verification`; shape in `templates/verification-feature.md`.
+**`agent/adapters.md`**: the batch's driver table. Every role bound to a skill, tool or tier, with a one-line invocation. Generated at kickoff from `<project root>/adapters.default.md` plus a detection run. Procedure: `references/adapters.md`. Template: `templates/02-adapters.md`.
 
-**`working/<item>.agent.md`**: JIT detail, plus two ledgers. `## Dispatch record` carries the **tier recorded per subagent dispatch**; `## Ephemera` carries one row per thing a dispatch started or wrote outside the repo and the SSOT, with the columns `| What | Where | Teardown | Swept on |`. Every returned "Ephemera started" line becomes a row, the teardown command is copied in with it, and `Swept on` is filled with the date the teardown actually ran, or `kept: <reason>`. The gates in `references/lifecycle.md` and the pause protocol in `references/resume.md` sweep this table, and the audit reads it. Exactly ONE live file per item; restructure by editing in place, never by spawning a second file (two "live" files with different currency broke one audited resume path). Prune superseded sections as you go, except the Ephemera ledger, which is pruned only by sweeping. Deleted at close-out, and only once every Ephemera row is swept or flagged `kept:`. Packet shape: `templates/handoff.agent.md`.
+**`agent/<n>-<item>/0-card.md`** (HEAD): the item's stable layer. Problem, files involved, evidence, acceptance criteria, test strategy, sensitive-surface flags, feature index. Rewritten in place when the premise changes; no correction block, no dated marker. Template: `templates/0-card.md`.
 
-**`docs/`**: the reader-facing docset, one chapter per feature, `NNN-<slug>.md` where `NNN` is a three-digit **reading-order** prefix (take the next number; reading order never shifts when item slots shift). Follow the `human-engineering-docs` conventions: `000-index.md` with an abstract, `## TL;DR` per file, evidence labels, written to the human. The chapter is written on the feature branch before its PR merges, while context is hot, not at batch end. **Deep-dives shard, not stretch:** a subject needing more than 100 lines becomes two or more numbered self-contained files, never one long one. Prefer a small diagram (ASCII inline, or `excalidraw-diagram-generator`) the moment a flow or matrix gets re-explained in prose a second time.
+**`agent/<n>-<item>/<f>-<slug>.md`** (HEAD): one per feature. Stage line, what and why, links, test strategy, one confidence line. Rewritten in place. Template: `templates/feature.md`.
 
-**`assets/`**: screenshots, captured logs, exported traces. Copy expiring evidence in: log retention is typically a day or two, and a verification row that cites a log nobody saved is unprovable by the time anyone reads it. **This directory holds kept evidence, never ephemera**: working screenshots, diff images and temp files live in the scratch root bound in `02-adapters.md` § Cleanup, are recorded in the item's `## Ephemera` ledger, and are copied here only when a row cites them.
+**`agent/<n>-<item>/<f>-<slug>.log.md`** (LOG): append-only, one per feature. Dispatch rows, evidence rows, review findings. **Every entry carries the SHA it was true at.** Nothing in this file is ever edited: a fact that stopped being true gets a new entry, and the old one stands with its SHA.
 
-## Line targets
+**`agent/<n>-<item>/resume.md`** (HEAD): exactly one resume block per item, **overwritten every time**, never appended to. Where the item is, what is in flight, the exact next step, and the facts the next step rests on. A second block, an addendum, or a "supersedes the previous" line is the failure this file exists to prevent.
 
-Soft target **~100 lines** on the human-facing files only: `00-plan.md`, `0-card.md`, feature files, and `docs/` chapters. Past it, the file has stopped being skimmable and detail is leaking out of `working/`: shard or move, do not shrink the font.
+**`agent/assets/`**: kept captures only. Copy expiring evidence in: log retention is typically a day or two. Working screenshots and temp files live in the scratch root bound in `agent/adapters.md` § Cleanup and are torn down, not kept here.
 
-Agent-facing files (`working/`, packets, this repo's references) have **no line cap**, but they are pruned: delete superseded sections as they are superseded. An unbounded file of live content is fine; an unbounded file of sediment is not.
+**`agent/harness/`**: a script a dispatch wrote that the next dispatch or the developer will re-run (a seeding script, a login-state generator, a capture loop). Anything not worth re-running is ephemera and is swept.
 
-## Three-tier file naming
+## Size
 
-| Suffix       | Meaning                                                  | Examples                                                                           |
-| ------------ | -------------------------------------------------------- | ---------------------------------------------------------------------------------- |
-| `*.agent.md` | Agent machinery. Reading it wastes the developer's time. | `working/1-pwa-shell.agent.md`, handoff packets                                    |
-| plain `.md`  | Shared record. The developer skims it when relevant.     | `00-plan.md`, `0-card.md`, feature files                                           |
-| `*.human.md` | **The developer must act or decide.**                    | prod runbooks, decisions awaiting their call, security trade-offs needing sign-off |
+**`00-plan.md` is capped at 100 lines.** Past it, move detail into a card.
 
-The suffix, not the directory, says who owns the file; every file is numbered for reading order, `.human.md` included. **Test for `.human.md`:** if the file's open TODO belongs to the developer, it is `.human.md`. Saying it in chat is not a substitute: chat scrolls away, the suffix makes the obligation findable weeks later.
+**Files under `agent/` target 150 lines.** Past it, the feature needs another shard, not a longer file. A subagent loads one feature's HEAD file and one LOG file; both must fit a packet's budget. Shard by feature, never by topic.
 
-## v1 batches
+`flows/` and `verification/` files are sized by the flow and the pass, not by a cap.
 
-**A batch whose `00-plan.md` says `layout: v1`, or carries no `layout:` field at all, keeps its own layout. Do not migrate it.** Renaming directories under a paused batch breaks every link in its STATE, its ledger and its issues, for no gain.
+## What does not exist here
 
-Two differences will trip you if you assume v2:
-
-- **`02-` meant something else.** In v1, `02-deferred.md` was a file of out-of-scope discoveries. In v2 the number belongs to `02-adapters.md`, and deferred work moved out of the batch entirely into sibling stub dirs (`references/resume.md` § Mid-flight inputs). In a v1 batch, read `02-deferred.md` as deferred work and keep appending to it; never overwrite it with an adapters table.
-- **`human/` was the docs dir.** v1 chapters live in `human/NNN-<slug>.md` with the same conventions v2 uses in `docs/`. Keep writing them to `human/` in that batch.
-
-v1 also has no `planning/`, no `verification/` dir (its checklist rows sit inline in `01-verification.md`, sharded to `verification/<item>.md` only past ~150 lines), and no `02-adapters.md`, so a v1 batch has no recorded role bindings: choose drivers per dispatch and say so in the working file. v1 stage names are `pending → in-progress → code-done → verified`; the mapping to the v2 stage sets is in `references/lifecycle.md`.
+- No docs chapters. A reader-facing docset is a separate skill and a separate decision; this layout does not carry one.
+- No confidence re-derivation prose. One line, `agent N / ceiling M`, in the feature file.
+- No compaction addenda. The resume block is overwritten.
+- No dated corrections in `agent/` files, and no `Previously:` chains in source headers.
+- No index file over `verification/`. The ledger's Stage column and `00-plan.md` § Hand-back are the index.

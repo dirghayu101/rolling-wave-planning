@@ -11,19 +11,12 @@ DO_CLAUDE=0
 PROBLEMS=0            # any entry that is skipped
 NOT_A_LINK=0          # a real file/dir sits where an entry belongs
 
-# The six skills-directory entries and their path inside the repo ("" = the repo root).
-ENTRY_NAMES=(rolling-wave-planning pre-rolling-wave-planning human-assisted-verification \
-             mentor-documentation-system human-engineering-docs senior-mentor)
+# The three skills-directory entries and their path inside the repo ("" = the repo root).
+# Every entry is a skill in its own right and resolves on its own SKILL.md.
+ENTRY_NAMES=(rolling-wave-planning pre-rolling-wave-planning human-assisted-verification)
 ENTRY_RELS=("" \
             "skills/pre-rolling-wave-planning" \
-            "skills/human-assisted-verification" \
-            "skills/mentor-documentation-system" \
-            "skills/mentor-documentation-system/skills/human-engineering-docs" \
-            "skills/mentor-documentation-system/skills/senior-mentor")
-# `mentor-documentation-system` is a bundle, not a skill: it has no SKILL.md of its own,
-# only a README and the two nested skills that are entries in their own right. It is
-# linked so that paths inside it stay reachable, and it resolves on the directory alone.
-ENTRY_KINDS=(skill skill skill bundle skill skill)
+            "skills/human-assisted-verification")
 
 usage() {
   cat <<'EOF'
@@ -32,8 +25,8 @@ setup.sh - install the rolling-wave-planning skill family.
 Usage: ./setup.sh [options]
 
   --skills-dir <path>  Skills directory to link into (default: $HOME/.agents/skills).
-  --claude             Also link the six entries into $HOME/.claude/skills.
-  --check              Report state only, change nothing. Exit 0 if all six resolve.
+  --claude             Also link the three entries into $HOME/.claude/skills.
+  --check              Report state only, change nothing. Exit 0 if all three resolve.
   --dry-run            Print what would be done, change nothing.
   --force              Replace a symlink that points elsewhere. Never deletes a real
                        file or directory.
@@ -148,11 +141,8 @@ done
 resolved=0
 i=0
 while [ $i -lt ${#ENTRY_NAMES[@]} ]; do
-  name=${ENTRY_NAMES[$i]}; kind=${ENTRY_KINDS[$i]}; i=$((i + 1))
-  if [ -r "$SKILLS_DIR/$name/SKILL.md" ]; then resolved=$((resolved + 1))
-  elif [ "$kind" = bundle ] && [ -r "$SKILLS_DIR/$name" ] && [ -d "$SKILLS_DIR/$name" ]; then
-    resolved=$((resolved + 1))
-  fi
+  name=${ENTRY_NAMES[$i]}; i=$((i + 1))
+  if [ -r "$SKILLS_DIR/$name/SKILL.md" ]; then resolved=$((resolved + 1)); fi
 done
 echo
 echo "$resolved/${#ENTRY_NAMES[@]} skills resolve"

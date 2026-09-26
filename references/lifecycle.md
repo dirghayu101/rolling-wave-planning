@@ -2,152 +2,148 @@
 
 Reference for `rolling-wave-planning`. Loaded at phase `scaffolded` and at phase `executing`, and it is the only target either phase loads.
 
-**At `executing`, do not read this as a procedure from the top.** Find the in-progress item's stage in the `00-plan.md` ledger and the in-progress feature's stage in that item's card feature index, go straight to that transition below, and satisfy its gate. The ledger is the program counter.
+**At `executing`, do not read this from the top.** Find the open item's stage in the `00-plan.md` ledger and the open feature's stage in that item's card feature index, go straight to that transition, and satisfy its gate. The ledger is the program counter.
 
-**Before choosing that step, check whether an audit is due.** Count the rows in `working/<item>.agent.md` § Dispatch record below the last row whose Packet cell reads `audit`. When that count has reached N, the number bound in `02-adapters.md` § Audit (default 8), **the audit is the next step**, not the gate you were heading for: dispatch `templates/audit-handoff.md` on the `heavy` tier, then act on its realignment actions. The other two triggers, every pause and the one before the batch PR opens, are in `references/review.md` § Audit.
+A file whose home is in question, or a directory that does not yet exist: `references/ssot-layout.md`.
 
 ## Unit hierarchy
 
-| Unit        | Definition                                                                                                               | Planned                               |
-| ----------- | ------------------------------------------------------------------------------------------------------------------------ | ------------------------------------- |
-| **Batch**   | The whole effort. One SSOT directory.                                                                                    | Up front (stable layer only)          |
-| **Item**    | Today's card.                                                                                                            | Up front (stable layer only)          |
-| **Feature** | One skimmable PR (roughly **≤400 changed lines excluding tests and generated code**) delivering one coherent behavior. | **Just in time, when the item opens** |
+| Unit | Definition | Planned |
+|---|---|---|
+| **Batch** | The whole effort. One SSOT directory. | Up front, stable layer only |
+| **Item** | Today's card. | Up front, stable layer only |
+| **Feature** | One skimmable PR, roughly 400 changed lines or fewer excluding tests and generated code, delivering one coherent behavior. | **Just in time, when the item opens** |
 
-Pre-decomposing item 7's features before item 1 starts is the rot this skill exists to avoid. **An item that is already feature-sized gets no sub-breakdown**: one item branch, one PR, one feature file numbered `1-`. Do not manufacture a split to satisfy the shape.
+**An item that is already feature-sized gets no sub-breakdown**: one item branch, one PR, one feature file numbered `1-`. Do not manufacture a split to satisfy the shape.
 
-## Stage sets
+## Stages
 
-**Feature** (in the card's feature index): `pending → in-progress → reviewed → agent-verified → documented → merged`.
+Four, at both feature scope (the card's feature index) and item scope (the `00-plan.md` ledger):
 
-**Item** (in the `00-plan.md` ledger): `pending → in-progress → agent-verified → documented → complete`.
+`open` to `built` to `reviewed` to `merged`. Plus `blocked` (with the blocker in the note) and `deferred`.
 
-Either scope can also sit at `triage` (not yet classified), `blocked` (with the blocker named in the note), or `deferred` (it left this batch, see `references/resume.md` § Mid-flight inputs).
+`merged` is the **agent terminal** at both scopes. Everything an agent can do is done and the batch branch carries the work.
 
-`documented` is the **agent terminal** at both scopes: everything an agent can do is done, the work is handed over, and only the human's own verification stands between the item and `complete`.
-
-Mapping from a `layout: v1` batch: v1 `code-done` at feature scope is v2 `merged`; v1 `code-done` at item scope is v2 `agent-verified` (the item PR merged, nothing human-verified yet); v1 `verified` is v2 `complete`. v1 has no equivalent of `reviewed` or `documented`. Do not rewrite a v1 ledger into v2 names; read it through this mapping.
+`verified` is set from the ticks in `verification/`, made by hand, usually weeks later, possibly for a cross-feature group rather than one feature. The agent never sets it. The resume sweep may set it when the ticks are already on disk (`references/resume.md`).
 
 ## The loop
 
-1. **Open an item**: take the item `pending → in-progress` gate below.
-2. **Open a feature**: take the feature `pending → in-progress` gate.
-3. **Work it**, delegating the how. Every subagent dispatch follows `references/dispatch.md` and carries a tier and an Ephemera slot; record the tier in `working/<item>.agent.md` § Dispatch record and every returned "Ephemera started" line in its `## Ephemera` ledger. New facts that change the card's problem statement get edited into the card now, not narrated in the working file.
-4. **Walk the feature up its stages**, one gate at a time, until it is `merged`. Then open the next feature.
-5. **Close the item** through its own gates once every feature is `merged`.
+1. **Open an item**: take the item `open` gate.
+2. **Open a feature**: take the feature `open` gate.
+3. **Work it**, delegating the how. Every dispatch follows `references/dispatch.md`, carries a tier, and appends one row to the feature's `.log.md`.
+4. **Walk the feature to `merged`**, one gate at a time. Then open the next feature, or the next overlapping feature in its own worktree (`references/dispatch.md` § Concurrency).
+5. **Close the item** once every feature is `merged`.
 
 ## Feature transitions
 
-Each transition is a checklist. The stage in the feature index moves when every box is ticked, not when the work "feels" done.
+### to `open`
 
-### `pending → in-progress`
+- [ ] `agent/<n>-<item>/<f>-<slug>.md` exists, copied from `templates/feature.md`, with the what and why, links and test strategy planned.
+- [ ] `agent/<n>-<item>/<f>-<slug>.log.md` exists, empty.
+- [ ] **The BEFORE flow is drawn.** Dispatch the `flow-explorer` role (`light` tier) to write `flows/<n>.<f>-<slug>.md` with the before diagram of the existing flow this feature will change, pinned to the base SHA. **Skip it, and say so in one line in the file, when the flow does not exist yet** (a feature that adds a surface from nothing has no before). Shape: `templates/flow.md`.
+- [ ] Ceremony ON: the feature branch is cut and its PR will be linked per `references/ceremony.md`. Load that file now if it is not loaded; it loads once per item, not once per session.
+- [ ] The implementation is dispatched per `references/dispatch.md`, with a tier, and the dispatch row is appended to the feature's `.log.md` with the SHA it was dispatched at.
+- [ ] TDD is running. A bug feature has been through `systematic-debugging` first.
 
-- [ ] The feature file `rollout/<n>-<item>/<f>-<slug>.md` exists, copied verbatim from `templates/feature.md`, with the what/why, links and test strategy planned.
-- [ ] Ceremony ON: the feature branch is cut and its PR will be linked per `references/ceremony.md` § Platform linking. Load `references/ceremony.md` now if it is not already loaded; it is loaded once per item, not once per session.
-- [ ] The implementation is dispatched per `references/dispatch.md`, with a tier, and the dispatch is recorded in the working file.
-- [ ] TDD is running (see below). A bug feature has been through `systematic-debugging` first.
+### `open` to `built`
 
-### `in-progress → reviewed`
+- [ ] Tests green. The feature file's test strategy "Actually ran" column is filled from the real run, not from intent.
+- [ ] **The L3 browser pass has run on any UI change**, driving the real surface through the bound adapter: the rendered element or state asserted, `console --clear` before and `errors --json` after clean of new errors, `network requests` for the calls the change makes, **geometry and focus reads** where layout or keyboard behavior changed, and a screenshot at every breakpoint the feature claims. This pass is what finds real defects; a green suite is not a substitute. Definitions: `references/verification.md`.
+- [ ] Evidence rows appended to the feature's `.log.md`, each with a re-openable pointer and the SHA.
+- [ ] The full test suite runs green before the PR is marked ready.
+- [ ] **The AFTER flow is written** into the same `flows/` file, pinned to the head SHA, at the moment the PR is ready.
+- [ ] Ceremony ON: the feature PR is opened, its description written from `templates/pr-body.md`.
 
-- [ ] Tests green, and the test strategy's "Actually ran" column in the feature file is filled from the real run, not from intent.
-- [ ] **Review point 1** is resolved on the branch, before the PR is opened: spec compliance against the feature file and the card's acceptance criteria, then code quality and reuse. Findings are fixed by a fresh subagent that did not write the code, then re-reviewed in scope, and the exchange is recorded in `working/<item>.agent.md`. Procedure and dimensions: `references/review.md`.
-- [ ] Ceremony ON: **the feature PR is opened now** (a draft is fine), linked per `references/ceremony.md` § Platform linking. From here the PR is the durable record: L3 evidence, the docs chapter and review point 2 all attach to it.
+### `built` to `reviewed`
 
-### `reviewed → agent-verified`
+- [ ] **One fresh-eyes review**, on the PR, by an agent that did not write the code. Scope: the diff, the tests, the L3 browser evidence. The security pass rides in the same packet when the card flags a sensitive surface. Procedure and the two-pass limit: `references/review.md`.
+- [ ] Findings are fixed by a fresh subagent that did not write the code and did not review it, then re-reviewed in scope. **Two passes maximum.**
+- [ ] Findings and their resolution are appended to the feature's `.log.md`, each with the SHA it was raised against.
 
-- [ ] **L1 to L3 evidence rows** are recorded in the feature file, each with what was run and what it showed. Ladder definitions, what counts as evidence at each level, and the `agent` and `ceiling` scores: `references/verification.md`.
-- [ ] Anything agent-actionable that would raise the score is **done, not listed**. The "what would raise this" list is only for raises needing human intervention or infrastructure that does not exist yet.
-- [ ] The feature's L5 file exists in `verification/` for the human, with zero agent steps and every verdict `open`. Invoke the `human-assisted-verification` skill to write it; it owns the row shape.
+### `reviewed` to `merged`
 
-### `agent-verified → documented`
+- [ ] **The feature's L5 work has a home in `verification/`**, written by the `human-assisted-verification` skill with every verdict cell reading `open`, every row running on dev, and it rides this PR. Either its own file, or a named cross-feature group file. A group file is written when the **last** feature of the group merges; until then the feature file names the group and this box is ticked by that pointer. A feature with no human-verifiable surface records its substitute in the card.
+- [ ] **A feature that needs a production step** (a migration, a secret, a config flip) has its runbook written as `runbooks/<k>-<slug>.md`, numbered in run order, from `templates/runbook.md`, and it rides this PR: what it does in plain words, preflight, dry run, apply, post-check SQL or command, rollback, known consequences. The read-only production post-check lives here and nowhere else. A feature with no production step gets no runbook.
+- [ ] The feature PR is merged into the item branch per `references/ceremony.md`, a merge commit, not a squash. With ceremony OFF, `merged` means implemented, tests green, committed.
+- [ ] The feature index row in the card is updated, and the item's `agent/<n>-<item>/resume.md` is overwritten.
 
-- [ ] The reader chapter `docs/NNN-<slug>.md` is written **on the feature branch, before the PR merges**, so the PR carries it. It is delegated under the `docs-conventions` role, using the docs-writer binding (external CLI or `subagent`) in `02-adapters.md`, with the contract in `templates/doc-handoff.md`: feature boundary file list, item card path, terms, conventions path. A subagent fallback for that role is a normal outcome, not a failure.
-- [ ] `docs/000-index.md` has the new chapter's row.
+## Minor change lane
 
-### `documented → merged`
-
-- [ ] The feature PR description is self-sufficient (what and why, test strategy, the two scores), with the chapter already on the branch, and the PR is marked ready for review.
-- [ ] **Review point 2** is resolved on the final diff: a fresh-context reviewer reads the diff against the feature file and the card, plus the security pass when the feature's `Sensitive surfaces:` line is not `none`. See `references/review.md`.
-- [ ] The feature PR is merged into the item branch per `references/ceremony.md` (merge commit, not squash). With ceremony OFF, `merged` means implemented, tests green, committed.
-- [ ] The feature index row in the card is updated.
+A feature triaged **minor** in `references/resume.md` skips every checklist above except tests green, the full suite green, the PR opened and merged, and a dispatch row plus a merge row in its log. No before or after flow, no verification file, no L3 pass unless the change is visual (then one screenshot in the PR body is enough), no L4, no integrity check. Its feature file is a stage line, one paragraph of what and why quoting the ruling, and the PR number. Records that a proper feature would fill stay unwritten, not filled with "not applicable". The developer's rule of 2026-09-25: if something is genuinely big and needs proper documentation, do it; otherwise it is overhead.
 
 ## Item transitions
 
-### `pending → in-progress`
+### to `open`
 
-- [ ] The card `rollout/<n>-<item>/0-card.md` is read, and its premise still holds against the repo as it is now. If it does not, the correction goes into the card first, dated.
-- [ ] The item is decomposed into features of ≤400 changed lines each, and the **feature index is written into the card** with every feature at `pending`.
-- [ ] `working/<item>.agent.md` is created with its two ledger headings, `## Dispatch record` and `## Ephemera`, both empty. Exactly one file, for this item.
-- [ ] Ceremony ON: the item branch is cut from the batch branch and the item's tracking issue is opened as a sub-issue of the batch issue, per `references/ceremony.md`.
-- [ ] The card's `## Test strategy` has its first three lines filled from `00-plan.md` § Testing plan: the `L4 flow:` that will exercise this item's features together plus any cross-item group slug the item belongs to, the `Environment:` the plan names for L2 to L4, and the `Non-functional:` criterion with the load tool that measures it, or `none stated`.
-- [ ] Ledger row moved to `in-progress` with a one-sentence note.
+- [ ] The card is read and its premise still holds against the repo as it is now. If it does not, the card is **rewritten in place**. No correction block.
+- [ ] The item is decomposed into features of 400 changed lines or fewer, and the feature index is written into the card with every feature at `open` or `blocked`.
+- [ ] `agent/<n>-<item>/resume.md` is created.
+- [ ] Ceremony ON: the item branch is cut from the batch branch and the item's tracking issue is opened as a sub-issue of the batch issue.
+- [ ] The card's test strategy is filled from `00-plan.md` § Testing plan.
+- [ ] Ledger row moved to `open` with a one-sentence note.
 
-### `in-progress → agent-verified`
+### `open` to `built`
 
-- [ ] **Every feature PR is merged** into the item branch. A feature index row reading `merged` whose PR is still open is drift; fix it before this gate, not after.
-- [ ] The **L4 cross-feature pass** has run: the card's `L4 flow:` exercised for real **in the environment the card's `Environment:` line names**, evidence rows recorded. A cross-item group whose later item this is has run too, and its row in `00-plan.md` § Testing plan reads `ran <date>`. See `references/verification.md`.
-- [ ] The card's `Non-functional:` criterion, when it states one, has been measured with the load tool bound in `02-adapters.md`, and the numbers are in an evidence row.
-- [ ] The card's `How it was tested:` line is filled: at most three lines saying what ran at L1 to L4 across this item's features, in which environment, and where the evidence is.
-- [ ] **Every row in `working/<item>.agent.md` § Ephemera is swept**: its teardown command has been run and `Swept on` carries the date, or the row reads `kept: <reason>`. Containers and background stacks go down through the lines in `02-adapters.md` § Cleanup; the scratch dir the packets named is removed once anything worth keeping has been copied into `assets/`.
-- [ ] **The acceptance rows this item serves are updated**: for each row number on the card's `Acceptance rows served:` line, append the evidence pointer to that row's `Agent check` column in `planning/00-acceptance.md` (an evidence-log row, a test path, a PR link). **The verdict column is the developer's**, exactly like an L5 verdict: an agent never writes `met`. Then re-count `acceptance: <n> of <m> rows met` in `00-plan.md` STATE from what the developer has actually ticked.
-- [ ] The item PR into the batch branch is **open**, and **review point 3** is resolved on it: integration review plus the rogue-check (direction, execution architecture, tiering read from `02-adapters.md` and the recorded packet tiers). See `references/review.md`.
+- [ ] **Every feature PR is merged** into the item branch.
+- [ ] The **L4 cross-feature pass** has run, in the environment the card's `Environment:` line names, with evidence rows appended to the last feature's `.log.md`. A cross-item group whose later item this is has run too, and its row in `00-plan.md` § Testing plan reads `ran <date>`.
+- [ ] The card's `Non-functional:` criterion, when it states one, has been measured with the bound load tool, and the numbers are in an evidence row.
+- [ ] The card's `How it was tested:` line is filled, three lines at most.
 
-### `agent-verified → documented`
+### `built` to `reviewed`
 
-This is the close-out gate. **ALL of:**
+- [ ] The item PR into the batch branch is open, its description written from `templates/pr-body.md`.
+- [ ] **The integrity check has run** on that PR: `templates/integrity-check.md`, `light` tier, fresh context. Three questions and nothing else: do the stage lines agree with the ledger, are all verdict cells in `verification/` still `open`, and is every ephemera row swept or flagged `kept:`. It reports; the orchestrator edits. It is not a review and it does not open the source.
+- [ ] Each acceptance row the card names has its evidence pointer appended in `planning/00-acceptance.md`. **The verdict column is the developer's.** Then re-count `acceptance: <n> of <m> rows met` in STATE.
 
-- [ ] Every feature of the item has its chapter in `docs/`, and `docs/000-index.md` is updated.
-- [ ] The item's verification rows are handed over: `01-verification.md` indexes every `verification/` file for this item, and each one is complete enough for the human to execute without asking a question.
-- [ ] `Outcome:` appended to the card, ≤5 bullets.
-- [ ] `working/<item>.agent.md` deleted, or flagged `kept: <reason>` in the card. Deleting it with an unswept Ephemera row destroys the only record of what is still running; sweep first, then delete.
-- [ ] Ledger note updated, one sentence.
-- [ ] The item PR is merged into the batch branch per `references/ceremony.md`.
+### `reviewed` to `merged`
 
-**The gate is a checklist, not a reminder:** one audited effort collapsed 8/9 working files, the next collapsed 0/8, with the collapse instruction present in every file it ignored. Prose reminders don't survive deadline pressure; gates do.
+- [ ] The item PR is merged into the batch branch.
+- [ ] The ledger row and note are updated, and `00-plan.md` § Hand-back gains one line per verification file and runbook this item leaves for the developer.
+- [ ] `agent/<n>-<item>/resume.md` is overwritten with the item's terminal state.
 
-### `documented → complete`
+## Batch scope
 
-- [ ] **Every L5 row for this item reads PASS** in its `verification/` file and is ticked in `01-verification.md`, or the card's recorded substitute (fault injection, CI gates) is satisfied. Tick and ledger row change go in the same commit; the rule and the promotion sweep are in `references/verification.md`.
-- [ ] The `agent` and `ceiling` scores are re-derived now that the human rows exist, and dated.
-- [ ] Ceremony ON: the item's tracking issue is closed.
+When every item reads `merged`, the batch PR into the trunk opens with its description from `templates/pr-body.md`, and the developer merges it. Nobody else merges that one. Before it opens:
 
-Only the human, or the resume sweep reading their ticks, sets `complete`. An agent never promotes an item past `documented` on its own judgement.
+- [ ] Every cross-item group and end-to-end flow in `00-plan.md` § Testing plan reads `ran <date>` or `n/a`.
+- [ ] The full test suite has run green on the batch branch.
+- [ ] Every row in `planning/00-acceptance.md` reads `met`, `struck: <reason>` or `deferred: <where>`, or is named in § Hand-back as still owed. `met` and `struck` are the developer's verdicts.
+- [ ] Every ephemera row of every item is swept and dated, or carries `kept: <reason>`.
+- [ ] **`runbooks/0-release.md` is written**, from `templates/release-runbook.md`: the merge order, the numbered runbooks in the order to run them, the dashboard release and its tag, the app tag or OTA push, and the version bump. It links the project's own release conventions and never restates them.
+- [ ] `00-plan.md` § Hand-back is complete: every `verification/` file still owed a pass and every `runbooks/` file still to be run by hand, in the order to run them.
 
-**Batch scope.** When every item reads `complete`, the batch PR into `dev` carries review point 4 (whole-batch review and a final rogue-check) and the developer merges it. Nobody else merges that one. The batch `done` gate is a checklist too, and all of it holds before that PR opens:
+Then set `phase: done`. The batch is agent-complete. The code is reviewed through the PRs, the dev pass runs on `verification/`, and `runbooks/0-release.md` is then followed by hand. Items reach `verified` when those ticks land, which the next resume sweep promotes (`references/verification.md` § Promotion).
 
-- [ ] **Every cross-item group and every end-to-end flow in `00-plan.md` § Testing plan reads `ran <date>` or `n/a`.** Review point 4 is a review, not a substitute for a flow nobody ran.
-- [ ] **An audit has run against this batch since the last item closed**, per `references/review.md` § Audit, and its realignment actions are done or recorded in STATE.
-- [ ] **Every row in `planning/00-acceptance.md` reads `met`, `struck: <reason>` or `deferred: <where>`**, each `met` row carrying an evidence pointer and each `deferred` row naming the sibling stub dir or the follow-up batch that took it. `met` and `struck` are the developer's verdicts, set when they sweep the list before merging the batch PR; an agent may record `deferred: <where>` for work it triaged out, and nothing else. A row still `open` blocks the gate: it is a requirement the developer stated and nobody answered, and the hand-back says so instead of the batch quietly closing over it.
-- [ ] **Every Ephemera row of every item is swept** (teardown run and dated) or carries `kept: <reason>`. A closed batch leaves no container running and no scratch dir behind.
+## Commits
 
-Then set `phase: done` and run the promotion pass in `references/verification.md`.
+- **Code and tests commit as they land.** Normal cadence, on the feature branch.
+- **`agent/` files commit at gates only**: feature `merged`, and the item PR. Not per edit.
+- **`flows/`, `verification/` and `runbooks/` ride the feature PR** that produced them.
+- **Never a commit whose whole diff is a record edit, made between gates.** That is the 80-of-128 `docs(...)` commit pattern this rule exists to stop.
+- Read history with `git log --first-parent`, so the batch reads as one merge per feature.
 
 ## TDD is the fixed default
 
-Every code feature is built test-first through `superpowers:test-driven-development`. This is not a per-batch choice any more; it is the default the lifecycle assumes, and an exception is a dated line in the item's card saying which feature and why. Any feature whose subject is a bug goes through `systematic-debugging` before a fix is written, so the failing test encodes a root cause rather than a symptom.
-
-## The working file
-
-Exactly one live `working/<item>.agent.md` per item, holding the volatile detail, the `## Dispatch record` (tier and roles per dispatch) and the `## Ephemera` ledger (`| What | Where | Teardown | Swept on |`, one row per thing a dispatch started or wrote outside the repo and the SSOT). Restructure it by editing in place. It is deleted at the item's close-out gate, once the Ephemera ledger is swept, or flagged `kept: <reason>` in the card. Full contract: `references/ssot-layout.md`.
+Every code feature is built test-first through the `tdd` role's skill, by an implementer with fresh context. An exception is one line in the item's card saying which feature and why. Any feature whose subject is a bug goes through `systematic-debugging` before a fix is written, so the failing test encodes a root cause rather than a symptom.
 
 ## Pausing
 
-A batch that stops mid-item does not just stop, it is paused, and pausing is a ceremony with its own steps. They live in `references/resume.md` § Pausing a batch, together with the resume that undoes them.
+A batch that stops mid-item is paused, which is a ceremony with its own steps: `references/resume.md` § Pausing a batch.
 
 ## Red flags
 
-- A stage moved without its gate. The gate is the definition of the stage, not a suggestion attached to it.
-- A feature at `merged` whose PR is still open, or at `documented` with no chapter in `docs/`.
-- An item at `complete` with an unticked row in `01-verification.md`, or an agent setting `complete` at all.
-- "DONE (verification pending)": that is `agent-verified`, a different stage.
-- An item decomposed into features before its own turn came, or a split manufactured to make a feature-sized item look like three.
-- A second working file for the same item, or "I'll collapse the working files at the end of the batch". Collapse is per item, at close-out.
-- An Outcome block growing past 5 bullets.
-- A feature file or card past ~100 lines: solution detail is leaking out of `working/`.
-- An item opened with its card's `## Test strategy` still holding the template's bracketed text, or closed at `agent-verified` with `How it was tested:` empty.
-- A batch heading for `done` with a cross-item group or end-to-end flow still reading `pending`, or with a row in `planning/00-acceptance.md` still reading `open`.
-- An Ephemera row with an empty Teardown cell: nobody can undo what nobody wrote down. Fill it at the moment the row is written, from the returned report.
-- An item closed at `agent-verified` with unswept Ephemera rows, or a working file deleted over them.
-- An item card with no `Acceptance rows served:` line, or a gate passed without the rows it names being updated.
-- N dispatches past the audit trigger with no `audit` row in the dispatch record.
-- A subagent dispatched without a tier, or the implementer reviewing or verifying its own work.
+- A stage moved without its gate.
+- A feature at `merged` whose PR is still open.
+- A UI change at `built` with no L3 browser evidence row, or an L3 row with no geometry or focus read on a layout or keyboard change.
+- A third review pass on one feature. Two is the limit; a third means the packet was wrong, so fix the packet.
+- A feature opened with no `flows/` file and no line saying the before flow does not exist yet.
+- A `flows/` file edited after it was written.
+- An item decomposed into features before its own turn came.
+- A second resume block, an addendum, or "supersedes the previous" anywhere under `agent/`.
+- An entry in a `.log.md` that was edited, re-pinned or corrected.
+- An item closed with unswept ephemera rows.
+- An agent writing a verdict cell in `verification/` or `planning/00-acceptance.md`.
+- A production step written into a `verification/` file instead of a runbook.
+- A feature with a migration, a secret or a config flip merged with no `runbooks/<k>-<slug>.md`.
+- A batch PR opened with no `runbooks/0-release.md`.
+- A batch reaching `done` with an empty § Hand-back while `verification/` holds unrun files.

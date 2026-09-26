@@ -26,7 +26,7 @@ Front-loads the **stable layer** of a rolling-wave effort: capture the developer
 
 **Write the checkpoint file and set `phase:` in the `00-plan.md` STATE block BEFORE doing the phase's work**, then fill the checkpoint as the work produces findings. A session that exits at any point resumes at the phase named, with the partial checkpoint in hand.
 
-**Resume rule.** Read `00-plan.md`, jump to the phase its STATE names, and read `planning/00-intake.md`, the checkpoint files of the phases already completed (they are the current phase's inputs: an interview question rests on exploration findings and graduated edge cases), and the current phase's own checkpoint. Nothing else loads, and no completed phase is re-run. Continue where the checkpoint stops: an interview resumes at the next unanswered round, exploration resumes with the packets not yet dispatched. (Corrected 2026-09-16: previously "only that phase's checkpoint file plus intake", which made a resumed interview draft questions without the exploration evidence; a test runner then flagged its own question as a lookup dressed as a decision.)
+**Resume rule.** Read `00-plan.md`, jump to the phase its STATE names, and read `planning/00-intake.md`, the checkpoint files of the phases already completed (they are the current phase's inputs: an interview question rests on exploration findings and graduated edge cases), and the current phase's own checkpoint. Nothing else loads, and no completed phase is re-run. Continue where the checkpoint stops: an interview resumes at the next unanswered round, exploration resumes with the packets not yet dispatched.
 
 ## Phase 0: Intake
 
@@ -34,10 +34,10 @@ The developer rants: the problem, the ideas they already have, the constraints, 
 
 **First action, before any exploration or discussion:**
 
-1. **Create the SSOT directory.** Ask the user where it goes; suggest the project convention (for example `docs/features/<N>-<name>/`). **List sibling dirs first and take the next unused number**: a real audit found two dirs both numbered 9. The scan counts deferred stub dirs (`<M>-<slug>/README.md`) as used numbers.
-2. **Write `00-plan.md`** from `templates/00-plan.md`, with `phase: intake` and `layout: v2` in the STATE block.
+1. **Create the SSOT directory.** Ask the user where it goes; suggest the project convention (for example `docs/features/<N>-<name>/`). **List sibling dirs first and take the next unused number.** The scan counts deferred stub dirs (`<M>-<slug>/README.md`) as used numbers.
+2. **Write `00-plan.md`** from `templates/00-plan.md`, with `phase: intake` and `layout: v3` in the STATE block.
 3. **Write `planning/00-intake.md`** from `templates/intake.md`: the rant verbatim first, then the extracted goals, constraints, unknowns and premises to verify, the surfaces touched (web / iOS / Android / backend), and the origin.
-4. **Write `planning/00-acceptance.md`** from `templates/00-acceptance.md`, straight from the rant, before any exploration. One row per requirement **in the developer's own words**, quoted or lightly trimmed and never paraphrased into agent vocabulary, plus the fixed block of implicit rows the template carries (security pass on card-flagged surfaces, tested as far as L1 to L4 allow with the batch Testing plan run, every feature documented, no machine-specific binding in shared skill files, the developer's standing rules honoured). A long rant carries fifteen to twenty rows; a sentence holding two requirements becomes two rows; a requirement you do not yet understand still gets a row, marked for the interview. Every verdict starts `open`, and stays `open` until the developer sets it.
+4. **Write `planning/00-acceptance.md`** from `templates/00-acceptance.md`, straight from the rant, before any exploration. One row per requirement **in the developer's own words**, quoted or lightly trimmed and never paraphrased into agent vocabulary, plus the fixed block of implicit rows the template carries (security pass on card-flagged surfaces, tested as far as L1 to L4 allow with the batch Testing plan run, every feature carrying a before and after flow diagram a reviewer can follow, no machine-specific binding in shared skill files, the developer's standing rules honoured). A long rant carries fifteen to twenty rows; a sentence holding two requirements becomes two rows; a requirement you do not yet understand still gets a row, marked for the interview. Every verdict starts `open`, and stays `open` until the developer sets it.
 
 **Why this file exists.** A rant is read once and then compressed into goals, and the compression silently drops requirements that were stated plainly. The acceptance list is the uncompressed version, checked at every gate, and it is what the batch `done` gate reads before the effort can close.
 
@@ -53,7 +53,7 @@ Dispatch parallel cheap agents (see `dispatching-parallel-agents`) to map: curre
 
 **Verify every premise the effort rests on.** If a premise can be settled by a query, a file read, or fetched vendor docs, settle it now: a plan anchored on a false premise fails silently at verification time, when the evidence may already be gone. Mark each premise from the intake settled or still open.
 
-When the `code-map` role is bound and enabled (in the project's `<project root>/adapters.default.md`, or in `02-adapters.md` once it exists) and its graph file is present, every exploration packet carries the line: query the code map first, open only the files it cites.
+When the `code-map` role is bound and enabled (in the project's `<project root>/adapters.default.md`, or in `agent/adapters.md` once it exists) and its graph file is present, every exploration packet carries the line: query the code map first, open only the files it cites.
 
 `planning/01-exploration.md` holds the findings that survive: file paths with line refs, the settled premises with the evidence that settled them, the open ones, and one line per dispatched packet so a resume knows what is already covered.
 
@@ -71,7 +71,7 @@ Use `superpowers:brainstorming` for genuinely fuzzy feature shapes.
 
 ## Phase 3: Blueprint
 
-Run this phase only when the effort has a screen. Set `phase: blueprint`, create `planning/03-blueprint/`, then load `references/blueprint.md` and follow it: one plain-HTML wireframe per screen plus a control and state inventory that feeds the item cards.
+Run this phase only when the effort has a screen. Set `phase: blueprint`, create `planning/03-blueprint/`, then load `references/blueprint.md` and follow it: one plain-HTML wireframe per screen, all of them linking the shared `templates/wireframe.css` copied in beside them so the states, role variation and backend needs read as visible collapsible sections in a browser, an `index.html` the developer navigates the review from (one row per wireframe, from `templates/blueprint-index.html`), plus a control and state inventory that feeds the item cards.
 
 No UI in this effort? Say so explicitly in one STATE line ("blueprint skipped: no screen in this batch") and go to Phase 4. A skipped phase that leaves no trace looks like an unfinished phase to the next session.
 
@@ -85,31 +85,36 @@ Then run the `grilling` frontier method over the open decisions: each round, pre
 
 Every settled question lands in the decisions table with its why and its rejected alternative, dated.
 
+**The blueprint round may be answered on the blueprint index page.** When a blueprint exists, the first design round after it is written into `planning/03-blueprint/index.html` as an answer sheet, the developer answers and exports there, and the export is imported per `references/blueprint.md` step 8, which also says how the export is saved and how unanswered questions carry forward. The questions still appear numbered in `planning/04-interview.md` exactly as asked, with the answers beside them: the page is the input surface, never the transcript.
+
+**An answer that changes a wireframed screen is written into the blueprint in the same pass as the decisions table.** A control added or removed, a state added or hidden, a route moved: the same edit updates the screen's wireframe in `planning/03-blueprint/`, its row in `planning/03-blueprint/inventory.md` and its row in the blueprint `index.html`, before the next round is asked. Otherwise the SSOT contradicts itself: the decision says one thing and the wireframe the implementer builds from says another.
+
 **The transcript accumulates round by round** in `planning/04-interview.md`: the questions as asked, the developer's answers, and which decision-table row each answer produced. Append the round before asking the next one, so a quit mid-interview resumes at the next round with no question re-asked.
 
 **The round before the adapter round is the testing round.** Three fixed questions, asked once, whose answers become `00-plan.md` § Testing plan at Phase 5:
 
-1. **Which flows must be proven end to end, and which items does each span?** A flow that only exists once two or more items are in becomes a **cross-item group**, with a slug, the items it spans and the later item it is recorded on. A flow that spans the whole batch becomes an **end-to-end flow**, with the `02-adapters.md` role that drives it and the gate it runs at.
+1. **Which flows must be proven end to end, and which items does each span?** A flow that only exists once two or more items are in becomes a **cross-item group**, with a slug, the items it spans and the later item it is recorded on. A flow that spans the whole batch becomes an **end-to-end flow**, with the `agent/adapters.md` role that drives it and the gate it runs at.
 2. **How does the stack under test run, and where does seed data come from?** A compose file, the local Supabase stack, testcontainers, or a staging deployment, with its bring-up line and its reset line. Detection from `references/adapters.md` § Environment supplies the candidates, so this is a choice between detected options, not an open question. Never read `.env` for it.
 3. **Which non-functional criteria exist, with numbers?** Latency, throughput, concurrency, bundle or page budgets. A criterion without a number is not one; press for the number or record `none stated`. Each criterion carries the item whose gate it is measured at.
 
 **The final round is the adapter and ceremony round.** Follow the procedure in `references/adapters.md`: read `<project root>/adapters.default.md` if it exists, run detection over installed skills and tools, and present as numbered options only the **delta** (roles whose binding changed, newly detected alternatives, roles with nothing installed) plus the ceremony level, each with a recommendation. Then:
 
-- Write `02-adapters.md` from `templates/02-adapters.md` with the agreed bindings.
+- Write `agent/adapters.md` from `templates/02-adapters.md` with the agreed bindings.
 - Save the result back as the project's `<project root>/adapters.default.md` (create it when this is the project's first batch).
 - Record the surface coverage decision in the decisions table: each surface the batch touches (web / iOS / Android / backend) with the role and tool that covers it, and an uncovered surface named as a decision with install suggestions.
 
 ## Phase 5: Scaffold and hand off
 
-Set `phase: scaffolded`, then build the rest of the SSOT tree that `rolling-wave-planning` defines:
+Set `phase: scaffolded`, load `references/ssot-layout.md`, then build the rest of the SSOT tree it defines:
 
 - `00-plan.md`: STATE, decisions table, adapters pointer, testing plan, status ledger. Already created at intake; fill the ledger now.
 - `00-plan.md` § Testing plan, written from the testing round's three answers: the cross-item groups table (every group at `pending`), the end-to-end flows table, the environment with its bring-up, seed and reset lines, and the load-and-performance table or `none stated`. Cards copy their own lines out of this section when each item opens, so a group left out here has no home later.
-- `rollout/<n>-<item>/0-card.md`: one dir per item from `templates/0-card.md`, numbered in execution order: problem, files, evidence, acceptance criteria, sensitive-surface flags. Each card's `Acceptance rows served:` line carries the row numbers from `planning/00-acceptance.md` that this item answers, and each row's `Where it lives` cell is filled with the item that took it. **A confirmed row no card names is either an item nobody scaffolded or a row that should read `deferred:`; settle it now, not at the batch `done` gate.** **No feature files**: features are decomposed when the item opens.
-  `<n>` is an **execution slot, not an identity**: an item added mid-flight takes the slot it will actually run in and shifts the later `pending` items, so scaffold the numbers in the order the work will happen. See `rolling-wave-planning`'s "Item numbers are execution slots".
-- `01-verification.md` skeleton and an empty `verification/` directory for the per-feature human checklists.
-- `docs/000-index.md` seed for the reader-facing chapters.
-- Copy interview and exploration evidence worth keeping into the dir (`assets/` for binaries): external pointers die with the session.
+- `agent/<n>-<item>/0-card.md`: one dir per item from `templates/0-card.md`, numbered in execution order: problem, files, evidence, acceptance criteria, sensitive-surface flags. Each card's `Acceptance rows served:` line carries the row numbers from `planning/00-acceptance.md` that this item answers, and each row's `Where it lives` cell is filled with the item that took it. **A confirmed row no card names is either an item nobody scaffolded or a row that should read `deferred:`; settle it now, not at batch close.** **No feature files**: features are decomposed when the item opens.
+  `<n>` is an **execution slot, not an identity**: an item added mid-flight takes the slot it will actually run in and shifts the later unopened items, so scaffold the numbers in the order the work will happen. See `rolling-wave-planning`'s "Item numbers are execution slots".
+- Empty `flows/`, `verification/` and `runbooks/` directories. Each fills as features reach their gates.
+- **One line in the repo's `.gitattributes`**, so GitHub collapses the machinery in every PR diff:
+  `<path to batch dir>/agent/** linguist-generated=true`. Verify with `git check-attr linguist-generated -- <batch dir>/agent/adapters.md`.
+- Copy interview and exploration evidence worth keeping into the dir (`agent/assets/` for binaries): external pointers die with the session.
 
 With ceremony ON, also **open the batch tracking issue at kickoff** (`[<N>] <batch title>`, labelled `batch:<N>-<slug>`): it is the developer's home page for the effort. See `references/ceremony.md`.
 
@@ -127,6 +132,7 @@ TDD on every code item, the review cadence, and the verification ladder are fixe
 - A confirmed acceptance row that no card names and no `deferred:` verdict covers.
 - Asking the developer something a query or file read would answer.
 - A decision recorded without its why and rejected alternative.
+- A decision row that changes a control with no matching edit in the wireframe and the inventory.
 - Exploration reports trusted without reopening the load-bearing citations.
 - The orchestrator reading whole subsystems itself instead of dispatching.
 - Scaffolding item numbers as stable identities rather than execution slots.
