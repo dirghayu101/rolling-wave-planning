@@ -28,7 +28,7 @@ A record entry is one or the other. A file that is edited to stay current is HEA
 
 ## Find the SSOT and read STATE
 
-1. **Locate the batch directory.** Ask the user where it is, or where it should go; suggest the project convention (for example `docs/features/<N>-<name>/`). **List sibling dirs first and take the next unused number.** The scan counts deferred stub dirs (`<M>-<slug>/README.md`) as used numbers.
+1. **Locate the batch directory.** Ask the user where it is, or where it should go; suggest the project convention (for example `docs/features/<N>-<name>/`). **List sibling dirs first and take the next unused number.** The scan counts batch directories only.
 2. **Read only `00-plan.md`,** and from it only STATE's `phase:` and `layout:` fields, before choosing a target.
 3. **No SSOT directory exists** for this effort: the phase is `intake`.
 

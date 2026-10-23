@@ -32,6 +32,7 @@ Filled from `00-plan.md` § Testing plan when the item opens, except the last li
 
 - **L4 flow:** <the flow that exercises this item's features together> · <cross-item group slug, or `no group`>
 - **Environment:** <where L2 to L4 run, taken from the plan's Testing plan>
+- **Seed:** <what the item's flows run on; the convention is in agent/adapters.md § Environment>
 - **Non-functional:** <the stated criterion with its number and the load tool that measures it | none stated>
 - **How it was tested:** <three lines at most: what ran at L1 to L4, in which environment, and where the evidence entries are>
 

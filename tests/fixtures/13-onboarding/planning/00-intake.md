@@ -45,5 +45,5 @@ modal or a real page. Web only for now, the mobile apps don't have signup."
 ## Origin
 
 - Requested in: planning session, 2026-09-13
-- Deferred stub: none
+- Origin issue: none
 - Originating batch: none

@@ -2,6 +2,40 @@
 
 All notable changes to this skill family are recorded here. Versions follow semver.
 
+## 3.6.0 - 2026-10-23
+
+Minor. Flows are tested on the data their users will face, not on the rows that were quick to write.
+Agents seeded a handful of rows made this week, one per status, so flows the business reads over time
+(reports, per-week rates, totals, pagination, aging queues) never met six months of rows, an empty
+week, a period boundary or a third store. A supply-request feature shipped on a seed of five
+requests, one per status, the oldest 12 days back, and its quarterly reports ran on empty months; a
+baseline run on item 9 of the `12-notifications` fixture planned a per-week rate on 12 rows and
+deferred week bucketing and zero-send channels to a later feature.
+
+Every feature now states a `Data horizon:` in product terms and a `Seed:` verdict checked on five
+dimensions (span, volume, states, spread, edges), defined in `references/verification.md` § Data
+under test. An insufficient seed is the feature's first task, written by the `heavy` tier under the
+project's `Seed convention:`, a new line in both adapters templates' § Environment that detection
+reads from the repo, and the same seed is applied on dev before the verification window opens. New
+gate box at the feature `open` transition, the item L4 box runs on a seed sufficient for the item,
+`Seed:` lines in the card, the handoff packet's Ephemera slot and the verification file's Setup, the
+horizon added to the pre-planning testing round and edge-case pass, and scenario 09.
+
+Out-of-scope findings are filed in the project's issue tracker, never kept as a directory beside the
+batch. A finding triaged out of scope used to become a sibling stub `<M>-<slug>/README.md` that took
+a batch number and sat in the repo until a later batch picked it up. The developer moved batch 14's
+parked work to issues on 2026-10-23 and ruled that deferred work never lives in a repo directory.
+The tracker is a new adapter binding, `## Issue tracker` (chosen tracker, detection line, file, title
+form, labels, list, `enabled`), detected at kickoff as a sixth sweep and independent of the ceremony
+level; bound to `none`, findings go to `planning/deferred.md`, one section each. The issue body is
+`templates/deferred-issue.md`, which replaces `templates/deferred-README.md`. `00-plan.md` § Deferred
+holds one `- <url>: <title>` line per issue, the acceptance verdict reads `deferred: <issue url>`, an
+intake non-goal now wins the triage over "an improvement to a built feature is in scope" (the first
+run of scenario 10 inserted an item instead of filing, because that rule was read first), the
+sibling scan counts batch directories only, the intake's `Origin issue:` field replaces `Deferred
+stub:`, and a filed issue is the next batch's intake seed. New integrity-sweep line, adapter red flag
+and scenario 10.
+
 ## 3.5.0 - 2026-10-15
 
 Minor. Phase 2 of `pre-rolling-wave-planning` gains a premise and consequence pass: the agent reads

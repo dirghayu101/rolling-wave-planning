@@ -41,6 +41,8 @@ Everything you write outside the repo and the SSOT goes in ONE scratch directory
 
 Containers, background processes, dev servers and stacks you start are ephemera too. Bring them up with the invocation in `agent/adapters.md` § Environment and tear them down with the matching line in § Cleanup. **One dev server per worktree, started and killed by this packet.**
 
+`Seed: <the files or command to load before the flow runs, under the convention in agent/adapters.md § Environment>`
+
 ## SSOT paths to read
 
 - `agent/<n>-<item>/0-card.md`

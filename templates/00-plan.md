@@ -63,6 +63,7 @@ Batch scope, written at scaffold from the interview's testing round. Each openin
 
 - Bring-up: `<one line>`
 - Seed data: `<path or command>`
+- Seed convention: `<copied from agent/adapters.md § Environment | none>`
 - Reset: `<one line>`
 
 ### Load and performance
@@ -104,6 +105,6 @@ Ceremony ON only; delete this section when ceremony is OFF.
 
 ## Deferred
 
-Work discovered here and pushed out. One forward link per sibling stub directory.
+Work discovered here and filed out. One line per issue: `- <url>: <title>`.
 
-- `<M>-<slug>/README.md`: <one line> (<YYYY-MM-DD>)
+- <issue url, or `planning/deferred.md#<slug>` when no tracker is bound>: <title>

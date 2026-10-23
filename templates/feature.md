@@ -30,6 +30,9 @@ siblings. Precise technical terms; never compress into vague abstraction to hit 
 
 ## Test strategy
 
+Data horizon: <in product terms: span, volume, states, spread, edges>
+Seed: <sufficient at <SHA> | insufficient: <dimensions>, written first as <seed file or command under the bound convention>>
+
 | Layer | Planned | Actually ran |
 |---|---|---|
 | L1 unit (one test per exit point) | <exit points to cover> | <what exists, file paths> |
@@ -46,6 +49,8 @@ Confidence: agent <0-100> / ceiling <0-100>
 
 - <a raise that needs a human or tooling that does not exist yet>
 ```
+
+**`Data horizon:` and `Seed:` are filled at the feature `open` gate**, before the first dispatch: `references/verification.md` § Data under test.
 
 **Confidence is one line.** No paragraph, no re-derivation, no history of the number. Overwrite it when it changes.
 

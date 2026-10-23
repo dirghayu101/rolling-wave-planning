@@ -39,6 +39,7 @@ Four, at both feature scope (the card's feature index) and item scope (the `00-p
 ### to `open`
 
 - [ ] `agent/<n>-<item>/<f>-<slug>.md` exists, copied from `templates/feature.md`, with the what and why, links and test strategy planned.
+- [ ] **The data horizon is stated and the seed is sufficient against it**, or the shortfall is the feature's first task, under the bound seed convention. `references/verification.md` § Data under test.
 - [ ] `agent/<n>-<item>/<f>-<slug>.log.md` exists, empty.
 - [ ] **The BEFORE flow is drawn.** Dispatch the `flow-explorer` role (`light` tier) to write `flows/<n>.<f>-<slug>.md` with the before diagram of the existing flow this feature will change, pinned to the base SHA. **Skip it, and say so in one line in the file, when the flow does not exist yet** (a feature that adds a surface from nothing has no before). Shape: `templates/flow.md`.
 - [ ] Ceremony ON: the feature branch is cut and its PR will be linked per `references/ceremony.md`. Load that file now if it is not loaded; it loads once per item, not once per session.
@@ -87,7 +88,7 @@ A feature triaged **minor** in `references/resume.md` skips every checklist abov
 ### `open` to `built`
 
 - [ ] **Every feature PR is merged** into the item branch.
-- [ ] The **L4 cross-feature pass** has run, in the environment the card's `Environment:` line names, with evidence rows appended to the last feature's `.log.md`. A cross-item group whose later item this is has run too, and its row in `00-plan.md` § Testing plan reads `ran <date>`.
+- [ ] The **L4 cross-feature pass** has run, in the environment the card's `Environment:` line names, on a seed sufficient for the horizon of every feature in the item, with evidence rows appended to the last feature's `.log.md`. A cross-item group whose later item this is has run too, and its row in `00-plan.md` § Testing plan reads `ran <date>`.
 - [ ] The card's `Non-functional:` criterion, when it states one, has been measured with the bound load tool, and the numbers are in an evidence row.
 - [ ] The card's `How it was tested:` line is filled, three lines at most.
 
@@ -110,7 +111,7 @@ When every item reads `merged`, the batch PR into the trunk opens with its descr
 
 - [ ] Every cross-item group and end-to-end flow in `00-plan.md` § Testing plan reads `ran <date>` or `n/a`.
 - [ ] The full test suite has run green on the batch branch.
-- [ ] Every row in `planning/00-acceptance.md` reads `met`, `struck: <reason>` or `deferred: <where>`, or is named in § Hand-back as still owed. `met` and `struck` are the developer's verdicts.
+- [ ] Every row in `planning/00-acceptance.md` reads `met`, `struck: <reason>` or `deferred: <issue url>`, or is named in § Hand-back as still owed. `met` and `struck` are the developer's verdicts.
 - [ ] Every ephemera row of every item is swept and dated, or carries `kept: <reason>`.
 - [ ] **`runbooks/0-release.md` is written**, from `templates/release-runbook.md`: the merge order, the numbered runbooks in the order to run them, the dashboard release and its tag, the app tag or OTA push, and the version bump. It links the project's own release conventions and never restates them.
 - [ ] `00-plan.md` § Hand-back is complete: every `verification/` file still owed a pass and every `runbooks/` file still to be run by hand, in the order to run them.
@@ -152,3 +153,5 @@ A batch that stops mid-item is paused, which is a ceremony with its own steps: `
 - A feature with a migration, a secret or a config flip merged with no `runbooks/<k>-<slug>.md`.
 - A batch PR opened with no `runbooks/0-release.md`.
 - A batch reaching `done` with an empty § Hand-back while `verification/` holds unrun files.
+- A feature opened with no `Data horizon:` line, or with `Seed: insufficient` and no seed task ahead of its first test.
+- An L4 pass run on a seed sufficient for one feature's horizon and short for another's.

@@ -10,6 +10,7 @@ Seven entries the developer opens (the plan file and six directories). One the d
 <N>-<slug>/
   00-plan.md        STATE, decisions, testing plan, ledger, hand-back list. Under 100 lines.
   planning/         intake, acceptance, exploration, edge cases, blueprint, interview
+                    deferred.md: out-of-scope findings, only when no tracker is bound
   use-cases/        goals people have with the product, one file per area, no steps
   flows/            one file per feature: before and after Mermaid diagrams, written once
   verification/     the verification pass, run on dev: one file per feature or per group
@@ -46,14 +47,14 @@ GitHub then collapses `agent/**` in every PR diff, so a reviewer sees code, flow
 
 1. **STATE**, 10 lines or fewer: what this effort is, `phase:`, `layout: v3`, `acceptance: <n> of <m> rows met`, and the single next action.
 2. **Decisions**, a table: `| # | Decision | Choice + why | Date |`. A reversed decision is rewritten in place as `was X, now Y`.
-3. **Testing plan**, batch scope: cross-item groups, end-to-end flows with the role that drives each, the environment with its bring-up, seed and reset lines, and the load criteria or `none stated`.
+3. **Testing plan**, batch scope: cross-item groups, end-to-end flows with the role that drives each, the environment with its bring-up, seed, seed convention and reset lines, and the load criteria or `none stated`.
 4. **Status ledger**, one row per item: `| # | Item | Stage | Note |`, linking to `agent/<n>-<item>/0-card.md`. Detail never goes in cells.
 5. **Hand-back list**: what the developer owes, one line each. Verification files waiting for a pass, use cases ready to run (`use cases ready: UC-a, UC-b`), runbooks waiting to be run, secrets to mint, devices to test on. This is the list the developer reads when the agent stops.
-6. **Forward links** to deferred sibling stub dirs.
+6. **Deferred**: work discovered here and filed out. One line per issue: `- <url>: <title>`.
 
 Copy `templates/00-plan.md`.
 
-**`planning/`**: the pre-execution record, one checkpoint per phase, written by `pre-rolling-wave-planning`: `00-intake.md`, `00-acceptance.md`, `01-exploration.md`, `02-edge-cases.md`, `03-blueprint/`, `04-interview.md`. A phase left without its checkpoint cannot be resumed, only redone.
+**`planning/`**: the pre-execution record, one checkpoint per phase, written by `pre-rolling-wave-planning`: `00-intake.md`, `00-acceptance.md`, `01-exploration.md`, `02-edge-cases.md`, `03-blueprint/`, `04-interview.md`. A phase left without its checkpoint cannot be resumed, only redone. `planning/deferred.md` exists only when no issue tracker is bound: one `## <slug>` section per out-of-scope finding, append-only (`references/resume.md` § Mid-flight inputs).
 
 **`use-cases/<area>.md`**: what people do with the product, stated as goals and never as steps. One file per area of the product, grouped by who does the work (for example `terminal-staff.md`, `store-operator.md`, `accounts.md`). A use case is reused across items; it is not per feature, and it is written before any screen that serves it is wireframed. Each use case carries: an id `UC-<n>` (unique in the batch, never renumbered), a one-line title, **Who** (the role), **Situation** (what just happened in their day), **Goal** (what they want to be true), **Done when** (the outcome they can see, in product terms), **Items** (the item numbers whose flows it exercises) and **Status** (`ready` when every flow it needs is merged into the batch branch, otherwise `waiting on item <n>`). A use case may list two or three variations as one-liners. **Steps, button labels, routes, control names, SQL and expected values are forbidden in a use case.** If the reader needs a step to succeed, either the UI fails the use case, which is a finding, or the detail belongs in a verification file. The developer runs `ready` use cases freely on dev during the dev pass, finds the how themselves, and what they trip over comes back as a feedback round. Written by the `heavy` tier, because a human executes it. Template: `templates/use-cases.md`.
 

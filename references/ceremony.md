@@ -63,6 +63,8 @@ Every artifact must be reachable by drill-down from one entry point:
 - **One label per batch** (`batch:<N>-<slug>`) on every issue and PR.
 - **Every PR body's first line is `Part of #<item issue>`**, and the batch PR points at the batch issue. "Part of", never "Closes": item issues close when the `verification/` rows are ticked, not at merge.
 
+These are tracking issues. **Filed findings are not ceremony**: an out-of-scope finding goes to the Issue tracker binding in `agent/adapters.md`, at every level including OFF.
+
 Sub-issue wiring:
 
 ```bash

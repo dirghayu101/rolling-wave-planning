@@ -76,6 +76,11 @@ The Environment row is also what the dev pass runs against: the app is served lo
 
 **Read the project's own rules before choosing a row.** A candidate the project forbids detects exactly as cleanly as an allowed one, and is recorded as `present, forbidden by <rule, file>` and never chosen. **A seed line is recorded only when the seed file it names exists**: open the path and check.
 
+**The seed convention is detected, not invented.** Read it from the committed seed directory, the
+scripts that apply seeds and the project rules that list them, and record it only when every path it
+names exists. Otherwise record `none`: the first feature that writes a seed writes the convention and
+records it here and in `adapters.default.md`.
+
 Docker being present is what makes L2 and L4 run against real services rather than mocks on both sides of every seam, and it is what makes a load number mean anything.
 
 ### Cleanup
@@ -123,6 +128,12 @@ Detection: `command -v graphify` **and** `graphify-out/graph.json` exists. A gra
 
 Build code only. Docs and media extraction is what triggers LLM calls. Check the README for the exclusion mechanism before building a monorepo root that holds secrets; if none exists, build per package.
 
+### Issue tracker
+
+Where an out-of-scope finding is filed (`references/resume.md` § Mid-flight inputs). Separate from ceremony: tracking issues are ceremony, a filed finding is this binding, and it exists at every ceremony level.
+
+Detection: a tracker CLI on the path **and** authenticated against the project's remote; when ceremony is ON, the tracker is the host that already holds the tracking issues. Record the command that proved it in `Detection:`. Nothing reachable is `none`, and `none` means `planning/deferred.md`, one section per finding.
+
 ### Skill roles
 
 The role list is fixed in `references/dispatch.md`; the binding is generated here. For each stable role, and each stack-conditional role whose manifest trigger fired, write a row: role, chosen skill, alternatives detected, when applied.
@@ -131,14 +142,15 @@ The role list is fixed in `references/dispatch.md`; the binding is generated her
 
 ## Detection procedure
 
-Run all five sweeps, then assemble.
+Run all six sweeps, then assemble.
 
 1. **CLIs**: `command -v <name>`, plus `type <name>` when the user reaches a tool by an alias. Aliases resolve only in a profile-initialized shell.
 2. **MCP servers**: presence means **the tool names are visible in this harness right now**. Not a config file on disk.
 3. **Skills**: list `~/.agents/skills` and read each `SKILL.md` frontmatter `description`; then scan the harness listing for namespaced plugin skills. Match by what the description says it triggers on, never by the name.
    `awk '/^description:/{print FILENAME": "$0}' ~/.agents/skills/*/SKILL.md`
-4. **Environment**: `docker info`, `find . -maxdepth 3 -name '*compose*.y*ml'`, `command -v supabase` with `supabase/config.toml`, and the manifest for testcontainers. **Read the project's rules in the same sweep** before any local stack is a candidate, and confirm that any seed file a candidate names actually exists.
+4. **Environment**: `docker info`, `find . -maxdepth 3 -name '*compose*.y*ml'`, `command -v supabase` with `supabase/config.toml`, and the manifest for testcontainers. **Read the project's rules in the same sweep** before any local stack is a candidate, and confirm that any seed file a candidate names actually exists. Read the seed convention in the same sweep, from the committed seed directory, its apply scripts and the project rules that list them.
 5. **Stack**: read the project manifest for `next`, `expo`, `react-native`, `stripe`, `@capacitor/core`, `@supabase/*`. A monorepo has one manifest per package: sweep them all.
+6. **Issue tracker**: read the project's remote, find the tracker's CLI on the path, and run its authentication status line. Record the chosen tracker, that line, and the file and list lines, or `none`.
 
 ## Surface coverage check
 
@@ -160,3 +172,5 @@ Before writing the file, list the **surfaces this batch touches**, read off the 
 - An Environment row reading `none (mocks only)` while `docker info` succeeds.
 - An Environment row chosen against a project rule that forbids it, or a seed line naming a file that does not exist.
 - A teardown or cache line written from memory, never run against the environment it claims to tear down.
+- A `Seed convention:` line written from habit, or naming a path or command that does not exist.
+- An Issue tracker recorded as bound with no `Detection:` line, or `enabled: true` with `File:` empty.

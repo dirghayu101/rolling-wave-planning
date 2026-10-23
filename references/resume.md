@@ -38,7 +38,7 @@ Check each against the files you just read:
 - A feature stage ahead of its item's stage, or `phase: executing` with no item at `open`.
 - Decisions contradicted by the ledger. Rows without cards, cards without rows.
 - With `planning/03-blueprint/` present: a `round-<n>-answers.md` with no matching round in `planning/04-interview.md`. Record it before anything else; every later decision rests on answers sitting outside the SSOT.
-- A deferred sibling stub dir with no forward link in `00-plan.md`.
+- A finding triaged out of scope with no issue url (or `planning/deferred.md` section) in `00-plan.md` § Deferred.
 
 For each hit, **restore truth in the cheaper direction**: demote the stage to match the evidence when the step is missing, or complete the missed step when it was done but not recorded. Anything bigger goes into STATE as the first order of business. Never start new work on top of known drift.
 
@@ -46,16 +46,16 @@ For each hit, **restore truth in the cheaper direction**: demote the stage to ma
 
 ## Mid-flight inputs
 
-Triage each one immediately into exactly one of:
+Triage each one immediately into exactly one of the four outcomes below. **Read the intake's non-goals first** (`planning/00-intake.md`): an input the intake names out of scope is **Out of scope**, however close it sits to a feature this batch built, until the developer strikes the non-goal from the intake. The developer stating what the behaviour should be is a requirement for the issue, not a strike.
 
 - **In scope**: its own ledger row and card, **at the execution slot it will actually run in**, shifting the still-unopened items. Never handle a discovered bug as narrative inside another item's log. **An improvement to a feature this batch already built is in scope by definition.**
-- **Out of scope**: a **sibling stub dir**, not a file inside this batch. Create `<M>-<slug>/README.md` next to the batch dir from `templates/deferred-README.md`, numbering with the same sibling scan the batch used. Write enough context to pick it up cold, then **record a forward link in `00-plan.md`**.
+- **Out of scope**: **filed in the bound issue tracker** (`agent/adapters.md` § Issue tracker), never a file or directory inside or beside the batch. The body is `templates/deferred-issue.md`, written to the scratch root and filed with the binding's `File:` line, titled in its `Title form:` and labelled per its `Labels:`. Then **one line in `00-plan.md` § Deferred**: `- <issue url>: <title>`. No item, card or feature is created for it. **With the tracker bound to `none`**, the same body becomes one `## <slug>` section of `planning/deferred.md` (one file per batch, append-only) and the § Deferred line points at that section.
 - **Minor**: a ruling on a routed question, a copy or style tweak, a one-screen fix, anything under roughly a hundred changed lines with no schema change and no new screen. It is a feature `<n>.<k>` on the item that owns the code, even when that item is already `merged`: one branch, one PR onto the item branch (or straight onto the batch branch when the item branch is gone), tests, `test:all`, merge. No new item, no issue, no card edit beyond one feature-index line, no flow file, no verification file unless an existing verification row is now wrong (then fix that row), no L4, no integrity check, no acceptance row. The feature file is ten lines or fewer and the log holds the dispatch and merge rows. Size decides the lane, not the agent's taste for records: when in doubt between minor and in scope, minor. (Added 3.2.0 after the developer stopped a five-agent ceremony for four one-line rulings on 2026-09-25.)
 - **Unclear**: a stub ledger row at stage `blocked`, reason "triage". Classifying it is itself work; the row keeps it visible.
 
 A developer feedback round arrives as a `feedback/<k>-<slug>.md` file the developer wrote; it is triaged like any other input, into an item or minor features, and the item card links the round. An agent never edits the round.
 
-**A mid-flight input that is a new requirement, not a bug, also gets a row in `planning/00-acceptance.md`**, in the developer's words, dated. Triaged out of the batch, its acceptance row reads `deferred: <the stub dir>`.
+**A mid-flight input that is a new requirement, not a bug, also gets a row in `planning/00-acceptance.md`**, in the developer's words, dated. Triaged out of the batch, its acceptance row reads `deferred: <issue url>`.
 
 ## Item numbers are execution slots
 

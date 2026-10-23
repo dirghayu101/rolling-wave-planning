@@ -13,7 +13,7 @@ Written at `phase: intake`, immediately after `planning/00-intake.md`, straight 
 | `open` | not yet satisfied, or satisfied with no evidence recorded | the starting value of every row |
 | `met` | the evidence in the row satisfies the requirement | the developer |
 | `struck: <reason>` | withdrawn. **Recorded, never deleted**: a struck row is the record that it was considered | the developer |
-| `deferred: <where>` | it left this batch. Name the sibling stub dir or the batch that took it | the agent that triaged it out, or the developer |
+| `deferred: <where>` | it left this batch. Name the issue url or the batch that took it | the agent that triaged it out, or the developer |
 
 ## Stated requirements
 

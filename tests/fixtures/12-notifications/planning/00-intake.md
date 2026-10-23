@@ -15,6 +15,8 @@ actually see when they're near their quota instead of just failing silently."
 - The daily digest never double-sends.
 - Users see their notification quota before they hit it, in the product, not just in a support ticket.
 - Non-goal: redesigning the notification content or templates.
+- Non-goal: email deliverability (bounces, complaints, suppression lists). This batch makes the
+  digest send once; whether it lands is a later effort.
 
 ## Constraints
 
@@ -41,5 +43,5 @@ actually see when they're near their quota instead of just failing silently."
 ## Origin
 
 - Requested in: planning session, 2026-09-06
-- Deferred stub: none
+- Origin issue: none
 - Originating batch: none

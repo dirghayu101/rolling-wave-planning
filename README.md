@@ -142,6 +142,8 @@ At the item PR one short `light`-tier integrity check asks three questions and n
 
 A layer is climbed, not skipped. Evidence is always a pointer you can reopen, and every evidence entry carries the SHA it was true at.
 
+L2 to L4 run on a seed checked against each feature's **data horizon**, the span of time, volume, states and groupings its users will face once the product has run for a while; a short seed is written first, under the project's bound **seed convention**.
+
 Confidence is **one line**: `agent N / ceiling M`. `agent` is what the L1 to L4 evidence proves today; `ceiling` is the same judgement with every L5 row assumed PASS, and it is reached only by your ticks. No re-derivation prose, no history of the number, no dated chain.
 
 A verification file has three parts: a walkthrough order over the flow file, a short replay section marked as sanity only that does not move the score, and the judgement rows only a human can make. Verdict cells are yours.

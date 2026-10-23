@@ -55,6 +55,7 @@ Surfaces this batch touches: `web, backend`.
 - Alternatives detected: `docker compose -f docker-compose.test.yml`, `hosted dev project`
 - Invocation: `supabase start`, then `supabase db reset` before each L4 run
 - Seed data: `supabase/seed.sql`
+- Seed convention: `supabase/seeds/<n>-<slug>.sql`, numbered in apply order; applied by `supabase db reset`, which runs them in order; each file opens with a `current_setting('app.env')` guard that aborts outside local and dev; a rerun truncates and reinserts the file's own rows; a new file is registered in `supabase/config.toml` `[db.seed] sql_paths`
 - Reset: `supabase db reset`
 - Docker present: `yes (docker info succeeds)`
 - Forbidden by project rules: `hosted dev project, see decision 4`
@@ -97,6 +98,18 @@ Bound because `00-plan.md` § Testing plan states a performance criterion (the d
 - Refresh: `n/a`
 - Query: `n/a`
 - Graph present: `absent`
+
+## Issue tracker
+
+Where out-of-scope findings go. Independent of the ceremony level: tracking issues are ceremony, filed findings are this binding.
+
+- Chosen: `tea` (Gitea CLI) against `example.invalid`, the host that holds the batch tracking issue
+- Detection: `tea login list` shows login `example` for `https://example.invalid`, and `tea issues list --login example --repo notifications --limit 1` returned issue 12 on `2026-09-09`
+- File: `tea issues create --login example --repo notifications --title "<title>" --description "$(cat <body file>)" --labels "<labels>"`
+- Title form: `[12] <title>`
+- Labels: `batch:12-notifications`, plus `bug` for a defect or `enhancement` for new behavior
+- List: `tea issues list --login example --repo notifications --state open`
+- `enabled: true`
 
 ## Skill roles
 

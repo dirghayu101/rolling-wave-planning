@@ -48,6 +48,7 @@ The developer's requirements in their words: `planning/00-acceptance.md`.
 
 - Bring-up: `supabase start` (local stack, needs Docker running)
 - Seed data: `supabase/seed.sql` (three users, one at 90% of quota, one fully muted)
+- Seed convention: `supabase/seeds/<n>-<slug>.sql`, numbered in apply order; applied by `supabase db reset`, which runs them in order; each file opens with a `current_setting('app.env')` guard that aborts outside local and dev; a rerun truncates and reinserts the file's own rows; a new file is registered in `supabase/config.toml` `[db.seed] sql_paths`
 - Reset: `supabase db reset`
 
 ### Load and performance

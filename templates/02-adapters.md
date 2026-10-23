@@ -58,6 +58,7 @@ Where the stack under test runs for L2 to L4. The one this batch uses is also wr
 - Alternatives detected: `<candidate, candidate | none>`
 - Invocation: `<one-line command that brings it up>`
 - Seed data: `<path or command | none>` <only when the file it names exists>
+- Seed convention: `<where seed files live and how they are named and ordered; the command that applies one; the guard that keeps it off production; what a rerun does; where a new file is registered | none (no seed convention in this project; the first seed feature writes one and records it here)>`
 - Reset: `<one-line command that returns it to a known state>`
 - Docker present: `<yes (docker info succeeds) | no>`
 - Forbidden by project rules: `<candidate + the rule and file | none>`
@@ -102,6 +103,18 @@ A teardown line nobody has run is a claim, not a binding.
 - Graph present: `<path to graph.json | absent>`
 
 Both `enabled: true` and a present graph are required before packets carry "query the code map first, open only cited files". Flipping `enabled` to `false` is the whole off switch.
+
+## Issue tracker
+
+Where out-of-scope findings go. Independent of the ceremony level: tracking issues are ceremony, filed findings are this binding.
+
+- Chosen: `<tracker and its CLI or API | none (planning/deferred.md)>`
+- Detection: `<the command that proved it reachable and authenticated | none>`
+- File: `<one-line command that opens an issue from a title, a body file and labels>`
+- Title form: `<the project's title shape for a filed finding>`
+- Labels: `<the labels a filed finding carries | none>`
+- List: `<one-line command that lists the project's open issues>`
+- `enabled: <true | false>`
 
 ## Skill roles
 

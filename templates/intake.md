@@ -51,5 +51,5 @@ Each bullet lands on a card's `## Sensitive surfaces` block at scaffold and bind
 ## Origin
 
 - Requested in: <chat session / issue / conversation date>
-- Deferred stub: <`<M>-<slug>/README.md` path, when this effort was deferred from an earlier batch, else "none">
+- Origin issue: <url or `planning/deferred.md` section | none>
 - Originating batch: <link to that batch's `00-plan.md`, else "none">

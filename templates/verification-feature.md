@@ -29,6 +29,8 @@ the start command (`agent/adapters.md` § Environment). There is no deployed pre
 need a merge to dev, which happens after this pass.
 Database console: the **dev** project's SQL editor.
 Setup you need first: <account / role / device / build, or "none">.
+Seed on dev: `<the seed files or command this pass expects>`, applied on dev before the verification
+window opened. The expected values below assume it.
 
 ## Walkthrough
 

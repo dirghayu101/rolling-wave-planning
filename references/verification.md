@@ -30,6 +30,49 @@ details.
 
 **Verification files and use cases are different instruments.** A verification file specifies an exact flow and its observables, row by row, with the query or command pasted ready to use. A use case (`use-cases/`) states only a goal, with no steps, and the developer runs the `ready` ones freely on dev and finds the how themselves, which is how a missing feature or a confusing flow shows up. The dev-pass hand-back names both: the verification files to run and the use cases ready to try.
 
+## Data under test
+
+**A flow is tested on the data its users will have in front of them, not on the rows that were
+quick to write.** A seed of a few rows made this week, one per status, passes every layer and still
+hides the defects that only show with six months of rows, a week with no activity, a period boundary
+or a third store.
+
+**Data horizon.** Stated per feature, in product terms: the longest span of time, the largest volume,
+and the full set of states and groupings that the people using the feature will have in front of
+them once the product has run for a while. Example: a store that has taken orders for six months;
+every status of a request including closed and reversed; three stores, one with no requests; a week
+with no sends.
+
+**Seed convention.** The project's own way of writing seed data, bound in `agent/adapters.md`
+§ Environment: where seed files live and how they are named and ordered, the command that applies
+one, the guard that keeps it off production, what a rerun does, and where a new file is registered.
+The skill names none of these; the binding does.
+
+The seed the feature's flows run on is checked against the horizon on five dimensions:
+
+| Dimension | Sufficient when the seed holds |
+|---|---|
+| **span** | rows older than the longest period any screen or report in the feature reads, plus one empty period beyond it |
+| **volume** | enough rows that paging, totals, sorting and any stated performance number mean something |
+| **states** | every state of every entity the feature reads, including terminal and reversed ones |
+| **spread** | every grouping the feature offers: tenant, store, role, channel; at least one group with zero rows |
+| **edges** | a row exactly on a period boundary, a timezone day boundary, the oldest row, the empty period |
+
+The verdict is one line in the feature file: `Seed: sufficient at <SHA>`, or
+`Seed: insufficient: <dimension>, <dimension>`.
+
+**An insufficient seed is written before L2 to L4 run.** It is the feature's first task, written by
+the `heavy` tier because the shapes are business judgement, under the bound seed convention, on the
+feature's own stack. It carries its own rerun check: a rerun refreshes or no-ops, and the row counts
+are asserted after each run. It is committed with the feature and registered wherever the convention
+registers a new seed. **No convention bound** means the first seed feature writes one and records it
+in `agent/adapters.md` § Environment and the project's `adapters.default.md`.
+
+**L5 runs on dev, so the same seed is applied on dev before the verification window opens**, and the
+verification file's `Seed on dev:` line names it. The window rule is unchanged.
+
+When a layer builds its own rows, as L1 unit does, the horizon does not apply to it.
+
 ## The ladder
 
 Five layers. **A layer is climbed, not skipped.** Everything an agent can observe is L1 to L4 and is finished before anything reaches a human.
@@ -115,6 +158,9 @@ Confidence: agent 62 / ceiling 88
 
 Judge it against six dimensions: unit coverage of exit points, integration seams actually exercised, real-surface verification driven, review findings raised versus resolved, unverifiable effects honestly listed, environment fidelity and stated limits measured.
 
+Environment fidelity counts the seed: L3 and L4 evidence gathered on a seed insufficient against the
+data horizon does not prove the flow the horizon describes.
+
 **No re-derivation prose.** No paragraph explaining why the number did or did not move, no "re-derived at <stage>" history, no dated chain. Set the number, move on. If the number changes, overwrite it.
 
 **One "what would raise this" list**, and only for raises that need a human or tooling that does not exist. Anything an agent can execute is *done*, not listed.
@@ -146,3 +192,9 @@ An agent never writes a verdict cell.
 - A log-based entry with no `time-sensitive (24h)` flag.
 - An item at `built` whose card's `How it was tested:` line is empty.
 - An agent-actionable entry still on "what would raise this" at feature close.
+- A feature that reads data over time with no `Data horizon:` line, or a horizon written as row counts instead of product terms.
+- A report, a per-period rate, a total or a paged list tested on a few rows made this week, one per status.
+- A seed shortfall deferred to a later feature instead of written first.
+- A seed written as an ad-hoc edit to whatever seed file exists, outside the bound convention, or with no rerun check.
+- A `Seed: sufficient` verdict with no SHA.
+- An L5 pass handed over before its seed was applied on dev.

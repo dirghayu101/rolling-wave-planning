@@ -18,7 +18,7 @@ Part of #<item issue>
 call worth knowing and where the risk sits. Link the feature file `agent/<n>-<item>/<f>-<slug>.md`.>
 
 ## What to look at
-<The two or three files a reviewer opens first and why, and any finding routed out of scope.>
+<The two or three files a reviewer opens first and why, and any finding routed out of scope, with its issue link.>
 
 ## Test strategy
 <One sentence on environment. Then a three-column table copied from the feature file at PR time:

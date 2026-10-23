@@ -34,14 +34,14 @@ The developer rants: the problem, the ideas they already have, the constraints, 
 
 **First action, before any exploration or discussion:**
 
-1. **Create the SSOT directory.** Ask the user where it goes; suggest the project convention (for example `docs/features/<N>-<name>/`). **List sibling dirs first and take the next unused number.** The scan counts deferred stub dirs (`<M>-<slug>/README.md`) as used numbers.
+1. **Create the SSOT directory.** Ask the user where it goes; suggest the project convention (for example `docs/features/<N>-<name>/`). **List sibling dirs first and take the next unused number.** The scan counts batch directories only.
 2. **Write `00-plan.md`** from `templates/00-plan.md`, with `phase: intake` and `layout: v3` in the STATE block.
 3. **Write `planning/00-intake.md`** from `templates/intake.md`: the rant verbatim first, then the extracted goals, constraints, unknowns and premises to verify, the surfaces touched (web / iOS / Android / backend), and the origin.
 4. **Write `planning/00-acceptance.md`** from `templates/00-acceptance.md`, straight from the rant, before any exploration. One row per requirement **in the developer's own words**, quoted or lightly trimmed and never paraphrased into agent vocabulary, plus the fixed block of implicit rows the template carries (security pass on card-flagged surfaces, tested as far as L1 to L4 allow with the batch Testing plan run, every feature carrying a before and after flow diagram a reviewer can follow, no machine-specific binding in shared skill files, the developer's standing rules honoured). A long rant carries fifteen to twenty rows; a sentence holding two requirements becomes two rows; a requirement you do not yet understand still gets a row, marked for the interview. Every verdict starts `open`, and stays `open` until the developer sets it.
 
 **Why this file exists.** A rant is read once and then compressed into goals, and the compression silently drops requirements that were stated plainly. The acceptance list is the uncompressed version, checked at every gate, and it is what the batch `done` gate reads before the effort can close.
 
-If a deferred stub `README.md` exists for this effort (a `<M>-<slug>/README.md` sibling written when an earlier batch deferred this work), **it is the intake seed**: copy its description, its context-to-pick-up-cold and its related decisions into `planning/00-intake.md` before the developer adds to them, and link the originating batch under Origin.
+If this effort originates in a filed issue (the bound tracker) or a `planning/deferred.md` section of an earlier batch, **it is the intake seed**: copy its body into `planning/00-intake.md`, link it under Origin, and comment on the issue with the new batch's path when the SSOT is scaffolded.
 
 Only when those four files exist do you continue to Phase 1. The rant lives in the session until it is written down, and the session is not storage.
 
@@ -62,6 +62,8 @@ When the `code-map` role is bound and enabled (in the project's `<project root>/
 Set `phase: edge-cases` and open `planning/02-edge-cases.md` first.
 
 From the evidence (not imagination alone), enumerate per item: edge cases (inputs, states, platforms, roles), blast radius (shared types, DB shapes, downstream consumers), and open premises → back to Phase 1 or into the interview.
+
+Then the horizon lens, per item: the product has run for a year; what does each screen list, total and chart, and which period is empty?
 
 Run a premortem: "the effort failed three weeks from now: why?" Mid-flight discoveries, deadline scope cuts, and reversed decisions are the norm, not the exception: note where the plan is expected to bend, so bending is an edit to STATE, not a crisis.
 
@@ -102,7 +104,7 @@ Every settled question lands in the decisions table with its why and its rejecte
 **The round before the adapter round is the testing round.** Three fixed questions, asked once, whose answers become `00-plan.md` § Testing plan at Phase 5:
 
 1. **Which flows must be proven end to end, and which items does each span?** A flow that only exists once two or more items are in becomes a **cross-item group**, with a slug, the items it spans and the later item it is recorded on. A flow that spans the whole batch becomes an **end-to-end flow**, with the `agent/adapters.md` role that drives it and the gate it runs at.
-2. **How does the stack under test run, and where does seed data come from?** A compose file, the local Supabase stack, testcontainers, or a staging deployment, with its bring-up line and its reset line. Detection from `references/adapters.md` § Environment supplies the candidates, so this is a choice between detected options, not an open question. Never read `.env` for it.
+2. **How does the stack under test run, where does seed data come from, and over what span of time, volume and spread will the business use these flows once the product has run for a while?** A compose file, the local Supabase stack, testcontainers, or a staging deployment, with its bring-up line and its reset line. Detection from `references/adapters.md` § Environment supplies the candidates and the seed convention, so this is a choice between detected options, not an open question. Never read `.env` for it. The last part is the batch's data horizon; each feature narrows it to its own at its `open` gate (`references/verification.md` § Data under test).
 3. **Which non-functional criteria exist, with numbers?** Latency, throughput, concurrency, bundle or page budgets. A criterion without a number is not one; press for the number or record `none stated`. Each criterion carries the item whose gate it is measured at.
 
 **The final round is the adapter and ceremony round.** Follow the procedure in `references/adapters.md`: read `<project root>/adapters.default.md` if it exists, run detection over installed skills and tools, and present as numbered options only the **delta** (roles whose binding changed, newly detected alternatives, roles with nothing installed) plus the ceremony level, each with a recommendation. Then:
@@ -116,7 +118,7 @@ Every settled question lands in the decisions table with its why and its rejecte
 Set `phase: scaffolded`, load `references/ssot-layout.md`, then build the rest of the SSOT tree it defines:
 
 - `00-plan.md`: STATE, decisions table, adapters pointer, testing plan, status ledger. Already created at intake; fill the ledger now.
-- `00-plan.md` § Testing plan, written from the testing round's three answers: the cross-item groups table (every group at `pending`), the end-to-end flows table, the environment with its bring-up, seed and reset lines, and the load-and-performance table or `none stated`. Cards copy their own lines out of this section when each item opens, so a group left out here has no home later.
+- `00-plan.md` § Testing plan, written from the testing round's three answers: the cross-item groups table (every group at `pending`), the end-to-end flows table, the environment with its bring-up, seed, seed convention and reset lines, and the load-and-performance table or `none stated`. Cards copy their own lines out of this section when each item opens, so a group left out here has no home later.
 - `agent/<n>-<item>/0-card.md`: one dir per item from `templates/0-card.md`, numbered in execution order: problem, files, evidence, acceptance criteria, sensitive-surface flags. Each card's `Acceptance rows served:` line carries the row numbers from `planning/00-acceptance.md` that this item answers, and each row's `Where it lives` cell is filled with the item that took it. **A confirmed row no card names is either an item nobody scaffolded or a row that should read `deferred:`; settle it now, not at batch close.** **No feature files**: features are decomposed when the item opens.
   `<n>` is an **execution slot, not an identity**: an item added mid-flight takes the slot it will actually run in and shifts the later unopened items, so scaffold the numbers in the order the work will happen. See `rolling-wave-planning`'s "Item numbers are execution slots".
 - `use-cases/` (already filled in Phase 3 when the batch has a screen, empty otherwise), and empty `flows/`, `verification/`, `runbooks/` and `feedback/` directories. Each fills as features reach their gates.
@@ -148,4 +150,5 @@ TDD on every code item, the review cadence, and the verification ladder are fixe
 - Leaving a phase without its checkpoint file written and `phase:` advanced. The next session then resumes into work that is already done.
 - Asking the developer adapter questions the detection already answered. The round presents the delta, not the whole roster.
 - Scaffolding cards before the interview closes. Decisions still open become cards that need rewriting.
+- A scaffold whose Environment names seed data and no seed convention.
 - A scaffold whose Testing plan has empty cross-item groups while two cards name the same screen or the same table. Two items on one surface is exactly the flow that only exists once both are in.

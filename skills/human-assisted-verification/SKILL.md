@@ -61,7 +61,8 @@ Copy `templates/verification-feature.md` into `verification/<n>.<f>-<slug>.md`, 
 The header carries where to run it: the app served locally from the batch branch against the dev
 database, with the start command the batch's `agent/adapters.md` names, plus the dev SQL console.
 There is no deployed preview to point at, because a preview would need the merge to dev that comes
-after this pass.
+after this pass. It also names the seed the pass runs on, applied on dev before the verification
+window opened, so the expected values in each row match what is on screen.
 
 ### 1. Walkthrough order
 
