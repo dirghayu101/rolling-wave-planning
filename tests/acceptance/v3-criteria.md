@@ -9,7 +9,7 @@ An agent never writes in the Verdict column. Every row starts `open`.
 | # | Must hold | Where it lives | Evidence | Verdict |
 |---|---|---|---|---|
 | 1 | The layout is v3: five directories the developer opens (`00-plan.md`, `planning/`, `flows/`, `verification/`, `runbooks/`) and `agent/` for every piece of machinery | `references/ssot-layout.md`, `templates/00-plan.md` | | open |
-| 2 | `agent/` holds `adapters.md`, `<n>-<item>/0-card.md`, a HEAD file and a `.log.md` per feature, exactly one `resume.md` per item, plus `assets/` and `harness/` | `references/ssot-layout.md`, `templates/feature.md` | | open |
+| 2 | `agent/` holds `adapters.md`, `<n>-<item>/0-card.md`, a HEAD file and a `.log.md` per feature, exactly one `resume.md` per item, plus `harness/` (`assets/` retired in 3.7.0: nothing binary under `agent/`) | `references/ssot-layout.md`, `templates/feature.md` | | open |
 | 3 | `00-plan.md` is capped at 100 lines, carries `layout: v3` in STATE and a § Hand-back section listing what the developer owes | `templates/00-plan.md`, `references/ssot-layout.md` | | open |
 | 4 | The scaffold adds one `.gitattributes` line marking `agent/**` generated, so GitHub collapses the machinery in every PR diff | `skills/pre-rolling-wave-planning/SKILL.md` Phase 5, `references/ssot-layout.md` | | open |
 | 5 | Four stages, at both feature and item scope: `open`, `built`, `reviewed`, `merged`, plus `blocked` and `deferred`. `merged` is the agent terminal; `verified` is set only from the ticks in `verification/` | `references/lifecycle.md` | | open |

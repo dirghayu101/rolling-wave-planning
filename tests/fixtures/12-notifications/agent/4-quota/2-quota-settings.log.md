@@ -19,7 +19,7 @@ or corrected: a fact that stopped being true gets a new entry below, and the old
 |---|---|---|---|---|
 | 2026-09-12 | 7d90e4b2 | L1 | `apps/dashboard/routes/settings/notifications/quota.test.tsx`, 5 exit points, green in CI run 886 | tdd · heavy |
 | 2026-09-13 | 2af61c08 | L2 | `apps/dashboard/lib/useQuotaBreakdown.integration.test.ts`, ran against `supabase start`, per-channel rows confirmed | tdd · heavy |
-| 2026-09-13 | 9b2d5af0 | L3 | `../assets/4.2-settings-1440.png`, `../assets/4.2-settings-768.png`, `../assets/4.2-settings-375.png`; `errors --json` empty; GET `/api/quota/breakdown` 200; channel table 1128px at 1440 and no horizontal scroll at 375; focus lands on the screen heading after the banner's Manage link; wireframe diff clean | browser-verification · light |
+| 2026-09-13 | 9b2d5af0 | L3 | flow: open settings, notifications, quota at 1440, 768 and 375; `errors --json` []; GET `/api/quota/breakdown` 200; channel table 1128px at 1440 and no horizontal scroll at 375; focus lands on the screen heading after the banner's Manage link; wireframe diff clean | browser-verification · light |
 
 ## Review
 
@@ -32,5 +32,5 @@ or corrected: a fact that stopped being true gets a new entry below, and the old
 | What | Where | Teardown | Swept on |
 |---|---|---|---|
 | dev server for the L3 pass | `vite --port 5173` | `pkill -f "vite --port 5173"` | 2026-09-13 |
-| screenshot scratch dir | `/tmp/rwp-12-notifications/4.2-browser/` | `rm -rf /tmp/rwp-12-notifications/4.2-browser/` | 2026-09-13 |
+| capture set (screenshots at 1440, 768, 375, wireframe diff) and scratch dir | `/tmp/rwp-12-notifications/4.2-browser/` | `rm -rf /tmp/rwp-12-notifications/4.2-browser/` | 2026-09-13 |
 | local Supabase stack | `supabase start` | `supabase stop` | kept: item 4's L4 pass runs on it |

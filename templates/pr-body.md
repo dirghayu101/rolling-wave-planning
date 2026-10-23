@@ -8,6 +8,8 @@ carries its own fixed line saying where and when it fills in. Do not copy eviden
 beyond the one test-strategy snapshot below, the body is still never edited to stay in sync with a
 file, and **never treat a disagreement between it and a file as a finding**.
 
+A visual change links the flow file that cites its one element capture; the body embeds no image from `agent/`.
+
 ## Template: copy verbatim, replacing bracketed text
 
 ```markdown

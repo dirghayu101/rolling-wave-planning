@@ -2,6 +2,32 @@
 
 All notable changes to this skill family are recorded here. Versions follow semver.
 
+## 3.7.0 - 2026-10-23
+
+Minor. A capture is an instrument, not evidence. Agents kept every screenshot and run log a pass
+produced, because the skill said evidence is "a pointer to something re-openable" and told them to
+copy expiring evidence into `agent/assets/`. One real batch ended with 507 PNGs (94 MB) and about 100
+test-run logs of 330 to 386 KB under `agent/assets/`, all deleted later as noise; a baseline run on
+feature 4.3 of the `12-notifications` fixture kept three full-page PNGs (3.4 MB) under
+`agent/assets/`, pointed the evidence row at them and embedded two in the PR body.
+
+An evidence row is now the date, the SHA, the layer, the command or flow run and its result as text:
+test counts, the query and its row, console and network results, geometry and focus numbers, and at
+most 20 excerpted log lines when a line is itself the fact (`references/verification.md` § Evidence
+entries). A pointer goes to something the repository or the forge re-opens at the SHA; a capture path
+is not one. The L3 pass takes a geometry read at every claimed breakpoint instead of a screenshot, and
+the captures are swept with the scratch directory. A capture is kept only when a file in `flows/`,
+`verification/`, `feedback/` or `runbooks/` cites it, as an element capture under a bound size cap in
+an `assets/` directory beside that file. Run logs, HAR files, traces and recordings are never
+committed. `agent/assets/` is retired and nothing binary lives under `agent/`; `agent/harness/` stays.
+The Cleanup binding gains `Kept captures:` and `Ignore rules:` rows, the ignore rules verified once
+with their check command like the teardown lines. A minor-lane visual change takes one geometry read
+in its evidence row and keeps no capture; PR bodies link the flow file and embed nothing from `agent/`. New item-PR and batch-close
+gate boxes, an integrity-sweep line, red flags in verification, lifecycle and adapters, the reviewer
+reading numbers rather than screenshots, a 3.7.0 note in `references/migration-3.md`, the fixture's
+4.1 and 4.2 L3 rows rewritten as numbers, and scenario 11. The integrity check still asks three
+questions.
+
 ## 3.6.0 - 2026-10-23
 
 Minor. Flows are tested on the data their users will face, not on the rows that were quick to write.

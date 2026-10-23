@@ -16,7 +16,7 @@ Copy `templates/handoff.agent.md` and fill it. A missing slot is a defect: the s
 4. **SSOT paths to read.** Exactly three by default: the card (`agent/<n>-<item>/0-card.md`), the feature's HEAD file, and the feature's `.log.md`. Never the whole `agent/` tree, and never `00-plan.md` unless the task is batch-scoped.
 5. **Roles to skills.** Resolve each role against `agent/adapters.md` and write the resolved pair on the packet (`simplicity → ponytail`). The subagent invokes each named skill itself. Never paraphrase a skill into a packet.
 6. **Tier.** One of `judge`, `heavy`, `light`. **A packet without a tier is a red flag**: subagents inherit the orchestrator's model, so an unset tier silently spends the session model on work a cheaper tier could do.
-7. **Evidence to return.** Files touched, line refs behind every claim, exact commands with their output, captures where the surface allows, an explicit uncertainties list, and the **Ephemera started** list with a teardown command per row, or `none`.
+7. **Evidence to return.** Files touched, line refs behind every claim, exact commands with their output, the numbers read off captures (geometry, focus, diff) with the captures left in the scratch directory, an explicit uncertainties list, and the **Ephemera started** list with a teardown command per row, or `none`.
 8. **Stop conditions.** The BLOCKED contract: if the code does not match the packet's premise, a command fails after one reasonable retry, the task needs a file outside scope, or two readings of the acceptance criteria disagree, **stop and report `BLOCKED: <what, where, what would unblock it>`**.
 
 **Subagents never edit SSOT files.** They return facts; the orchestrator, or one light scribe, writes them down. Say this on every packet.
@@ -113,6 +113,8 @@ When the agent returns, transcribe its **Ephemera started** list into `## Epheme
 ```
 
 `Swept on` is filled only when the teardown has been run, or replaced by `kept: <reason>`. This is the one column in a LOG file that is written twice, and only ever from empty to a date.
+
+A capture set (screenshots, HAR files, traces) and the run logs of a pass are ephemera rows like any other, swept with the scratch directory. `kept:` on a capture names the human-facing file that cites it (`references/verification.md` § Evidence entries).
 
 ## Roles
 

@@ -37,7 +37,7 @@ Seed: <sufficient at <SHA> | insufficient: <dimensions>, written first as <seed 
 |---|---|---|
 | L1 unit (one test per exit point) | <exit points to cover> | <what exists, file paths> |
 | L2 integration (seams) | <which seams> | <what exists> |
-| L3 real surface | <flows to drive, breakpoints, geometry and focus reads, console and network assertions> | <what was driven, evidence entry> |
+| L3 real surface | <flows to drive, breakpoints, geometry and focus reads, console and network assertions> | <what was driven, and the numbers in its evidence entry; no capture paths> |
 | L4 cross-feature | <what this feature contributes to the card's L4 flow> | <what was run> |
 | L5 human-only | <the verification file's rows> | <open, until the row is ticked> |
 
@@ -73,6 +73,9 @@ or corrected: a fact that stopped being true gets a new entry below, and the old
 
 | Date | SHA | Layer | Evidence | By |
 |---|---|---|---|---|
+
+<!-- One row per layer climbed: the command or flow run and its result as text (test counts, the
+query and its row, console and network results, geometry and focus numbers). No capture paths. -->
 
 ## Review
 

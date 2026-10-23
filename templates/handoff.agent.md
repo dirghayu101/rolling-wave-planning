@@ -55,7 +55,8 @@ Read these three and no others. Not the rest of `agent/`, not `00-plan.md`.
 
 - Files touched, with a line ref behind every claim
 - Exact commands run, with their output
-- `<Surface evidence: the rendered state asserted, console and network capture, geometry and focus reads, screenshots at <breakpoints>, query results, test output>`
+- `<Surface evidence as text: the rendered state asserted, console and network results, geometry and focus reads as numbers at <breakpoints>, query results, test counts>`
+- Captures are instruments: return the numbers read off them, and leave the captures in the scratch directory, listed under Ephemera started. Copy no capture, log or trace into the repository.
 - **Ephemera started:** one row per container, process, temp dir or temp file you created, with the command that tears it down. Write `none` only if you started nothing.
 - Uncertainties, listed explicitly.
 

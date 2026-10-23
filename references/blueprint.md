@@ -54,7 +54,7 @@ Every row's backend needs are copied into that item's `0-card.md` as acceptance 
 
 - **Interview.** An answer that changes a control, a state or a route updates the wireframe, `inventory.md` and `index.html` in the same pass as the decisions table, before the next round is asked. The implementer builds from the wireframe, so a change living only in the decisions table leaves the SSOT contradicting itself.
 - **Implementation.** A screen feature's packet carries the wireframe path and names the `ui-implementation` role's bound skill.
-- **L3 verification.** The built screen is driven through the `browser-verification` adapter, and a `light`-tier agent compares the capture against the wireframe control by control and state by state, reporting missing, invented and mis-stated controls. The comparison result is an L3 evidence entry in the feature's `.log.md`.
+- **L3 verification.** The built screen is driven through the `browser-verification` adapter, and a `light`-tier agent compares the capture against the wireframe control by control and state by state, reporting missing, invented and mis-stated controls. The comparison result, the diff numbers (controls missing, invented and mis-stated, and the pixel diff when one is bound), is the L3 evidence entry in the feature's `.log.md`. The capture and the diff image are swept with the scratch directory, unless the flow file cites the diff.
 
 ## Red flags
 

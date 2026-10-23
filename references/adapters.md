@@ -92,8 +92,14 @@ The other half of the Environment row: what takes down everything the batch's su
 | Scratch root | the ONE directory every packet's Ephemera slot points under | a session scratchpad path |
 | Teardown lines | one line per thing the environment brings up, in the order they must run | the stack's stop line, the compose-down line, `rm -rf <scratch root>/<dispatch dir>` |
 | Cache to reclaim | caches safe to drop, with the line that drops them, or `none` | a build cache, an image cache, a browser profile dir |
+| Kept captures | where a capture a human-facing file cites lives, its format and its size cap | `assets/` beside the citing file, element PNG, under 200 KB |
+| Ignore rules | the version-control ignore patterns that keep the scratch root, run logs and captures out, and the command that verifies them | `*.log`, `*.har`, `<scratch root>/` in the ignore file; checked with `git check-ignore -v <path>` |
 
 **A teardown line nobody has run is a claim, not a binding:** run each one once at kickoff, against the environment it targets.
+
+**The ignore rules are verified with the check command once, dated, like the teardown lines.** Run
+it against a path under the scratch root and a sample run log. A scratch root outside the repository
+needs no pattern, and the row says so.
 
 Ephemera is swept at the item PR, at batch close and at every pause.
 
@@ -172,5 +178,7 @@ Before writing the file, list the **surfaces this batch touches**, read off the 
 - An Environment row reading `none (mocks only)` while `docker info` succeeds.
 - An Environment row chosen against a project rule that forbids it, or a seed line naming a file that does not exist.
 - A teardown or cache line written from memory, never run against the environment it claims to tear down.
+- A Cleanup binding with no Ignore rules row.
+- A scratch root inside the repository that the ignore rules do not cover.
 - A `Seed convention:` line written from habit, or naming a path or command that does not exist.
 - An Issue tracker recorded as bound with no `Detection:` line, or `enabled: true` with `File:` empty.

@@ -17,7 +17,7 @@ Batch: `../../00-plan.md` · Stage: **open | built | reviewed | merged** (plus `
 
 ## Evidence
 
-- <log line, query result, capture in `../assets/`, reproduction steps, with its date>
+- <log line, query result, the numbers read off a capture, or the flow file that cites the one kept capture, reproduction steps, with its date>
 
 ## Acceptance criteria
 

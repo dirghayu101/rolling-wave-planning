@@ -124,7 +124,7 @@ Set `phase: scaffolded`, load `references/ssot-layout.md`, then build the rest o
 - `use-cases/` (already filled in Phase 3 when the batch has a screen, empty otherwise), and empty `flows/`, `verification/`, `runbooks/` and `feedback/` directories. Each fills as features reach their gates.
 - **One line in the repo's `.gitattributes`**, so GitHub collapses the machinery in every PR diff:
   `<path to batch dir>/agent/** linguist-generated=true`. Verify with `git check-attr linguist-generated -- <batch dir>/agent/adapters.md`.
-- Copy interview and exploration evidence worth keeping into the dir (`agent/assets/` for binaries): external pointers die with the session.
+- Paste interview and exploration evidence worth keeping into the intake or planning file as text: external pointers die with the session. A binary the developer supplied goes beside the file that cites it, never under `agent/`.
 
 With ceremony ON, also **open the batch tracking issue at kickoff** (`[<N>] <batch title>`, labelled `batch:<N>-<slug>`): it is the developer's home page for the effort. See `references/ceremony.md`.
 

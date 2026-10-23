@@ -19,7 +19,7 @@ or corrected: a fact that stopped being true gets a new entry below, and the old
 |---|---|---|---|---|
 | 2026-09-10 | e18b7c26 | L1 | `apps/dashboard/lib/useQuota.test.ts`, 3 exit points, green in CI run 881 | tdd · heavy |
 | 2026-09-11 | b3f4a19c | L2 | `apps/dashboard/lib/useQuota.integration.test.ts`, ran against `supabase start`, row read confirmed | tdd · heavy |
-| 2026-09-11 | b3f4a19c | L3 | `../assets/4.1-banner-1440.png`, `../assets/4.1-banner-768.png`, `../assets/4.1-banner-375.png`; `errors --json` empty; one GET `/api/quota` 200; banner box 48px tall at 1440 and 72px at 375, header offset unchanged | browser-verification · light |
+| 2026-09-11 | b3f4a19c | L3 | flow: load the dashboard at 1440, 768 and 375; `errors --json` []; one GET `/api/quota` 200; banner box 48px tall at 1440 and 72px at 375, header offset unchanged | browser-verification · light |
 | 2026-09-12 | 5c8ad713 | L1 | `apps/dashboard/lib/useQuota.test.ts`, empty-state exit point added, 4 green | tdd · heavy |
 
 ## Review
@@ -34,5 +34,5 @@ or corrected: a fact that stopped being true gets a new entry below, and the old
 | What | Where | Teardown | Swept on |
 |---|---|---|---|
 | dev server for the L3 pass | `vite --port 5173` | `pkill -f "vite --port 5173"` | 2026-09-11 |
-| screenshot scratch dir | `/tmp/rwp-12-notifications/4.1-browser/` | `rm -rf /tmp/rwp-12-notifications/4.1-browser/` | 2026-09-11 |
+| capture set (screenshots at 1440, 768, 375) and scratch dir | `/tmp/rwp-12-notifications/4.1-browser/` | `rm -rf /tmp/rwp-12-notifications/4.1-browser/` | 2026-09-11 |
 | local Supabase stack | `supabase start` | `supabase stop` | 2026-09-12 |

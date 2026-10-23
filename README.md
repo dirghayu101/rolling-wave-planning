@@ -89,7 +89,7 @@ A reviewer is told, in the packet, that the feature file, the PR body, the flow 
   verification/     the verification pass, run on dev: one file per feature or group
   runbooks/         the production stage: run by hand after the dev pass, plus 0-release.md
   feedback/         the developer's feedback rounds, never edited by an agent
-  agent/            adapters, cards, feature HEAD and LOG files, resume blocks, assets, harness
+  agent/            adapters, cards, feature HEAD and LOG files, resume blocks, harness
 ```
 
 The developer opens everything except `agent/`. `agent/**` is marked `linguist-generated` in the repo's `.gitattributes`, so GitHub collapses it in every PR diff. Files under `agent/` are sharded per feature and target 150 lines, so a subagent packet loads one card, one HEAD file and one LOG file, whatever the batch size.
@@ -136,11 +136,11 @@ At the item PR one short `light`-tier integrity check asks three questions and n
 
 - **L1 unit.** Each exit point of each changed unit behaves, test-first.
 - **L2 integration.** Each seam is actually exercised, not mocked on both sides.
-- **L3 real surface.** The surface a user touches is driven for real: rendered state asserted, console and network captured, **geometry and focus read** wherever layout or keyboard behavior changed, screenshots at every claimed breakpoint. This is the pass that finds real defects.
+- **L3 real surface.** The surface a user touches is driven for real: rendered state asserted, console and network captured, **geometry and focus read** wherever layout or keyboard behavior changed, and a geometry read at every claimed breakpoint, written down as numbers. This is the pass that finds real defects.
 - **L4 cross-feature.** The item's features run together once every feature PR has merged, in the environment the plan names.
 - **L5 human-only.** What no bound tool can perform or perceive.
 
-A layer is climbed, not skipped. Evidence is always a pointer you can reopen, and every evidence entry carries the SHA it was true at.
+A layer is climbed, not skipped. An evidence entry is the command or flow that ran and its result as text (counts, query rows, console and network results, geometry and focus numbers), and it carries the SHA it was true at. A screenshot is an instrument the agent reads and sweeps; one is kept only when a flow, verification, feedback or runbook file cites it, as an element capture under a size cap in an `assets/` directory beside that file. Nothing binary lives under `agent/`, and run logs are never committed.
 
 L2 to L4 run on a seed checked against each feature's **data horizon**, the span of time, volume, states and groupings its users will face once the product has run for a while; a short seed is written first, under the project's bound **seed convention**.
 

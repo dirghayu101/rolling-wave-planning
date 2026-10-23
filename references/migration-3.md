@@ -26,8 +26,9 @@ mkdir -p agent flows runbooks
 ```bash
 git mv 02-adapters.md          agent/adapters.md
 git mv rollout/<n>-<item>      agent/<n>-<item>      # once per item
-git mv assets                  agent/assets          # if it exists
 ```
+
+A top-level `assets/` directory does not move under `agent/`: sort it per § 3.7.0 below.
 
 v1 batches have no `rollout/`: their cards sit in `00-plan.md`. Split each one out into `agent/<n>-<item>/0-card.md` from `templates/0-card.md` as you go, then delete the card sections from `00-plan.md`.
 
@@ -133,3 +134,17 @@ Then re-run the resume integrity sweep in `references/resume.md` against the mig
 - [ ] Every `verification/` file with an unticked row appears in `00-plan.md` § Hand-back.
 
 Batches migrated before 3.1.0 must also move any production-facing rows out of `verification/` into the matching runbook.
+
+## 3.7.0: captures and run logs leave `agent/`
+
+`agent/assets/` is retired. Nothing binary lives under `agent/`, and run logs and traces are never
+committed (`references/verification.md` § Evidence entries).
+
+- A capture a file in `flows/`, `verification/`, `feedback/` or `runbooks/` cites moves beside that
+  file: `git mv agent/assets/<file> flows/assets/<f>-<slug>-<what>.png`, and the citing link is
+  updated in the same commit.
+- Every other capture, run log, HAR or trace under `agent/assets/` is deleted:
+  `git rm -r agent/assets/`. An evidence row that pointed at one stands as written, at its SHA.
+- The `.gitattributes` line for `agent/**` stays.
+- `agent/adapters.md` § Cleanup gains `Kept captures:` and `Ignore rules:`, and the ignore rules are
+  verified once with their check command.

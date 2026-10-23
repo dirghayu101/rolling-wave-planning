@@ -1,7 +1,7 @@
 # Release-gate scenarios
 
-Ten fresh-agent scenarios must pass before a release is tagged (scenarios 01 to 08 gated `v3.0.0`;
-09 and 10 arrived with 3.6.0). This directory holds the scenario prompts and the fixtures they run
+Eleven fresh-agent scenarios must pass before a release is tagged (scenarios 01 to 08 gated
+`v3.0.0`; 09 and 10 arrived with 3.6.0; 11 with 3.7.0). This directory holds the scenario prompts and the fixtures they run
 against; there is deliberately **no runner script**.
 
 The release checklist itself is `acceptance/v3-criteria.md`: one row per thing 3.0.0 must hold,
@@ -20,7 +20,7 @@ with an evidence column the agent fills and a verdict column the developer fills
    the subagent's written answer, never against what the orchestrator assumes happened.
 5. A run whose "Files I read" list includes anything under this repo's `tests/` directory is void:
    the scenario file is the answer key. Re-run with a fresh agent; do not grade it.
-6. A release is tagged only when **all ten** scenarios pass. A failing scenario is a bug in the
+6. A release is tagged only when **all eleven** scenarios pass. A failing scenario is a bug in the
    skill repo (`SKILL.md`, a `references/*.md` file, a template, or a sub-skill), not in the
    fixture: fix the repo, rerun the scenario fresh (a new subagent, not the same one continuing).
 
@@ -38,6 +38,7 @@ with an evidence column the agent fills and a verdict column the developer fills
 | 08 | [Ephemera and the integrity check](scenarios/08-ephemera-and-integrity-check.md) | `12-notifications` | The packet Ephemera slot bound to the scratch root, the `## Ephemera` table in the feature log, and the three-question item-PR check |
 | 09 | [Data horizon](scenarios/09-data-horizon.md) | `12-notifications` | A per-week, per-channel report feature stating its data horizon, judging the seed against span, volume, states, spread and edges, and writing the shortfall first under the bound seed convention |
 | 10 | [Out-of-scope finding](scenarios/10-out-of-scope-finding.md) | `12-notifications` | A mid-flight finding the intake names out of scope, filed through the Issue tracker binding with its title form and labels, one § Deferred line and a `deferred:` acceptance row, and no stub directory |
+| 11 | [Captures and run logs](scenarios/11-captures-and-run-logs.md) | `12-notifications` (4.3 prepared at the `built` gate) | An L3 pass that returned full-page PNGs, a HAR and a long test log: the evidence row carries the numbers, no binary and no log lands under `agent/`, and the PR body links the flow file instead of embedding captures |
 
 ## Why no runner script
 

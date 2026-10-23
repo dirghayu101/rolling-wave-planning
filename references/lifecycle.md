@@ -50,8 +50,8 @@ Four, at both feature scope (the card's feature index) and item scope (the `00-p
 ### `open` to `built`
 
 - [ ] Tests green. The feature file's test strategy "Actually ran" column is filled from the real run, not from intent.
-- [ ] **The L3 browser pass has run on any UI change**, driving the real surface through the bound adapter: the rendered element or state asserted, `console --clear` before and `errors --json` after clean of new errors, `network requests` for the calls the change makes, **geometry and focus reads** where layout or keyboard behavior changed, and a screenshot at every breakpoint the feature claims. This pass is what finds real defects; a green suite is not a substitute. Definitions: `references/verification.md`. The pass also walks the simplicity checks in `references/blueprint.md` against the built screen, and runs the `ui-guidelines` role's bound skills (primary and alternates) as a review of the built code and captures: every finding is fixed or recorded with a reason before `built`.
-- [ ] Evidence rows appended to the feature's `.log.md`, each with a re-openable pointer and the SHA.
+- [ ] **The L3 browser pass has run on any UI change**, driving the real surface through the bound adapter: the rendered element or state asserted, `console --clear` before and `errors --json` after clean of new errors, `network requests` for the calls the change makes, **geometry and focus reads** where layout or keyboard behavior changed, and a geometry read at every breakpoint the feature claims, written into the row as numbers; the captures are read and left in the scratch directory to be swept. This pass is what finds real defects; a green suite is not a substitute. Definitions: `references/verification.md`. The pass also walks the simplicity checks in `references/blueprint.md` against the built screen, and runs the `ui-guidelines` role's bound skills (primary and alternates) as a review of the built code and captures: every finding is fixed or recorded with a reason before `built`.
+- [ ] Evidence rows appended to the feature's `.log.md`, each with the SHA, the command or flow run, and its result as text (`references/verification.md` § Evidence entries).
 - [ ] The full test suite runs green before the PR is marked ready.
 - [ ] **The AFTER flow is written** into the same `flows/` file, pinned to the head SHA, at the moment the PR is ready.
 - [ ] Ceremony ON: the feature PR is opened, its description written from `templates/pr-body.md`.
@@ -71,7 +71,7 @@ Four, at both feature scope (the card's feature index) and item scope (the `00-p
 
 ## Minor change lane
 
-A feature triaged **minor** in `references/resume.md` skips every checklist above except tests green, the full suite green, the PR opened and merged, and a dispatch row plus a merge row in its log. No before or after flow, no verification file, no L3 pass unless the change is visual (then one screenshot in the PR body is enough), no L4, no integrity check. Its feature file is a stage line, one paragraph of what and why quoting the ruling, and the PR number. Records that a proper feature would fill stay unwritten, not filled with "not applicable". The developer's rule of 2026-09-25: if something is genuinely big and needs proper documentation, do it; otherwise it is overhead.
+A feature triaged **minor** in `references/resume.md` skips every checklist above except tests green, the full suite green, the PR opened and merged, and a dispatch row plus a merge row in its log. No before or after flow, no verification file, no L3 pass unless the change is visual (then one geometry read in the evidence row is enough; no capture is kept, because a minor feature has no flow file to cite one), no L4, no integrity check. Its feature file is a stage line, one paragraph of what and why quoting the ruling, and the PR number. Records that a proper feature would fill stay unwritten, not filled with "not applicable". The developer's rule of 2026-09-25: if something is genuinely big and needs proper documentation, do it; otherwise it is overhead.
 
 ## Item transitions
 
@@ -96,6 +96,7 @@ A feature triaged **minor** in `references/resume.md` skips every checklist abov
 
 - [ ] The item PR into the batch branch is open, its description written from `templates/pr-body.md`.
 - [ ] **The integrity check has run** on that PR: `templates/integrity-check.md`, `light` tier, fresh context. Three questions and nothing else: do the stage lines agree with the ledger, are all verdict cells in `verification/` still `open`, and is every ephemera row swept or flagged `kept:`. It reports; the orchestrator edits. It is not a review and it does not open the source.
+- [ ] Nothing binary and no run log under `agent/`; every kept capture is cited from a human-facing file and lives beside it (`references/verification.md` § Evidence entries).
 - [ ] Each acceptance row the card names has its evidence pointer appended in `planning/00-acceptance.md`. **The verdict column is the developer's.** Then re-count `acceptance: <n> of <m> rows met` in STATE.
 
 ### `reviewed` to `merged`
@@ -113,6 +114,7 @@ When every item reads `merged`, the batch PR into the trunk opens with its descr
 - [ ] The full test suite has run green on the batch branch.
 - [ ] Every row in `planning/00-acceptance.md` reads `met`, `struck: <reason>` or `deferred: <issue url>`, or is named in § Hand-back as still owed. `met` and `struck` are the developer's verdicts.
 - [ ] Every ephemera row of every item is swept and dated, or carries `kept: <reason>`.
+- [ ] Nothing binary and no run log under `agent/`; every kept capture is cited from a human-facing file and lives beside it.
 - [ ] **`runbooks/0-release.md` is written**, from `templates/release-runbook.md`: the merge order, the numbered runbooks in the order to run them, the dashboard release and its tag, the app tag or OTA push, and the version bump. It links the project's own release conventions and never restates them.
 - [ ] `00-plan.md` § Hand-back is complete: every `verification/` file still owed a pass and every `runbooks/` file still to be run by hand, in the order to run them.
 
@@ -148,6 +150,8 @@ A batch that stops mid-item is paused, which is a ceremony with its own steps: `
 - A second resume block, an addendum, or "supersedes the previous" anywhere under `agent/`.
 - An entry in a `.log.md` that was edited, re-pinned or corrected.
 - An item closed with unswept ephemera rows.
+- A binary or a run log under `agent/`, or a kept capture no human-facing file cites.
+- A PR body that embeds a capture instead of linking the flow file that cites it.
 - An agent writing a verdict cell in `verification/` or `planning/00-acceptance.md`.
 - A production step written into a `verification/` file instead of a runbook.
 - A feature with a migration, a secret or a config flip merged with no `runbooks/<k>-<slug>.md`.

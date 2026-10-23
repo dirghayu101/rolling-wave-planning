@@ -13,8 +13,11 @@ Seven entries the developer opens (the plan file and six directories). One the d
                     deferred.md: out-of-scope findings, only when no tracker is bound
   use-cases/        goals people have with the product, one file per area, no steps
   flows/            one file per feature: before and after Mermaid diagrams, written once
+    assets/         kept captures a file in this directory cites
   verification/     the verification pass, run on dev: one file per feature or per group
+    assets/         kept captures a file in this directory cites
   runbooks/         the production stage: run by hand after the dev pass, numbered, plus 0-release.md
+    assets/         kept captures a file in this directory cites
   feedback/         the developer's feedback rounds, in their words
   agent/            everything else
 ```
@@ -29,7 +32,6 @@ Seven entries the developer opens (the plan file and six directories). One the d
       <f>-<slug>.md        HEAD: one file per feature (scope, links, test strategy, score)
       <f>-<slug>.log.md    LOG: append-only, one per feature
       resume.md            HEAD: ONE resume block per item, overwritten
-    assets/                kept captures: screenshots, exported logs, traces
     harness/               scripts a dispatch wrote that are worth replaying
 ```
 
@@ -80,7 +82,15 @@ Runbooks are **deleted after the push they describe**, in the commit that record
 
 **`agent/<n>-<item>/resume.md`** (HEAD): exactly one resume block per item, **overwritten every time**, never appended to. Where the item is, what is in flight, the exact next step, and the facts the next step rests on. A second block, an addendum, or a "supersedes the previous" line is the failure this file exists to prevent.
 
-**`agent/assets/`**: kept captures only. Copy expiring evidence in: log retention is typically a day or two. Working screenshots and temp files live in the scratch root bound in `agent/adapters.md` § Cleanup and are torn down, not kept here.
+**Captures and run logs.** Nothing binary lives under `agent/`, and run logs and traces are never
+committed. Expiring evidence is not copied in: the lines that matter, at most 20, go into the
+evidence row (log retention is typically a day or two). A capture is kept only when a file in
+`flows/`, `verification/`, `feedback/` or `runbooks/` cites it, and it lives in that directory's
+`assets/` (`flows/assets/<f>-<slug>-<what>.png`), as an element capture under the size cap bound in
+`agent/adapters.md` § Cleanup. Every other screenshot, log and temp file lives in the scratch root
+bound in that section and is torn down. The scratch root may sit anywhere the binding names,
+including under the SSOT directory, provided the bound ignore rules keep it out of version control.
+Rules: `references/verification.md` § Evidence entries.
 
 **`agent/harness/`**: a script a dispatch wrote that the next dispatch or the developer will re-run (a seeding script, a login-state generator, a capture loop). Anything not worth re-running is ephemera and is swept.
 

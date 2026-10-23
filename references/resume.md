@@ -34,6 +34,7 @@ Check each against the files you just read:
 - A feature at `open` with no `flows/` file and no line in one saying the before flow does not exist yet.
 - A `flows/` file whose diagram was edited after it was written (compare against the pinned SHA in its header).
 - A `.log.md` entry with no SHA, or one that reads as a correction of an earlier entry.
+- A binary or run log under `agent/`.
 - A second resume block for one item, an addendum, or a "supersedes" line anywhere under `agent/`.
 - A feature stage ahead of its item's stage, or `phase: executing` with no item at `open`.
 - Decisions contradicted by the ledger. Rows without cards, cards without rows.

@@ -15,7 +15,7 @@ Two rules hold:
 
 1. **The diff.** Correctness, reuse, project conventions.
 2. **The tests.** Do the exit points the tests claim to cover match the ones the code has.
-3. **The L3 browser evidence.** Does it show the surface actually doing what the feature claims, at the breakpoints it claims.
+3. **The L3 browser evidence.** Does it show the surface actually doing what the feature claims, at the breakpoints it claims. The reviewer reads the numbers in the L3 evidence row, not screenshots. When a visual judgement is needed, it opens the one element capture the flow file cites.
 
 **Security rides in the same packet** when the card's `Sensitive surfaces:` line is not `none`: auth boundaries, tenant isolation, key handling, policy tests. One reviewer, one packet, one pass. The `security-review` role's skill goes on that packet alongside `review`.
 

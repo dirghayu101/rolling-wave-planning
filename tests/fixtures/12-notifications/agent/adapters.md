@@ -72,7 +72,12 @@ What takes down everything this batch's subagents start or write.
   3. `pkill -f "vite --port 5173"` (the one dev server a web packet starts per worktree)
   4. `rm -rf /tmp/rwp-12-notifications/<dispatch dir>`
 - Cache to reclaim: `docker builder prune -f`
-- Verified on: `2026-09-10`
+- Kept captures: `flows/assets/<f>-<slug>-<what>.png` beside the citing flow file (or the same
+  under `verification/assets/`); element PNG, under 200 KB
+- Ignore rules: `/tmp/rwp-12-notifications/` is outside the repo and needs no pattern; `*.log`,
+  `*.har` and `docs/**/agent/assets/` in `.gitignore`; checked with
+  `git check-ignore -v <path>`
+- Verified on: `2026-09-10` (each line above, and the ignore rules)
 
 ## Load testing
 

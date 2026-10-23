@@ -104,8 +104,11 @@ Web, under the `browser-verification` role:
 - `network requests` for the calls the change is supposed to make.
 - **Geometry reads** wherever layout changed: measure the box, not the screenshot. Overflow, clipping, wrap, column width, sticky offsets, and the values at each breakpoint the feature claims.
 - **Focus reads** wherever keyboard or dialog behavior changed: what holds focus after open, after close, after submit, and what the tab order is.
-- A screenshot at every breakpoint the feature claims to support.
-- When the feature builds a screen from a wireframe, run the wireframe comparison in `references/blueprint.md` and log its diff.
+- **A geometry read at every breakpoint the feature claims to support**, written into the evidence
+  row as numbers. A screenshot taken during the pass is an instrument: read it, write down what it
+  shows, and leave it in the scratch directory to be swept.
+- When the feature builds a screen from a wireframe, run the wireframe comparison in
+  `references/blueprint.md` and log its diff numbers.
 
 Mobile, under `mobile-verification`: the bound tool, driving the same shape of flow.
 
@@ -137,10 +140,33 @@ Evidence is appended to the feature's `agent/<n>-<item>/<f>-<slug>.log.md`, one 
 | date | sha | layer | evidence | by |
 |---|---|---|---|---|
 | 2026-09-23 | 4f1c9a2 | L1 | `tests/unit/quota.test.ts`, 7 exit points green | tdd · heavy |
-| 2026-09-23 | 4f1c9a2 | L3 | `agent/assets/4.2-quota-1440.png`, errors --json empty, POST /api/quota 200, table width 1128px at 1440 | browser-verification · light |
+| 2026-09-23 | 4f1c9a2 | L3 | flow: open settings, Manage quota, save; `errors --json` []; POST /api/quota 200; table width 1128px at 1440, no horizontal scroll at 375; focus on `h2#quota-title` after the Manage link | browser-verification · light |
 ```
 
-**Evidence is a pointer to something re-openable**: a test path, a CI run, a capture under `agent/assets/`, the query plus the row it returned. "Verified, works" is not evidence. `by` is the role and tier, never a model name.
+**An evidence row is** the date, the SHA, the layer, the exact command or flow that was run, and the
+result read back as text: test counts, the query and the row it returned, console and network
+results, geometry and focus reads with their numbers, and at most 20 excerpted lines when a log line
+is itself the fact. "Verified, works" is not evidence. `by` is the role and tier, never a model name.
+
+**A pointer in a row goes to something the repository or the forge re-opens at the SHA**: a test
+path, a CI run, a PR, a flow or verification file, an issue. A path to a capture is not evidence;
+the numbers read off the capture are.
+
+**A capture is an instrument, not evidence.** During an L3 pass the agent reads the capture
+(geometry, focus, wireframe diff), writes the numbers into the row, and leaves the capture in the
+scratch directory, which is swept with the rest of the feature's ephemera.
+
+**A capture is kept only when a human-facing file cites it**: a file in `flows/`, `verification/`,
+`feedback/` or `runbooks/`. It then lives in an `assets/` directory beside the citing file
+(`flows/assets/<f>-<slug>-<what>.png`), as an element capture rather than a full page, under the size
+cap bound in `agent/adapters.md` § Cleanup. The developer's own pasted screenshots in `feedback/`
+already live beside the feedback file and are exempt from the cap. The test for any capture in the
+tree: which human-facing file cites this path? When the answer is none, or only a `.log.md`, it is
+swept. Nothing binary lives under `agent/`.
+
+**Run logs and traces are never committed**: test output, server output, HAR files, console or
+network dumps, traces and recordings. Each is reproducible at the SHA from the command in the row,
+or it expires, and then the lines that matter, at most 20, are copied into the row.
 
 **Durable observable first.** Assert on durable state wherever the behavior produces one. Logs are primary only for fire-and-forget calls with no persisted trace, and a log-based entry is flagged **time-sensitive (24h)**.
 
@@ -190,6 +216,11 @@ An agent never writes a verdict cell.
 - A UI change with no geometry or focus read where layout or keyboard behavior changed.
 - A seam "tested" with a mock on both sides.
 - A log-based entry with no `time-sensitive (24h)` flag.
+- An evidence row whose content is a path to a capture.
+- A capture committed that no human-facing file cites.
+- A run log, trace or HAR in the repository.
+- A full-page screenshot where an element capture would do.
+- A binary under `agent/`.
 - An item at `built` whose card's `How it was tested:` line is empty.
 - An agent-actionable entry still on "what would raise this" at feature close.
 - A feature that reads data over time with no `Data horizon:` line, or a horizon written as row counts instead of product terms.

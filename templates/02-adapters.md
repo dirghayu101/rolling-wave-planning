@@ -75,7 +75,9 @@ What takes down everything this batch's subagents start or write.
   3. `<line that kills a dev server started per worktree>`
   4. `rm -rf <scratch root>/<dispatch dir>`
 - Cache to reclaim: `<line that drops the safe-to-drop caches | none>`
-- Verified on: `<date each line above was actually run once against this environment>`
+- Kept captures: `<where a cited capture lives, the format and the size cap>`
+- Ignore rules: `<patterns that keep the scratch root, run logs and captures out of version control, and the check command>`
+- Verified on: `<date each line above, and the ignore rules, was actually run once against this environment>`
 
 A teardown line nobody has run is a claim, not a binding.
 
