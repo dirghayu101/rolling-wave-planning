@@ -145,11 +145,15 @@ the table does not change, the dev surface does not expose it):
    observable left is production, the row leaves this file and becomes a runbook step in stage two.
 3. Record the pivot in the file and in `00-plan.md` STATE.
 
+## Verification files and use cases
+
+This skill writes exact flows and observables. Use cases (`use-cases/`, contract in `references/ssot-layout.md`) are a different instrument: they state goals only, with no steps, and the developer runs the ready ones freely on dev. Never put a step into a use case; the step belongs in a verification file here.
+
 ## Hand-back
 
 Every file written here gets a line in `00-plan.md` § Hand-back the moment its item reaches `merged`:
 the file path, what it covers, and whether any row is time-sensitive. That list is what
-is read when the agent stops. Production steps get their own § Hand-back lines pointing at
+is read when the agent stops, together with the `use cases ready:` line. Production steps get their own § Hand-back lines pointing at
 `runbooks/`, in the order `runbooks/0-release.md` gives them.
 
 ## Promotion

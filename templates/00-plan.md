@@ -90,8 +90,9 @@ What the developer owes, in the order to do it. Struck through when done.
 | # | What | File | Note |
 |---|---|---|---|
 | 1 | run the dev pass for <feature or group> | `verification/<n>.<f>-<slug>.md` | <time-sensitive rows first, or none> |
-| 2 | run the release sequence by hand | `runbooks/0-release.md` | after the dev pass; it orders every runbook below |
-| 3 | run the production step for <what> by hand | `runbooks/<k>-<slug>.md` | <where it sits in the release order> |
+| 2 | try the ready use cases on dev | `use-cases/<area>.md` | use cases ready: <UC-a, UC-b>; goals only, find the how yourself |
+| 3 | run the release sequence by hand | `runbooks/0-release.md` | after the dev pass; it orders every runbook below |
+| 4 | run the production step for <what> by hand | `runbooks/<k>-<slug>.md` | <where it sits in the release order> |
 
 ## Review URLs
 

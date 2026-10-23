@@ -48,6 +48,8 @@ A record entry is one or the other. A file that is edited to stay current is HEA
 
 Stages inside `executing`, at both feature and item scope: `open` to `built` to `reviewed` to `merged`, plus `blocked` and `deferred`. `merged` is the agent terminal at both scopes. Only the ticks on the `verification/` files, made by hand on dev, reach `verified`, and they usually land later. `references/lifecycle.md` owns the gates.
 
+**Directories the developer opens:** `00-plan.md`, `planning/`, `use-cases/`, `flows/`, `verification/`, `runbooks/` and `feedback/`. Use cases are written before any UI is designed, and the UI is made for them; `references/blueprint.md` owns that order. `feedback/` holds the developer's own rounds and is never edited by an agent.
+
 **Two stages: verify on dev, then deploy through the runbooks.** The dev pass runs from the batch branch served locally against dev, before any merge, and needs no production access. `runbooks/` is the production stage: procedures run by hand, never by an agent, after the dev pass and the merge, and their post-checks are the production-side verification of the same flow. `references/verification.md` owns that split.
 
 Four rules sit around the table:
@@ -67,6 +69,7 @@ Four rules sit around the table:
 - A LOG entry edited, re-pinned or "corrected". Append a new entry; leave the old one standing with its SHA.
 - A HEAD file that has grown an addendum, a superseding section or a dated correction chain. HEAD is rewritten in place.
 - A commit whose whole diff is a record edit, made between gates.
+- A screen designed or built with no use case behind it.
 - A `verification/` row naming production, or a production post-check copied into a verification file. That work is a runbook step.
 - An agent running `db:apply`, a dev reseed or a schema rehearsal while a `verification_window:` line is open in STATE.
 - "The detail is in the session transcript / my context": if it is not in the SSOT dir, it does not exist tomorrow.

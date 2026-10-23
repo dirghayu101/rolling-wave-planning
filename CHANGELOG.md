@@ -2,6 +2,25 @@
 
 All notable changes to this skill family are recorded here. Versions follow semver.
 
+## 3.5.0 - 2026-10-15
+
+Minor. Phase 2 of `pre-rolling-wave-planning` gains a premise and consequence pass: the agent reads
+and applies `thinking-first-principles`, `thinking-second-order` and `thinking-via-negativa` (user-invoked
+skills, so read rather than invoked) over the developer's framing. Added after batch 11 item 12, where
+the first two corrected the premise that Colima speeds up CI and removed the need for stored screenshot
+baselines, and surfaced that per-worktree stacks also end the shared-database type drift.
+
+## 3.4.0 - 2026-10-07
+
+Minor. Use cases come before UI. The developer found the shipped dashboard cluttered and confusing
+(too many segmented filters, disabled buttons shown, filters where nothing could be filtered,
+whole-page scroll), and observed that agents built the backend and then a frontend instead of
+starting from what people do with the product. The skill now writes `use-cases/` (goals with no
+steps, one file per area, run freely by the developer on dev) before any wireframe, derives screens
+from them, adds the simplicity checks to the blueprint and the L3 pass, and adds `feedback/` for the
+developer's own rounds. Layout is the plan file plus six developer-opened directories; verification files stay the
+place for exact steps. New `templates/use-cases.md`.
+
 ## 3.3.0 - 2026-09-26
 
 Minor. A fourth tier, `orchestrator`, and the `judge` tier becomes an escalation instead of work

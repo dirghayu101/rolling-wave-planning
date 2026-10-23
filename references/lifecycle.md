@@ -42,13 +42,14 @@ Four, at both feature scope (the card's feature index) and item scope (the `00-p
 - [ ] `agent/<n>-<item>/<f>-<slug>.log.md` exists, empty.
 - [ ] **The BEFORE flow is drawn.** Dispatch the `flow-explorer` role (`light` tier) to write `flows/<n>.<f>-<slug>.md` with the before diagram of the existing flow this feature will change, pinned to the base SHA. **Skip it, and say so in one line in the file, when the flow does not exist yet** (a feature that adds a surface from nothing has no before). Shape: `templates/flow.md`.
 - [ ] Ceremony ON: the feature branch is cut and its PR will be linked per `references/ceremony.md`. Load that file now if it is not loaded; it loads once per item, not once per session.
+- [ ] A UI feature's packet names the UC ids it serves.
 - [ ] The implementation is dispatched per `references/dispatch.md`, with a tier, and the dispatch row is appended to the feature's `.log.md` with the SHA it was dispatched at.
 - [ ] TDD is running. A bug feature has been through `systematic-debugging` first.
 
 ### `open` to `built`
 
 - [ ] Tests green. The feature file's test strategy "Actually ran" column is filled from the real run, not from intent.
-- [ ] **The L3 browser pass has run on any UI change**, driving the real surface through the bound adapter: the rendered element or state asserted, `console --clear` before and `errors --json` after clean of new errors, `network requests` for the calls the change makes, **geometry and focus reads** where layout or keyboard behavior changed, and a screenshot at every breakpoint the feature claims. This pass is what finds real defects; a green suite is not a substitute. Definitions: `references/verification.md`.
+- [ ] **The L3 browser pass has run on any UI change**, driving the real surface through the bound adapter: the rendered element or state asserted, `console --clear` before and `errors --json` after clean of new errors, `network requests` for the calls the change makes, **geometry and focus reads** where layout or keyboard behavior changed, and a screenshot at every breakpoint the feature claims. This pass is what finds real defects; a green suite is not a substitute. Definitions: `references/verification.md`. The pass also walks the simplicity checks in `references/blueprint.md` against the built screen, and runs the `ui-guidelines` role's bound skills (primary and alternates) as a review of the built code and captures: every finding is fixed or recorded with a reason before `built`.
 - [ ] Evidence rows appended to the feature's `.log.md`, each with a re-openable pointer and the SHA.
 - [ ] The full test suite runs green before the PR is marked ready.
 - [ ] **The AFTER flow is written** into the same `flows/` file, pinned to the head SHA, at the moment the PR is ready.
@@ -76,6 +77,7 @@ A feature triaged **minor** in `references/resume.md` skips every checklist abov
 ### to `open`
 
 - [ ] The card is read and its premise still holds against the repo as it is now. If it does not, the card is **rewritten in place**. No correction block.
+- [ ] **An item with a screen has its use cases written** in `use-cases/`, or the existing ones extended with this item's number under **Items**, before its first feature opens. Screens are derived from use cases (`references/blueprint.md` step 0).
 - [ ] The item is decomposed into features of 400 changed lines or fewer, and the feature index is written into the card with every feature at `open` or `blocked`.
 - [ ] `agent/<n>-<item>/resume.md` is created.
 - [ ] Ceremony ON: the item branch is cut from the batch branch and the item's tracking issue is opened as a sub-issue of the batch issue.
@@ -99,6 +101,7 @@ A feature triaged **minor** in `references/resume.md` skips every checklist abov
 
 - [ ] The item PR is merged into the batch branch.
 - [ ] The ledger row and note are updated, and `00-plan.md` § Hand-back gains one line per verification file and runbook this item leaves for the developer.
+- [ ] **Use cases whose flows are now all merged** into the batch branch have Status flipped to `ready`, and § Hand-back gains `use cases ready: UC-a, UC-b`.
 - [ ] `agent/<n>-<item>/resume.md` is overwritten with the item's terminal state.
 
 ## Batch scope
@@ -136,6 +139,8 @@ A batch that stops mid-item is paused, which is a ceremony with its own steps: `
 - A feature at `merged` whose PR is still open.
 - A UI change at `built` with no L3 browser evidence row, or an L3 row with no geometry or focus read on a layout or keyboard change.
 - A third review pass on one feature. Two is the limit; a third means the packet was wrong, so fix the packet.
+- A screen feature opened with no use case behind it, or a UI packet that names no UC id.
+- A use case carrying steps, button labels, routes or expected values.
 - A feature opened with no `flows/` file and no line saying the before flow does not exist yet.
 - A `flows/` file edited after it was written.
 - An item decomposed into features before its own turn came.

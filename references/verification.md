@@ -28,6 +28,8 @@ trunk, run the migrations in the stated order, release the dashboard, tag or shi
 `runbooks/0-release.md` sequences that stage, and the project's own release conventions govern its
 details.
 
+**Verification files and use cases are different instruments.** A verification file specifies an exact flow and its observables, row by row, with the query or command pasted ready to use. A use case (`use-cases/`) states only a goal, with no steps, and the developer runs the `ready` ones freely on dev and finds the how themselves, which is how a missing feature or a confusing flow shows up. The dev-pass hand-back names both: the verification files to run and the use cases ready to try.
+
 ## The ladder
 
 Five layers. **A layer is climbed, not skipped.** Everything an agent can observe is L1 to L4 and is finished before anything reaches a human.

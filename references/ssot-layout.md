@@ -4,15 +4,17 @@ Reference for `rolling-wave-planning`. Load it when a batch is being scaffolded,
 
 ## The split
 
-Five directories the developer opens. One the developer never opens.
+Seven entries the developer opens (the plan file and six directories). One the developer never opens.
 
 ```
 <N>-<slug>/
   00-plan.md        STATE, decisions, testing plan, ledger, hand-back list. Under 100 lines.
   planning/         intake, acceptance, exploration, edge cases, blueprint, interview
+  use-cases/        goals people have with the product, one file per area, no steps
   flows/            one file per feature: before and after Mermaid diagrams, written once
   verification/     the verification pass, run on dev: one file per feature or per group
   runbooks/         the production stage: run by hand after the dev pass, numbered, plus 0-release.md
+  feedback/         the developer's feedback rounds, in their words
   agent/            everything else
 ```
 
@@ -46,12 +48,16 @@ GitHub then collapses `agent/**` in every PR diff, so a reviewer sees code, flow
 2. **Decisions**, a table: `| # | Decision | Choice + why | Date |`. A reversed decision is rewritten in place as `was X, now Y`.
 3. **Testing plan**, batch scope: cross-item groups, end-to-end flows with the role that drives each, the environment with its bring-up, seed and reset lines, and the load criteria or `none stated`.
 4. **Status ledger**, one row per item: `| # | Item | Stage | Note |`, linking to `agent/<n>-<item>/0-card.md`. Detail never goes in cells.
-5. **Hand-back list**: what the developer owes, one line each. Verification files waiting for a pass, runbooks waiting to be run, secrets to mint, devices to test on. This is the list the developer reads when the agent stops.
+5. **Hand-back list**: what the developer owes, one line each. Verification files waiting for a pass, use cases ready to run (`use cases ready: UC-a, UC-b`), runbooks waiting to be run, secrets to mint, devices to test on. This is the list the developer reads when the agent stops.
 6. **Forward links** to deferred sibling stub dirs.
 
 Copy `templates/00-plan.md`.
 
 **`planning/`**: the pre-execution record, one checkpoint per phase, written by `pre-rolling-wave-planning`: `00-intake.md`, `00-acceptance.md`, `01-exploration.md`, `02-edge-cases.md`, `03-blueprint/`, `04-interview.md`. A phase left without its checkpoint cannot be resumed, only redone.
+
+**`use-cases/<area>.md`**: what people do with the product, stated as goals and never as steps. One file per area of the product, grouped by who does the work (for example `terminal-staff.md`, `store-operator.md`, `accounts.md`). A use case is reused across items; it is not per feature, and it is written before any screen that serves it is wireframed. Each use case carries: an id `UC-<n>` (unique in the batch, never renumbered), a one-line title, **Who** (the role), **Situation** (what just happened in their day), **Goal** (what they want to be true), **Done when** (the outcome they can see, in product terms), **Items** (the item numbers whose flows it exercises) and **Status** (`ready` when every flow it needs is merged into the batch branch, otherwise `waiting on item <n>`). A use case may list two or three variations as one-liners. **Steps, button labels, routes, control names, SQL and expected values are forbidden in a use case.** If the reader needs a step to succeed, either the UI fails the use case, which is a finding, or the detail belongs in a verification file. The developer runs `ready` use cases freely on dev during the dev pass, finds the how themselves, and what they trip over comes back as a feedback round. Written by the `heavy` tier, because a human executes it. Template: `templates/use-cases.md`.
+
+**`feedback/<k>-<slug>.md`**: one developer feedback round, written by the developer in their own words, with pasted screenshots kept beside the file. **Never edited by an agent.** The agent triages a round as a mid-flight input (`references/resume.md`) into an item or minor features, and links the round from the item card.
 
 **`flows/<n>.<f>-<slug>.md`**: the human's map for reviewing the PR. Before and after Mermaid diagrams of the flow the feature changes, each node naming a file plus a function or symbol and carrying a GitHub permalink at a pinned SHA. **Written once, never edited.** Shape and rules: `templates/flow.md`.
 
@@ -83,7 +89,7 @@ Runbooks are **deleted after the push they describe**, in the commit that record
 
 **Files under `agent/` target 150 lines.** Past it, the feature needs another shard, not a longer file. A subagent loads one feature's HEAD file and one LOG file; both must fit a packet's budget. Shard by feature, never by topic.
 
-`flows/` and `verification/` files are sized by the flow and the pass, not by a cap.
+`flows/`, `verification/` and `use-cases/` files are sized by the flow and the pass, not by a cap.
 
 ## What does not exist here
 

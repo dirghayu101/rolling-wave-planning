@@ -65,13 +65,21 @@ From the evidence (not imagination alone), enumerate per item: edge cases (input
 
 Run a premortem: "the effort failed three weeks from now: why?" Mid-flight discoveries, deadline scope cuts, and reversed decisions are the norm, not the exception: note where the plan is expected to bend, so bending is an edit to STATE, not a crisis.
 
+Run a premise and consequence pass over the developer's framing. The thinking skills are user-invoked only, so read each `SKILL.md` under `~/.agents/skills/` and apply its procedure (skip any that is not installed):
+
+- `thinking-first-principles` on every constraint the design treats as fixed: tag it physics, contract, measured fact or convention, and drop the conventions with no support. (Batch 11 item 12, 2026-10-15: "Colima makes CI faster" was a convention, because Linux runners run Docker natively, and "baselines must be stored" fell away once both sides could be rebuilt per run.)
+- `thinking-second-order` on every change that couples components: chain "and then what?" two orders past the intended effect, and keep only links that change the design. (Same item: per-worktree stacks also end the shared-database type drift, and a deterministic seed makes a fixture age gate meaningless.)
+- `thinking-via-negativa` when the reflex is to add a script, layer or check: name what could be removed instead.
+
+Record each finding as a premise settled or corrected in `planning/02-edge-cases.md`. Do not pad: a pass that changes nothing is one line.
+
 Use `superpowers:brainstorming` for genuinely fuzzy feature shapes.
 
 `planning/02-edge-cases.md` holds the enumeration, the premortem answers, and the questions that graduate to the interview.
 
 ## Phase 3: Blueprint
 
-Run this phase only when the effort has a screen. Set `phase: blueprint`, create `planning/03-blueprint/`, then load `references/blueprint.md` and follow it: one plain-HTML wireframe per screen, all of them linking the shared `templates/wireframe.css` copied in beside them so the states, role variation and backend needs read as visible collapsible sections in a browser, an `index.html` the developer navigates the review from (one row per wireframe, from `templates/blueprint-index.html`), plus a control and state inventory that feeds the item cards.
+Run this phase only when the effort has a screen. Set `phase: blueprint`, create `planning/03-blueprint/`, then **write the use cases first**: `use-cases/<area>.md` from `templates/use-cases.md`, by the `heavy` tier, covering what people do with the product in the batch's areas, as goals with no steps. Every screen is derived from them, and a control that serves none is cut. Then load `references/blueprint.md` and follow it: one plain-HTML wireframe per screen, all of them linking the shared `templates/wireframe.css` copied in beside them so the states, role variation and backend needs read as visible collapsible sections in a browser, an `index.html` the developer navigates the review from (one row per wireframe, from `templates/blueprint-index.html`), plus a control and state inventory that feeds the item cards.
 
 No UI in this effort? Say so explicitly in one STATE line ("blueprint skipped: no screen in this batch") and go to Phase 4. A skipped phase that leaves no trace looks like an unfinished phase to the next session.
 
@@ -111,7 +119,7 @@ Set `phase: scaffolded`, load `references/ssot-layout.md`, then build the rest o
 - `00-plan.md` § Testing plan, written from the testing round's three answers: the cross-item groups table (every group at `pending`), the end-to-end flows table, the environment with its bring-up, seed and reset lines, and the load-and-performance table or `none stated`. Cards copy their own lines out of this section when each item opens, so a group left out here has no home later.
 - `agent/<n>-<item>/0-card.md`: one dir per item from `templates/0-card.md`, numbered in execution order: problem, files, evidence, acceptance criteria, sensitive-surface flags. Each card's `Acceptance rows served:` line carries the row numbers from `planning/00-acceptance.md` that this item answers, and each row's `Where it lives` cell is filled with the item that took it. **A confirmed row no card names is either an item nobody scaffolded or a row that should read `deferred:`; settle it now, not at batch close.** **No feature files**: features are decomposed when the item opens.
   `<n>` is an **execution slot, not an identity**: an item added mid-flight takes the slot it will actually run in and shifts the later unopened items, so scaffold the numbers in the order the work will happen. See `rolling-wave-planning`'s "Item numbers are execution slots".
-- Empty `flows/`, `verification/` and `runbooks/` directories. Each fills as features reach their gates.
+- `use-cases/` (already filled in Phase 3 when the batch has a screen, empty otherwise), and empty `flows/`, `verification/`, `runbooks/` and `feedback/` directories. Each fills as features reach their gates.
 - **One line in the repo's `.gitattributes`**, so GitHub collapses the machinery in every PR diff:
   `<path to batch dir>/agent/** linguist-generated=true`. Verify with `git check-attr linguist-generated -- <batch dir>/agent/adapters.md`.
 - Copy interview and exploration evidence worth keeping into the dir (`agent/assets/` for binaries): external pointers die with the session.
@@ -132,6 +140,7 @@ TDD on every code item, the review cadence, and the verification ladder are fixe
 - A confirmed acceptance row that no card names and no `deferred:` verdict covers.
 - Asking the developer something a query or file read would answer.
 - A decision recorded without its why and rejected alternative.
+- A screen wireframed before the use cases it serves were written, or a use case holding steps instead of a goal.
 - A decision row that changes a control with no matching edit in the wireframe and the inventory.
 - Exploration reports trusted without reopening the load-bearing citations.
 - The orchestrator reading whole subsystems itself instead of dispatching.

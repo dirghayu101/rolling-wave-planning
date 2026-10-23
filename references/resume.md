@@ -53,6 +53,8 @@ Triage each one immediately into exactly one of:
 - **Minor**: a ruling on a routed question, a copy or style tweak, a one-screen fix, anything under roughly a hundred changed lines with no schema change and no new screen. It is a feature `<n>.<k>` on the item that owns the code, even when that item is already `merged`: one branch, one PR onto the item branch (or straight onto the batch branch when the item branch is gone), tests, `test:all`, merge. No new item, no issue, no card edit beyond one feature-index line, no flow file, no verification file unless an existing verification row is now wrong (then fix that row), no L4, no integrity check, no acceptance row. The feature file is ten lines or fewer and the log holds the dispatch and merge rows. Size decides the lane, not the agent's taste for records: when in doubt between minor and in scope, minor. (Added 3.2.0 after the developer stopped a five-agent ceremony for four one-line rulings on 2026-09-25.)
 - **Unclear**: a stub ledger row at stage `blocked`, reason "triage". Classifying it is itself work; the row keeps it visible.
 
+A developer feedback round arrives as a `feedback/<k>-<slug>.md` file the developer wrote; it is triaged like any other input, into an item or minor features, and the item card links the round. An agent never edits the round.
+
 **A mid-flight input that is a new requirement, not a bug, also gets a row in `planning/00-acceptance.md`**, in the developer's words, dated. Triaged out of the batch, its acceptance row reads `deferred: <the stub dir>`.
 
 ## Item numbers are execution slots

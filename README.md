@@ -84,13 +84,15 @@ A reviewer is told, in the packet, that the feature file, the PR body, the flow 
 <N>-<slug>/
   00-plan.md        STATE, decisions, testing plan, ledger, hand-back. 100 lines, hard cap.
   planning/         intake, acceptance, exploration, edge cases, blueprint, interview
+  use-cases/        goals people have with the product, one file per area, no steps
   flows/            one file per feature: before and after Mermaid diagrams, written once
   verification/     the verification pass, run on dev: one file per feature or group
   runbooks/         the production stage: run by hand after the dev pass, plus 0-release.md
+  feedback/         the developer's feedback rounds, never edited by an agent
   agent/            adapters, cards, feature HEAD and LOG files, resume blocks, assets, harness
 ```
 
-The developer opens the first five. `agent/**` is marked `linguist-generated` in the repo's `.gitattributes`, so GitHub collapses it in every PR diff. Files under `agent/` are sharded per feature and target 150 lines, so a subagent packet loads one card, one HEAD file and one LOG file, whatever the batch size.
+The developer opens everything except `agent/`. `agent/**` is marked `linguist-generated` in the repo's `.gitattributes`, so GitHub collapses it in every PR diff. Files under `agent/` are sharded per feature and target 150 lines, so a subagent packet loads one card, one HEAD file and one LOG file, whatever the batch size.
 
 ## How a batch flows
 

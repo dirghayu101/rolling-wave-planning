@@ -119,7 +119,7 @@ One row per role. Roles are defined in `references/dispatch.md`; only the bindin
 | `tdd` | `<skill>` | `<skill or none>` | every packet writing production code, including fixers |
 | `debugging` | `<skill>` | `<skill or none>` | any packet starting from a symptom |
 | `flow-explorer` | `none (template only)` | `<skill or none>` | feature `open` and PR ready, `light` tier, from `templates/flow.md` |
-| `ui-guidelines` | `<skill>` | `<skill, skill or none>` | blueprint phase only |
+| `ui-guidelines` | `<skill>` | `<skill, skill or none>` | blueprint phase, every UI feature packet, and the L3 simplicity review |
 | `ui-implementation` | `<skill>` | `<skill, skill or none>` | screen features, wireframe path in scope |
 | `browser-verification` | `<skill>` | `<skill or none>` | web features at L3 |
 | `mobile-verification` | `<skill or none>` | `<skill or none>` | iOS or Android features at L3 |

@@ -10,6 +10,7 @@ The wireframe is the cheapest place to discover that a screen needs a filter, a 
 
 ## Procedure
 
+0. **List the use cases first.** Before any wireframe, write or extend the use cases the screen serves in `use-cases/<area>.md` (contract: `references/ssot-layout.md`). Screens are derived from use cases, and the backend needs are derived from the screens. **Every wireframe header names the UC ids it serves.** A control or filter that serves no use case is cut, not added.
 1. **One plain-HTML file per screen**, copied from `templates/wireframe.html` into `planning/03-blueprint/<screen>.html`. Boxes and labels only: no CSS framework, no component library, no scripts, no colour work.
    **Every wireframe and the index link the shared `templates/wireframe.css`**, copied once into `planning/03-blueprint/` beside them. No file carries an inline style block.
    **The three inventories are visible sections, not comments**: states, role variation and backend needs are `<details class="states">`, `<details class="roles">` and `<details class="backend">` in the body. Screen, Route, Roles and Item are a visible `<header><dl>`.
@@ -19,9 +20,21 @@ The wireframe is the cheapest place to discover that a screen needs a filter, a 
 3. **List every state**: empty, loading, error, success, and any partial state (unsaved, submitting, offline, read-only). A screen with one state is a screen whose states have not been thought about.
 4. **List navigation**: how the user arrives, where each exit goes, what a deep link must carry.
 5. **List role-based variation**: what each role sees, what is hidden, what is disabled with an explanation versus absent entirely.
-6. **Consult the `ui-guidelines` role's skill** for **guideline lookup only**: form patterns, navigation patterns, accessibility requirements. Never for styling, palettes, typography or polish. A wireframe that looks designed has already failed its job.
+6. **Consult the `ui-guidelines` role's skill** for **guideline lookup only**: form patterns, navigation patterns, accessibility requirements, and its simplicity or UX heuristics for the checks below. Never for styling, palettes, typography or polish. A wireframe that looks designed has already failed its job.
 7. **The developer reviews in a browser**, starting from `index.html`. Every control they change or question becomes a numbered interview question in Phase 4.
 8. **The blueprint round's questions are written into `index.html` as the answer sheet.** A numbered block at the foot of the index, one `<details class="question">` per question, each with options, one-line trade-offs, the recommendation marked on the option it belongs to, and a free-text note. `templates/blueprint-index.html` carries the block, the draft-to-localStorage script and the Download and Copy actions; that script is the ONE script the blueprint directory holds. **Save the export verbatim as `planning/03-blueprint/round-<n>-answers.md`**, never retyped and never tidied, then record the round in `planning/04-interview.md` from it. A question marked "discuss" or left blank is not settled: carry it into the next round.
+
+## Simplicity checks
+
+Run these against every wireframe, and again on the built screen in the L3 browser pass (`references/lifecycle.md`). Each one came from a shipped screen the developer found cluttered.
+
+- Hide an action the user cannot take in the current state; do not show it disabled with an explanation, unless the reason is something they can fix.
+- One primary action per state (one button that reads "New request" or "Open draft", never both with one disabled).
+- A filter with more than three options, or one that is secondary to the list, is a dropdown with the most common choice preselected, not a row of segmented chips.
+- No filter where the list cannot hold the alternatives (status filters on a draft that only holds drafts).
+- No counter badges whose meaning needs a sentence to explain.
+- A list or pane that grows scrolls inside its region; headers, the primary action and any keypad or form stay put. Check that every pane scrolls to its last row at the smallest claimed viewport.
+- Use the domain word the user uses (the developer renamed "lines" to "items" because "line" caught people off guard).
 
 ## Output
 
@@ -46,6 +59,7 @@ Every row's backend needs are copied into that item's `0-card.md` as acceptance 
 ## Red flags
 
 - Styling beyond the shared `wireframe.css`: a brand colour, a component library, a framework class, an inline style.
+- A wireframe whose header names no UC id, or a control that serves no use case.
 - A wireframe with no state list. Empty, loading and error are where the backend requirements hide.
 - A decision row that changes a control with no matching edit in the wireframe and the inventory.
 - A screen feature packet that does not carry its wireframe path.
